@@ -744,7 +744,7 @@ Notes:
 - The newer docs' `4317` port is still treated as a future/configuration decision, not a breaking default change.
 - Unknown route guidance now points to `/tasks/run` and labels `/analyze` as legacy.
 
-## Phase N - Packaging Preparation
+## Phase N - Packaging Preparation - Done
 
 Goal: Finish current old Phase 10 while respecting new engine direction.
 
@@ -767,7 +767,32 @@ Acceptance criteria:
 - Smoke test instructions are obvious.
 - Port conflict messaging is clear.
 
-## Phase O - Desktop Companion Planning Gate
+Implemented files:
+
+```txt
+companion/server.js
+start-windows.bat
+start-dev.ps1
+README.md
+docs/packaging-plan.md
+```
+
+Notes:
+
+- Added `start-windows.bat` for one-step Windows startup from the repo root.
+- Added `start-dev.ps1` with configurable host, port, and Ollama model.
+- Server startup now prints:
+  - local server URL
+  - canonical and compatibility API endpoints
+  - active provider
+  - provider availability and endpoint
+  - default model role and selected model readiness
+  - registered tool count
+  - smoke-test command
+- Port conflict errors now include Windows `netstat` guidance and an alternate-port example.
+- No `package.json` was introduced, so no npm scripts were added.
+
+## Phase O - Desktop Companion Planning Gate - Done
 
 Goal: Prepare for UI without starting too early.
 
@@ -788,6 +813,26 @@ Acceptance criteria:
 
 - UI build starts only after core endpoints are stable.
 - Dashboard data needs are mapped to API endpoints.
+
+Implemented files:
+
+```txt
+docs/desktop-companion-decision.md
+README.md
+docs/architecture.md
+```
+
+Notes:
+
+- Added a Tauri-first desktop companion decision doc.
+- Deferred actual UI implementation.
+- Mapped dashboard data needs to current API endpoints:
+  - `GET /health`
+  - `GET /tools`
+  - `GET /providers/status`
+  - `GET /models/roles`
+  - `GET /audit`
+- Captured server-side gaps to resolve before UI work starts, including persistent provider/model-role settings, permission review endpoints, CORS/origin policy, tool pack manifest loading, and start/stop behavior.
 
 ## Final Completed Development Target
 

@@ -143,3 +143,9 @@ POST /analyze       legacy compatibility
 ## Compatibility Rule
 
 Old `/analyze` clients should continue to work. New engine features should be added through `/tasks/run` and related engine endpoints without breaking the legacy response envelope.
+
+## Desktop Companion Boundary
+
+The future Desktop Companion should be a thin local control panel over the HTTP API, not a replacement for the companion server.
+
+The current planning decision is documented in `docs/desktop-companion-decision.md`. UI implementation is deferred until the core API, packaging path, and manifest-loader direction are stable enough for tester builds.

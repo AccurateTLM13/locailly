@@ -117,11 +117,31 @@ Start the server:
 node companion/server.js
 ```
 
+Windows helper:
+
+```bat
+start-windows.bat
+```
+
+PowerShell development helper:
+
+```powershell
+.\start-dev.ps1
+```
+
 Alternate development port:
 
 ```powershell
-$env:LOCAL_AI_PORT = "31314"
-node companion/server.js
+.\start-dev.ps1 -Port 31314
+```
+
+On startup, the server prints the local URL, canonical API endpoint, active provider, provider availability, default model role, selected model readiness, registered tool count, and the smoke-test command.
+
+If port `31313` is already in use, either stop the existing server process or start on another port:
+
+```powershell
+netstat -ano | findstr :31313
+.\start-dev.ps1 -Port 31314
 ```
 
 ## Smoke Test
@@ -186,6 +206,7 @@ Smoke test summary: 27/27 checks passed.
 - The new engine docs mention port `4317`; this repo keeps `31313` for compatibility.
 - Audit events are summary-only and do not persist raw input/output by default.
 - CORS remains minimal and should be expanded carefully for browser extension testing.
+- No `package.json` is required yet; helper scripts call Node directly.
 
 ## Documentation
 
@@ -194,4 +215,5 @@ Smoke test summary: 27/27 checks passed.
 - [Tool integration guide](docs/tool-integration-guide.md)
 - [Current-to-engine implementation plan](docs/current-to-local-ai-engine-implementation-plan.md)
 - [Packaging plan](docs/packaging-plan.md)
+- [Desktop companion decision](docs/desktop-companion-decision.md)
 - [Publish readiness checklist](docs/publish-readiness-checklist.md)

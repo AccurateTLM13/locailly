@@ -232,8 +232,10 @@ const server = http.createServer(async (request, response) => {
 
 server.on("error", (error) => {
   if (error.code === "EADDRINUSE") {
-    console.error(`Port ${config.server.host}:${config.server.port} is already in use.`);
-    console.error("Stop the existing process or set LOCAL_AI_PORT to another port.");
+    console.error(`Local AI Platform could not start because ${config.server.host}:${config.server.port} is already in use.`);
+    console.error("Stop the existing server process, or start this one on another port.");
+    console.error(`Windows check: netstat -ano | findstr :${config.server.port}`);
+    console.error(`Alternate port: set LOCAL_AI_PORT=${config.server.port + 1}, then run node companion\\server.js`);
     process.exitCode = 1;
     return;
   }
@@ -243,8 +245,8 @@ server.on("error", (error) => {
   process.exitCode = 1;
 });
 
-server.listen(config.server.port, config.server.host, () => {
-  console.log(`Local AI Platform running at http://${config.server.host}:${config.server.port}`);
+server.listen(config.server.port, config.server.host, async () => {
+  await printStartupStatus();
 });
 
 function loadConfig() {
@@ -348,6 +350,40 @@ async function buildHealthResponse() {
   }
 
   return health;
+}
+
+async function printStartupStatus() {
+  const serverUrl = `http://${config.server.host}:${config.server.port}`;
+  const activeProvider = providerRouter.getActiveProviderId();
+  const defaultRole = resolveModelForRole("default_worker");
+
+  console.log("Local AI Platform");
+  console.log(`Server URL: ${serverUrl}`);
+  console.log("Canonical API: POST /tasks/run");
+  console.log("Compatibility API: POST /analyze");
+  console.log(`Active provider: ${activeProvider}`);
+
+  try {
+    const runtimeState = await checkRuntimeState(defaultRole.ok ? defaultRole.model : null);
+    const availability = runtimeState.available ? "available" : "unavailable";
+    const readiness = runtimeState.modelReady ? "ready" : "not ready";
+
+    console.log(`Provider status: ${availability}`);
+    console.log(`Provider endpoint: ${runtimeState.endpoint}`);
+    console.log(`Default model role: default_worker`);
+    console.log(`Selected model: ${defaultRole.ok ? defaultRole.model : runtimeState.model} (${readiness})`);
+
+    if (runtimeState.warning) {
+      console.log(`Startup warning: ${runtimeState.warning.message}`);
+      console.log(`Next step: ${runtimeState.warning.nextStep}`);
+    }
+  } catch (error) {
+    console.log("Provider status: unavailable");
+    console.log(`Startup warning: ${error.message}`);
+  }
+
+  console.log(`Registered tools: ${toolRegistry.listIds().length}`);
+  console.log("Smoke test: node scripts\\smoke-test.js");
 }
 
 function buildToolsResponse() {

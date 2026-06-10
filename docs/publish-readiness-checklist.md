@@ -100,7 +100,7 @@ MVP requires:
 - [x] New developer can run setup from README.
 - [x] Windows instructions are included.
 - [x] Required software is listed.
-- [ ] Node version expectation is listed.
+- [x] Node version expectation is listed.
 - [x] Ollama setup is listed.
 - [x] Smoke test script exists.
 - [x] Example config exists.
@@ -128,11 +128,11 @@ MVP requires:
 
 ## Tester Readiness
 
-- [ ] Tester setup steps are short and clear.
+- [x] Tester setup steps are short and clear.
 - [ ] Known issues are listed.
 - [ ] Feedback instructions are included.
 - [ ] Screenshots or terminal examples are included if useful.
-- [ ] Fallback behavior is explained.
+- [x] Fallback behavior is explained.
 
 ## Almost Publish-Ready Definition
 

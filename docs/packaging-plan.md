@@ -8,7 +8,7 @@ Make the Local AI Platform easy enough for open-source testers first, then packa
 
 ## Stage 1 - Developer/Test Package
 
-This is the current target and is mostly implemented.
+This stage is implemented for the current MVP.
 
 ### User Flow
 
@@ -34,11 +34,12 @@ Current implementation:
 - Ollama adapter exists.
 - Smoke test exists.
 - README includes setup and alternate-port instructions.
+- Windows launcher exists at `start-windows.bat`.
+- PowerShell development launcher exists at `start-dev.ps1`.
+- Startup output includes local URL, active provider, provider availability, selected model role/model, registered tool count, and smoke-test guidance.
 
 Still missing for a smoother tester package:
 
-- Launcher scripts
-- More polished startup status output
 - Example client folders
 
 ### Pros
@@ -58,14 +59,15 @@ Still missing for a smoother tester package:
 
 Add simple launch helpers.
 
-Status: not started. This is the next practical packaging step.
+Status: started for Windows. Mac/Linux helpers are deferred until non-Windows testing starts.
 
 ### Add
 
 ```txt
-start-windows.bat
-start-mac.sh
-start-linux.sh
+start-windows.bat      implemented
+start-dev.ps1          implemented
+start-mac.sh           deferred
+start-linux.sh         deferred
 ```
 
 Windows batch example:
@@ -89,11 +91,17 @@ Selected model: llama3.2
 Registered tools: deal-sniper, lighthouse-handoff
 ```
 
+The current server prints this same information in a compact status block. Port conflicts include Windows `netstat` guidance and an alternate-port example.
+
 ## Stage 3 - Desktop Companion App
 
 This is the real user version.
 
-Status: future work. Do not start until the server and tester package are stable.
+Status: planned but not started. The implementation decision is documented in `docs/desktop-companion-decision.md`.
+
+Current direction: Tauri-first, with Electron as a fallback if prototype work proves Tauri is a poor fit.
+
+Do not start implementation until the server API, tester package, and manifest-loader direction are stable.
 
 ### User Flow
 
