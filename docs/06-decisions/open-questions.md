@@ -4,7 +4,7 @@ Separated from [assumptions.md](./assumptions.md). Items here are **not decided*
 
 ## Product
 
-1. Is **Locaily** the final public product name?
+1. ~~Is **Locaily** the final public product name?~~ **Confirmed:** Locaily
 2. Desktop Companion: Tauri vs Electron for first prototype?
 3. Should audit logs move to SQLite or stay JSONL?
 4. Should tool packs stay local-folder-only for v1?

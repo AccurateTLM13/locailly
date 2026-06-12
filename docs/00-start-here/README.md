@@ -84,4 +84,6 @@ When in doubt, check [../06-decisions/open-questions.md](../06-decisions/open-qu
 
 ## Naming Note
 
-The repo README and some files still say **Local AI Platform** or **Local AI Engine**. That is legacy naming from earlier phases. **Locaily** is the current umbrella vision. Do not rename the whole repo in docs alone; align terminology gradually and label renames as non-final where needed.
+**Locaily** is the confirmed public product name. **NearbyNode** and **AI Pit Crew** are confirmed public architecture terms.
+
+Some repo files (`README.md`, `AGENTS.md`) still say **Local AI Platform** or **Local AI Engine** from earlier phases. Treat those as legacy aliases being phased out.

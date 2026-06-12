@@ -16,7 +16,7 @@ It is **not** the entire Locaily system. It validates:
 
 | Role | Description |
 |---|---|
-| Chrome extension workflow | Captures or receives Lighthouse / PageSpeed data in the browser (client; not fully specified in this repo) |
+| Chrome extension workflow | Captures or receives Lighthouse / PageSpeed data in the browser — client repo: [github.com/mnfrdrsh/lighthouse-handoff](https://github.com/mnfrdrsh/lighthouse-handoff) |
 | PageSpeed / Lighthouse translator | Maps report JSON into handoff-oriented developer notes |
 | Deterministic Markdown handoff generator | Runs without Ollama when runtime is missing |
 | Local AI enhancement path | Uses model roles across orchestrated steps when runtime is ready |
@@ -104,16 +104,22 @@ POST /analyze
 
 **Experimental / incomplete**
 
-- Production Chrome extension packaging and UX
+- Chrome extension integration validation against this Local Brain repo (extension repo exists separately)
 - Validated quality comparison vs human-written handoffs
 - Benchmarks vs monolithic large-model pass
 - Full Markdown export pipeline as a separate artifact
 
-## Related Code
+## Related Code and Repos
+
+**Local Brain (this repo)**
 
 - `companion/tools/lighthouse-handoff.js`
 - `companion/core/orchestrator.js`
 - `companion/core/scoreboard.js`
+
+**Chrome extension client**
+
+- https://github.com/mnfrdrsh/lighthouse-handoff
 
 ## Do Not
 

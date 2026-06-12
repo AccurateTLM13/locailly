@@ -4,11 +4,11 @@ Terms used across Locaily docs. Names marked **(non-final)** may still change.
 
 ## Core Project Terms
 
-### Locaily **(non-final)**
+### Locaily
 
-Umbrella project for local-first AI coordination: Local Brain, NearbyNode, AI Pit Crew, and workflows such as Lighthouse Handoff.
+Confirmed public umbrella name for local-first AI coordination: Local Brain, NearbyNode, AI Pit Crew, and workflows such as Lighthouse Handoff.
 
-Legacy aliases in repo: Local AI Platform, Local AI Engine, Local AI Engine Core.
+Legacy aliases still appearing in some repo files: Local AI Platform, Local AI Engine, Local AI Engine Core.
 
 ### Local Brain **(working name)**
 
@@ -16,15 +16,15 @@ Coordinator / orchestrator layer. Owns API, routing, permissions, validation, au
 
 **Code mapping today:** `companion/server.js`, `companion/core/*`.
 
-### NearbyNode **(non-final)**
+### NearbyNode
 
-Nearby device and capability layer. Exposes connectors and capabilities on local network peers without requiring each device to run a model.
+Confirmed public name for the nearby device and capability layer. Exposes connectors and capabilities on local network peers without requiring each device to run a model.
 
-**Status:** conceptual; not fully implemented.
+**Status:** conceptual direction confirmed; implementation not built yet.
 
-### AI Pit Crew **(working name)**
+### AI Pit Crew
 
-Strategy for coordinating multiple small models, tools, rules, and validators across task tracks instead of relying on one large general model.
+Confirmed public name for the strategy of coordinating multiple small models, tools, rules, and validators across task tracks instead of relying on one large general model.
 
 Also called "track-based orchestration" or "tiny model garage" in research notes.
 

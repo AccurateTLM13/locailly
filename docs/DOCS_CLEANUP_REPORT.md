@@ -144,9 +144,9 @@ No exact-duplicate files were deleted.
 | DealSniper as MVP centerpiece vs Lighthouse as first workflow | Both true in different eras: DealSniper was MVP tool; Locaily direction prioritizes Lighthouse as workflow test bench |
 | Pit Crew naming vs Track-Based Orchestration | Same concept; glossary lists aliases |
 
-## Owner Confirmation Needed
+## Owner Confirmation (2026-06-12 follow-up)
 
-1. Final public name: **Locaily** vs keep **Local AI Platform** for repo branding
-2. Whether **NearbyNode** and **AI Pit Crew** ship as public product terms
-3. Priority order: harden Lighthouse vs update AGENTS.md vs Desktop Companion spec
-4. Whether archived migration plan should get a banner file at archive root (done via `99-archive/README.md`)
+1. **Locaily** — confirmed as public product name
+2. **NearbyNode** and **AI Pit Crew** — confirmed as public terms
+3. **Next work priority** — owner asked for clarification (see explanation in PR/issue thread)
+4. **Lighthouse extension repo** — https://github.com/mnfrdrsh/lighthouse-handoff (linked in workflow doc)

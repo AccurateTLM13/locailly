@@ -1,5 +1,69 @@
 # Decision Log
 
+## 2026-06-12 — Locaily Confirmed as Public Product Name
+
+### Decision
+
+**Locaily** is the confirmed public umbrella name for the project.
+
+### Why
+
+Owner confirmation after docs reorganization review.
+
+### Status
+
+Confirmed
+
+### Notes
+
+Some repo files (`README.md`, `AGENTS.md`) still use legacy "Local AI Platform" wording and should be updated in a follow-up pass.
+
+---
+
+## 2026-06-12 — NearbyNode and AI Pit Crew as Public Terms
+
+### Decision
+
+**NearbyNode** and **AI Pit Crew** ship as public product/architecture terms alongside Local Brain and Lighthouse Handoff.
+
+### Why
+
+Owner confirmation. These names communicate the capability-first and multi-specialist thesis clearly.
+
+### Status
+
+Confirmed (naming); NearbyNode implementation remains experimental
+
+### Notes
+
+NearbyNode is a confirmed term for a not-yet-built layer—do not imply it is implemented.
+
+---
+
+## 2026-06-12 — Lighthouse Handoff Chrome Extension Repository
+
+### Decision
+
+The Lighthouse Handoff Chrome extension client lives at:
+
+https://github.com/mnfrdrsh/lighthouse-handoff
+
+This repo (`locailly`) owns the Local Brain server side; the extension repo owns browser capture and client UX.
+
+### Why
+
+Owner provided the external client repository link.
+
+### Status
+
+Confirmed
+
+### Notes
+
+Linked from `docs/02-workflows/lighthouse-handoff.md`.
+
+---
+
 ## 2026-06-12 — Docs Reorganized Around Locaily Vision
 
 ### Decision
