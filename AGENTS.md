@@ -236,19 +236,23 @@ Implemented:
 
 - `companion/server.js` (Local Brain / companion server)
 - `companion/core/*` (input gate, context, permissions, validator, audit, orchestrator)
+- `companion/pit-crew/*` (track orchestrator, decomposer, model/tool routers, session jobs)
+- `companion/core/model-profiles.js` (Model Garage profiles / suitability metadata)
 - `companion/providers/router.js` (Ollama + mock)
 - `companion/runtime/ollama.js`
 - `companion/tools/registry.js` (manifest-backed tool pack loader)
 - `companion/tools/deal-sniper.js`, `companion/tools/lighthouse-handoff.js`
-- `tool-packs/standard-text-pack/`
+- `tool-packs/standard-text-pack/`, `tool-packs/lighthouse-parser-pack/`
+- `POST /tracks/run`, `GET /tracks` track APIs
 - `scripts/smoke-test.js`, `scripts/contract-test.js`
 - `start-windows.bat`, `start-dev.ps1`
 
 Next focus areas (see [docs/04-product/roadmap.md](docs/04-product/roadmap.md)):
 
+- Model Garage evaluation harness and auto model switching (Phase 2)
+- Track Classifier for multi-track auto-routing
 - Harden Lighthouse Handoff validation end-to-end with the extension client
 - NearbyNode capability connectors (spec + prototype)
-- AI Pit Crew track classifier and model suitability profiles
 - Desktop Companion UI (deferred; see desktop companion decision doc)
 
 ## Documentation Map
@@ -258,6 +262,7 @@ Next focus areas (see [docs/04-product/roadmap.md](docs/04-product/roadmap.md)):
 | Start here | [docs/00-start-here/README.md](docs/00-start-here/README.md) |
 | Vision / glossary | [docs/00-start-here/current-vision.md](docs/00-start-here/current-vision.md) |
 | Architecture | [docs/01-architecture/locaily-overview.md](docs/01-architecture/locaily-overview.md) |
+| Pit Crew gap analysis | [docs/01-architecture/pit-crew-gap-analysis.md](docs/01-architecture/pit-crew-gap-analysis.md) |
 | Lighthouse workflow | [docs/02-workflows/lighthouse-handoff.md](docs/02-workflows/lighthouse-handoff.md) |
 | Agent rules | [docs/05-agents/agent-context.md](docs/05-agents/agent-context.md) |
 | Decisions | [docs/06-decisions/decision-log.md](docs/06-decisions/decision-log.md) |
