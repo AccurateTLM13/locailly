@@ -217,3 +217,23 @@ Smoke test summary: 27/27 checks passed.
 - [Packaging plan](docs/packaging-plan.md)
 - [Desktop companion decision](docs/desktop-companion-decision.md)
 - [Publish readiness checklist](docs/publish-readiness-checklist.md)
+
+## Amendment: Tiny Model Garage / Track-Based Clustering
+
+The Local AI Engine will explore whether multiple small local models can be orchestrated together to complete useful workflows that would normally require a larger general-purpose model.
+
+Instead of treating model size as the primary measure of capability, the system treats each task as a track. Each track can be broken into smaller jobs and routed to the best available model, tool pack, ruleset, or verifier.
+
+The goal is to find the balance threshold where optimized small models, structured tools, and local orchestration produce useful results with lower hardware requirements, lower cost, better privacy, and more accessible deployment.
+
+This architecture should support:
+- tiny local models
+- model routing
+- task decomposition
+- tool packs
+- structured outputs
+- fallback handling
+- verification
+- older hardware reuse
+- future distributed local clusters
+

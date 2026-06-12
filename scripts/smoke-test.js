@@ -843,6 +843,72 @@ async function checkLighthouseInputValidation() {
   assertAnalyzeError(invalidLighthouse.body, "lighthouse-handoff", "analyze-report", "INVALID_INPUT");
 }
 
+async function checkLighthouseOrchestratedAndScoreboard() {
+  // Switch to mock provider
+  await request("/providers/set", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ provider: "mock" })
+  });
+
+  try {
+    // 1. Run orchestrated
+    const orchestrated = await request("/tasks/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tool: "lighthouse-handoff",
+        input: {
+          url: "https://example.com",
+          scores: { performance: 72, accessibility: 96, bestPractices: 100, seo: 92 },
+          opportunities: [{ title: "Reduce render-blocking resources" }]
+        },
+        options: { execution_mode: "orchestrated" }
+      })
+    });
+    assert(orchestrated.response.status === 200, "Orchestrated mock lighthouse run failed");
+    assertTaskRunSuccess(orchestrated.body, "lighthouse-handoff", "analyze-report");
+    assert(orchestrated.body.meta.schema_valid === true, "Expected valid orchestrated output");
+
+    // 2. Run baseline
+    const baseline = await request("/tasks/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tool: "lighthouse-handoff",
+        input: {
+          url: "https://example.com",
+          scores: { performance: 72, accessibility: 96, bestPractices: 100, seo: 92 },
+          opportunities: [{ title: "Reduce render-blocking resources" }]
+        },
+        options: { execution_mode: "baseline" }
+      })
+    });
+    assert(baseline.response.status === 200, "Baseline mock lighthouse run failed");
+    assertTaskRunSuccess(baseline.body, "lighthouse-handoff", "analyze-report");
+
+    // 3. Query Scoreboard
+    const scoreboard = await request("/scoreboard");
+    assert(scoreboard.response.status === 200, "GET /scoreboard failed");
+    assertJsonObject(scoreboard.body, "/scoreboard response");
+    assert(scoreboard.body.ok === true, "Expected scoreboard ok true");
+    const handoffStats = scoreboard.body.scoreboard.lighthouse_handoff;
+    assert(handoffStats, "Expected lighthouse_handoff stats on scoreboard");
+    assert(handoffStats.orchestrated.count >= 1, "Expected orchestrated run in scoreboard stats");
+    assert(handoffStats.baseline.count >= 1, "Expected baseline run in scoreboard stats");
+    assert(typeof handoffStats.orchestrated.avgDurationMs === "number", "Expected numeric duration");
+    assert(handoffStats.orchestrated.avgRamGb === 1.2, "Expected 1.2GB RAM estimation for orchestrated");
+    assert(handoffStats.baseline.avgRamGb === 3.0, "Expected 3.0GB RAM estimation for baseline");
+  } finally {
+    // Restore provider to ollama
+    await request("/providers/set", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider: "ollama" })
+    });
+  }
+}
+
 async function main() {
   console.log(`Smoke testing Local AI Platform at ${BASE_URL}`);
 
@@ -873,6 +939,7 @@ async function main() {
   await runCheck("GET /audit run filter", checkAuditEndpoint);
   await runCheck("GET /audit failure event", checkAuditFailureEvent);
   await runCheck("Lighthouse Handoff input validation", checkLighthouseInputValidation);
+  await runCheck("Lighthouse orchestrated and scoreboard", checkLighthouseOrchestratedAndScoreboard);
 
   const failed = results.filter((result) => !result.ok);
   const passed = results.length - failed.length;

@@ -1,5 +1,7 @@
 const { readFileSync } = require("node:fs");
 const { join } = require("node:path");
+const { executeLighthouseHandoffTrack } = require("../core/orchestrator");
+const { recordScoreboardEntry } = require("../core/scoreboard");
 
 const promptTemplate = readFileSync(join(__dirname, "..", "prompts", "lighthouse-handoff.md"), "utf8");
 const outputSchema = require("../schemas/lighthouse-handoff.schema.json");
@@ -10,9 +12,9 @@ const lighthouseHandoffTool = {
   pack: "showcase-tools",
   description: "Convert Lighthouse/PageSpeed-style report data into deterministic MVP handoff notes.",
   tasks: ["analyze-report"],
-  permissions: [],
-  modelRole: null,
-  requiresRuntime: false,
+  permissions: ["model.run"],
+  modelRole: "default_worker",
+  requiresRuntime: false, // Keep false for runtime-free backward compatibility/fallback
   inputSchema: "companion/schemas/lighthouse-handoff.input.schema.json",
   outputSchema: "companion/schemas/lighthouse-handoff.schema.json",
   input: {
@@ -22,7 +24,7 @@ const lighthouseHandoffTool = {
   output: outputSchema,
   prompt: promptTemplate,
   validateInput,
-  async handle({ task, input }) {
+  async handle({ task, input, runtime, options }) {
     if (task !== "analyze-report") {
       throwToolError("UNKNOWN_TASK", `Task '${task}' is not supported by Lighthouse Handoff.`);
     }
@@ -33,7 +35,108 @@ const lighthouseHandoffTool = {
       throwToolError(validationError.code, validationError.message, validationError.nextStep);
     }
 
-    return buildDemoResult(input);
+    // Determine execution mode (default to orchestrated if runtime is available)
+    const executionMode = (options && options.execution_mode) || "orchestrated";
+
+    // Determine if we should use the LLM runtime
+    let useRuntime = false;
+    if (runtime) {
+      if (runtime.provider === "mock") {
+        useRuntime = true;
+      } else if (runtime.provider === "ollama") {
+        try {
+          const available = await runtime.isAvailable();
+          if (available) {
+            const modelName = options.model || runtime.model;
+            const hasModel = await runtime.hasModel(modelName);
+            if (hasModel) {
+              useRuntime = true;
+            }
+          }
+        } catch (err) {
+          useRuntime = false;
+        }
+      }
+    }
+
+    if (!useRuntime) {
+      return buildDemoResult(input);
+    }
+
+    const start = Date.now();
+
+    if (executionMode === "baseline") {
+      // Monolithic baseline: single-pass LLM execution
+      const prompt = `Convert this Lighthouse/PageSpeed report data into developer handoff notes.
+Input URL: ${input.url}
+Scores: ${JSON.stringify(input.scores)}
+Opportunities: ${JSON.stringify(input.opportunities || [])}
+Diagnostics: ${JSON.stringify(input.diagnostics || [])}
+
+Make sure to return JSON only conforming to the schema.`;
+
+      try {
+        const result = await runtime.generateJson(prompt, outputSchema, {
+          ...options,
+          temperature: 0.2
+        });
+
+        const durationMs = Date.now() - start;
+        recordScoreboardEntry({
+          track: "lighthouse_handoff",
+          mode: "baseline",
+          durationMs,
+          schemaValid: true,
+          steps: [
+            {
+              name: "monolithic_baseline",
+              model: options.model || runtime.model,
+              role: options.model_role || "default_worker",
+              durationMs
+            }
+          ]
+        });
+
+        return result;
+      } catch (err) {
+        recordScoreboardEntry({
+          track: "lighthouse_handoff",
+          mode: "baseline",
+          durationMs: Date.now() - start,
+          schemaValid: false,
+          steps: []
+        });
+        throw err;
+      }
+    } else {
+      // Orchestrated mode: Tiny Pit Crew
+      try {
+        const orchestrationResult = await executeLighthouseHandoffTrack({
+          input,
+          runtime,
+          options
+        });
+
+        recordScoreboardEntry({
+          track: "lighthouse_handoff",
+          mode: "orchestrated",
+          durationMs: orchestrationResult.durationMs,
+          schemaValid: true,
+          steps: orchestrationResult.steps
+        });
+
+        return orchestrationResult.result;
+      } catch (err) {
+        recordScoreboardEntry({
+          track: "lighthouse_handoff",
+          mode: "orchestrated",
+          durationMs: Date.now() - start,
+          schemaValid: false,
+          steps: []
+        });
+        throw err;
+      }
+    }
   }
 };
 

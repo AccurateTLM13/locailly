@@ -100,6 +100,14 @@ const server = http.createServer(async (request, response) => {
       return sendJson(response, 200, await buildAuditResponse(url.searchParams));
     }
 
+    if (request.method === "GET" && url.pathname === "/scoreboard") {
+      const { getScoreboardSummary } = require("./core/scoreboard");
+      return sendJson(response, 200, {
+        ok: true,
+        scoreboard: getScoreboardSummary()
+      });
+    }
+
     if (request.method === "GET" && url.pathname === "/providers/status") {
       return sendJson(response, 200, await buildProvidersStatusResponse());
     }
@@ -748,7 +756,8 @@ async function executeAnalyzeRequest(body, context) {
         options: {
           ...(body.options || {}),
           model: selectedModel,
-          fallback: fallbackContext
+          fallback: fallbackContext,
+          resolveModelForRole: (role) => resolveModelForRole(role)
         },
         meta: {
           requestId: context.identity.requestId,
@@ -1001,7 +1010,8 @@ async function executeTaskRunRequest(body, context) {
         options: {
           ...(body.options || {}),
           model: selectedModel,
-          fallback: fallbackContext
+          fallback: fallbackContext,
+          resolveModelForRole: (role) => resolveModelForRole(role)
         },
         meta: {
           requestId: context.identity.requestId,

@@ -272,18 +272,17 @@ MVP requires:
 
 ## Current Implementation Status
 
-Phases 1 through 8 are implemented. Phase 9 documentation synchronization is in progress/completing.
+Core phases, including the dynamic manifest-backed Tool Pack registry (Phase L), are fully implemented.
 
 Implemented:
-
-- `companion/server.js`
-- `companion/runtime/ollama.js`
-- `companion/tools/registry.js`
-- `companion/tools/deal-sniper.js`
-- `companion/tools/lighthouse-handoff.js`
-- prompt and schema files for both tools
-- `scripts/smoke-test.js`
+- `companion/server.js` (core companion server)
+- `companion/runtime/ollama.js` (runtime adapter)
+- `companion/tools/registry.js` (dynamic manifest-backed tool pack registry loader)
+- `companion/tools/deal-sniper.js` (showcase tool)
+- `companion/tools/lighthouse-handoff.js` (showcase tool)
+- `tool-packs/standard-text-pack/` (first official manifest-backed tool pack containing manifest, schemas, implementations, and examples)
+- `scripts/smoke-test.js` & `scripts/contract-test.js` (test suites)
+- `start-windows.bat` & `start-dev.ps1` (Windows startup scripts)
 
 Next phase:
-
-- Phase 10 packaging preparation with Windows-friendly launch helpers and clearer tester setup.
+- Development of Locaily V2 Track-Based Orchestration and Model Suitability Profiles.
