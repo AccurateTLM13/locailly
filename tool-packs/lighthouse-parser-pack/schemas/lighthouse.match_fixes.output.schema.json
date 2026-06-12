@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "required": ["fixes"],
+  "properties": {
+    "fixes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "effort", "impact"],
+        "properties": {
+          "title": { "type": "string" },
+          "effort": { "type": "string", "enum": ["low", "medium", "high"] },
+          "impact": { "type": "string", "enum": ["low", "medium", "high"] },
+          "steps": { "type": "array", "items": { "type": "string" } },
+          "needs_review": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

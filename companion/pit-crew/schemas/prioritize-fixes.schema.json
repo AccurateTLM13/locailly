@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": ["thinking", "priorityFixes"],
+  "properties": {
+    "thinking": { "type": "string" },
+    "priorityFixes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "priority", "reason"],
+        "properties": {
+          "title": { "type": "string" },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": ["priorityFixes"],
+  "properties": {
+    "issues": { "type": "array" },
+    "priorityFixes": { "type": "array" }
+  }
+}

@@ -33,7 +33,10 @@
       "text.extract_json",
       "text.classify",
       "text.detect_injection",
-      "text.validate_schema"
+      "text.validate_schema",
+      "lighthouse.parse",
+      "lighthouse.match_fixes",
+      "lighthouse.verify_handoff"
     ]
   },
   "permissions": {

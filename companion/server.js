@@ -24,6 +24,8 @@ const { createPermissionManager } = require("./core/permissions");
 const { runToolWithValidation } = require("./core/result-validator");
 const { createProviderRouter } = require("./providers/router");
 const { createToolRegistry } = require("./tools/registry");
+const { listTracks, runTrack, createJob, updateJob } = require("./pit-crew");
+const { recordScoreboardEntry } = require("./core/scoreboard");
 
 const PLATFORM_VERSION = "0.1.0";
 const SERVICE_NAME = "local-ai-platform";
@@ -106,6 +108,36 @@ const server = http.createServer(async (request, response) => {
         ok: true,
         scoreboard: getScoreboardSummary()
       });
+    }
+
+    if (request.method === "GET" && url.pathname === "/tracks") {
+      return sendJson(response, 200, {
+        ok: true,
+        tracks: listTracks()
+      });
+    }
+
+    if (request.method === "POST" && url.pathname === "/tracks/run") {
+      const bodyResult = await readJsonBody(request);
+
+      if (!bodyResult.ok) {
+        const errorBody = buildTaskRunError({
+          identity,
+          startedAt,
+          code: "BAD_JSON",
+          message: "Request body could not be parsed as JSON.",
+          nextStep: "Send a valid JSON object with track_id and input."
+        });
+
+        return sendJson(response, 400, errorBody);
+      }
+
+      const trackRunResult = await executeTrackRunRequest(bodyResult.body, {
+        identity,
+        startedAt
+      });
+
+      return sendJson(response, trackRunResult.statusCode, trackRunResult.body);
     }
 
     if (request.method === "GET" && url.pathname === "/providers/status") {
@@ -223,7 +255,7 @@ const server = http.createServer(async (request, response) => {
       ok: false,
       code: "NOT_FOUND",
       message: `No route matched ${request.method} ${url.pathname}.`,
-      nextStep: "Use GET /health, GET /tools, POST /tasks/run, or legacy POST /analyze."
+      nextStep: "Use GET /health, GET /tools, GET /tracks, POST /tracks/run, POST /tasks/run, or legacy POST /analyze."
     });
   } catch (error) {
     console.error("Unexpected server error.");
@@ -368,6 +400,7 @@ async function printStartupStatus() {
   console.log("Local AI Platform");
   console.log(`Server URL: ${serverUrl}`);
   console.log("Canonical API: POST /tasks/run");
+  console.log("Track API: POST /tracks/run");
   console.log("Compatibility API: POST /analyze");
   console.log(`Active provider: ${activeProvider}`);
 
@@ -757,7 +790,8 @@ async function executeAnalyzeRequest(body, context) {
           ...(body.options || {}),
           model: selectedModel,
           fallback: fallbackContext,
-          resolveModelForRole: (role) => resolveModelForRole(role)
+          resolveModelForRole: (role) => resolveModelForRole(role),
+          toolRegistry
         },
         meta: {
           requestId: context.identity.requestId,
@@ -1011,7 +1045,8 @@ async function executeTaskRunRequest(body, context) {
           ...(body.options || {}),
           model: selectedModel,
           fallback: fallbackContext,
-          resolveModelForRole: (role) => resolveModelForRole(role)
+          resolveModelForRole: (role) => resolveModelForRole(role),
+          toolRegistry
         },
         meta: {
           requestId: context.identity.requestId,
@@ -1072,6 +1107,175 @@ async function executeTaskRunRequest(body, context) {
       })
     };
   }
+}
+
+async function executeTrackRunRequest(body, context) {
+  const validationError = validateTrackRunRequest(body);
+
+  if (validationError) {
+    return {
+      statusCode: validationError.statusCode || 400,
+      body: buildTaskRunError({
+        identity: context.identity,
+        startedAt: context.startedAt,
+        code: validationError.code,
+        message: validationError.message,
+        nextStep: validationError.nextStep,
+        tool: "track-orchestrator",
+        task: body && body.track_id ? body.track_id : null
+      })
+    };
+  }
+
+  const job = createJob({
+    trackId: body.track_id,
+    input: body.input,
+    context: body.context || {},
+    options: body.options || {}
+  });
+
+  updateJob(job.job_id, { status: "running" });
+
+  const runtime = getActiveRuntime();
+  const runtimeState = await checkRuntimeState(getActiveModel());
+
+  if (!runtimeState.available) {
+    updateJob(job.job_id, {
+      status: "failed",
+      error: runtimeState.warning
+    });
+
+    return {
+      statusCode: 503,
+      body: buildTaskRunError({
+        identity: context.identity,
+        startedAt: context.startedAt,
+        tool: "track-orchestrator",
+        task: body.track_id,
+        code: "PROVIDER_UNAVAILABLE",
+        message: runtimeState.warning.message,
+        nextStep: runtimeState.warning.nextStep
+      })
+    };
+  }
+
+  try {
+    const trackResult = await runTrack({
+      trackId: body.track_id,
+      input: body.input,
+      runtime,
+      toolRegistry,
+      options: {
+        ...(body.options || {}),
+        model: getActiveModel(),
+        resolveModelForRole: (role) => resolveModelForRole(role),
+        toolRegistry
+      },
+      meta: {
+        requestId: context.identity.requestId,
+        run_id: context.identity.run_id,
+        trace_id: context.identity.trace_id,
+        job_id: job.job_id
+      }
+    });
+
+    recordScoreboardEntry({
+      track: body.track_id,
+      mode: body.options?.execution_mode || "orchestrated",
+      durationMs: trackResult.durationMs,
+      schemaValid: trackResult.schemaValid !== false,
+      steps: trackResult.steps
+    });
+
+    updateJob(job.job_id, {
+      status: "completed",
+      result: trackResult.result
+    });
+
+    return {
+      statusCode: 200,
+      body: buildEngineSuccess({
+        run_id: context.identity.run_id,
+        trace_id: context.identity.trace_id,
+        tool: "track-orchestrator",
+        task: body.track_id,
+        provider: getActiveProviderId(),
+        model: getActiveModel(),
+        model_role: "default_worker",
+        result: normalizeToolResult(trackResult.result),
+        confidence: 1,
+        warnings: [],
+        fallbacks_used: trackResult.fallbacks_used || [],
+        meta: {
+          ...buildTaskRunMeta(context, { warnings: [], risk_level: "low", flags: [] }, trackResult.schemaValid !== false, { ok: true }),
+          job_id: job.job_id,
+          track_id: body.track_id,
+          steps: trackResult.steps.map((step) => ({
+            step_id: step.name,
+            executor: step.executor,
+            tool: step.tool,
+            model: step.model,
+            role: step.role,
+            durationMs: step.durationMs
+          }))
+        }
+      })
+    };
+  } catch (error) {
+    updateJob(job.job_id, {
+      status: "failed",
+      error: {
+        code: error.code || "TRACK_EXECUTION_FAILED",
+        message: error.message
+      }
+    });
+
+    const code = normalizeTaskRunErrorCode(error.code || "TRACK_EXECUTION_FAILED");
+
+    return {
+      statusCode: code === "TRACK_NOT_FOUND" ? 404 : 500,
+      body: buildTaskRunError({
+        identity: context.identity,
+        startedAt: context.startedAt,
+        tool: "track-orchestrator",
+        task: body.track_id,
+        code,
+        message: error.message || "Track execution failed.",
+        nextStep: error.nextStep || "Check track configuration and tool registration."
+      })
+    };
+  }
+}
+
+function validateTrackRunRequest(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return {
+      statusCode: 400,
+      code: "INVALID_INPUT",
+      message: "Track run request must be a JSON object.",
+      nextStep: "Send track_id and input fields."
+    };
+  }
+
+  if (!body.track_id || typeof body.track_id !== "string" || !body.track_id.trim()) {
+    return {
+      statusCode: 400,
+      code: "INVALID_INPUT",
+      message: "Track run request requires track_id.",
+      nextStep: "Use GET /tracks to list available tracks."
+    };
+  }
+
+  if (!body.input || typeof body.input !== "object" || Array.isArray(body.input)) {
+    return {
+      statusCode: 400,
+      code: "INVALID_INPUT",
+      message: "Track run request requires input object.",
+      nextStep: "Send structured track input such as url and scores."
+    };
+  }
+
+  return null;
 }
 
 function validateTaskRunRequest(body) {

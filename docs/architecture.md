@@ -12,11 +12,33 @@ Clients can be browser extensions, local websites, desktop utilities, developer 
 Client tools
   -> Local AI Platform API at 127.0.0.1:31313
   -> Input gate / context / permissions
-  -> Tool registry
+  -> Tool registry OR Pit Crew track orchestrator (POST /tracks/run)
   -> Provider router
   -> Ollama or mock provider
-  -> Result validator / audit log
+  -> Result validator / audit log / scoreboard
 ```
+
+## Pit Crew Platform (track orchestration)
+
+Implemented in `companion/pit-crew/`:
+
+- `decomposer.js` — load track definitions from `tracks/*.track.json`
+- `orchestrator.js` — run multi-step tracks via ModelRouter + ToolRouter
+- `model-router.js` — model role steps
+- `tool-router.js` — invoke registered tool packs per step
+- `session-jobs.js` — in-memory job records for track runs
+
+Track API:
+
+```txt
+GET  /tracks
+POST /tracks/run
+GET  /scoreboard
+```
+
+First proof track: `website_audit.lighthouse_handoff` (Lighthouse report → developer handoff markdown).
+
+`lighthouse-handoff` is one tool pack step (`compose-handoff`), not the orchestrator host.
 
 ## API Layers
 

@@ -843,6 +843,63 @@ async function checkLighthouseInputValidation() {
   assertAnalyzeError(invalidLighthouse.body, "lighthouse-handoff", "analyze-report", "INVALID_INPUT");
 }
 
+async function checkTracksCatalog() {
+  const tracks = await request("/tracks");
+  assert(tracks.response.status === 200, "Expected GET /tracks to return HTTP 200.");
+  assertJsonObject(tracks.body, "/tracks response");
+  assert(tracks.body.ok === true, "Expected /tracks ok true.");
+  assert(Array.isArray(tracks.body.tracks), "Expected tracks array.");
+  const lighthouseTrack = tracks.body.tracks.find((track) => track.track_id === "website_audit.lighthouse_handoff");
+  assert(lighthouseTrack, "Expected website_audit.lighthouse_handoff track.");
+  assert(Array.isArray(lighthouseTrack.steps), "Expected lighthouse track steps.");
+  assert(lighthouseTrack.steps.includes("write_handoff"), "Expected write_handoff step.");
+}
+
+async function checkTracksRunMockProvider() {
+  await request("/providers/set", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ provider: "mock" })
+  });
+
+  try {
+    const trackRun = await request("/tracks/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        track_id: "website_audit.lighthouse_handoff",
+        input: {
+          url: "https://example.com",
+          scores: {
+            performance: 72,
+            accessibility: 96,
+            bestPractices: 100,
+            seo: 92
+          },
+          opportunities: [{ title: "Reduce render-blocking resources" }],
+          diagnostics: []
+        },
+        context: { source: "smoke-test" },
+        options: { execution_mode: "orchestrated" }
+      })
+    });
+
+    assert(trackRun.response.status === 200, "Expected POST /tracks/run to return HTTP 200.");
+    assertTaskRunSuccess(trackRun.body, "track-orchestrator", "website_audit.lighthouse_handoff");
+    assert(typeof trackRun.body.result.markdown === "string", "Expected markdown handoff in track result.");
+    assert(trackRun.body.result.markdown.includes("# Developer Handoff:"), "Expected markdown heading.");
+    assert(Array.isArray(trackRun.body.meta.steps), "Expected track step metadata.");
+    assert(trackRun.body.meta.steps.length >= 6, "Expected six track steps.");
+    assert(trackRun.body.meta.job_id, "Expected job_id in track run metadata.");
+  } finally {
+    await request("/providers/set", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider: "ollama" })
+    });
+  }
+}
+
 async function checkLighthouseOrchestratedAndScoreboard() {
   // Switch to mock provider
   await request("/providers/set", {
@@ -869,6 +926,7 @@ async function checkLighthouseOrchestratedAndScoreboard() {
     assert(orchestrated.response.status === 200, "Orchestrated mock lighthouse run failed");
     assertTaskRunSuccess(orchestrated.body, "lighthouse-handoff", "analyze-report");
     assert(orchestrated.body.meta.schema_valid === true, "Expected valid orchestrated output");
+    assert(typeof orchestrated.body.result.markdown === "string", "Expected orchestrated markdown output.");
 
     // 2. Run baseline
     const baseline = await request("/tasks/run", {
@@ -939,6 +997,8 @@ async function main() {
   await runCheck("GET /audit run filter", checkAuditEndpoint);
   await runCheck("GET /audit failure event", checkAuditFailureEvent);
   await runCheck("Lighthouse Handoff input validation", checkLighthouseInputValidation);
+  await runCheck("GET /tracks", checkTracksCatalog);
+  await runCheck("POST /tracks/run mock provider", checkTracksRunMockProvider);
   await runCheck("Lighthouse orchestrated and scoreboard", checkLighthouseOrchestratedAndScoreboard);
 
   const failed = results.filter((result) => !result.ok);

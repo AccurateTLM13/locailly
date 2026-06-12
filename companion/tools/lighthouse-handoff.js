@@ -2,6 +2,7 @@ const { readFileSync } = require("node:fs");
 const { join } = require("node:path");
 const { executeLighthouseHandoffTrack } = require("../core/orchestrator");
 const { recordScoreboardEntry } = require("../core/scoreboard");
+const { formatHandoffMarkdown } = require("../pit-crew/markdown");
 
 const promptTemplate = readFileSync(join(__dirname, "..", "prompts", "lighthouse-handoff.md"), "utf8");
 const outputSchema = require("../schemas/lighthouse-handoff.schema.json");
@@ -10,11 +11,11 @@ const lighthouseHandoffTool = {
   id: "lighthouse-handoff",
   name: "Lighthouse Handoff",
   pack: "showcase-tools",
-  description: "Convert Lighthouse/PageSpeed-style report data into deterministic MVP handoff notes.",
-  tasks: ["analyze-report"],
+  description: "Convert Lighthouse/PageSpeed-style report data into developer handoff notes.",
+  tasks: ["analyze-report", "compose-handoff"],
   permissions: ["model.run"],
   modelRole: "default_worker",
-  requiresRuntime: false, // Keep false for runtime-free backward compatibility/fallback
+  requiresRuntime: false,
   inputSchema: "companion/schemas/lighthouse-handoff.input.schema.json",
   outputSchema: "companion/schemas/lighthouse-handoff.schema.json",
   input: {
@@ -23,41 +24,30 @@ const lighthouseHandoffTool = {
   },
   output: outputSchema,
   prompt: promptTemplate,
-  validateInput,
+  validateInput: validateToolInput,
   async handle({ task, input, runtime, options }) {
+    if (task === "compose-handoff") {
+      const validationError = validateComposeInput(input);
+
+      if (validationError) {
+        throwToolError(validationError.code, validationError.message, validationError.nextStep);
+      }
+
+      return buildComposedHandoff(input);
+    }
+
     if (task !== "analyze-report") {
       throwToolError("UNKNOWN_TASK", `Task '${task}' is not supported by Lighthouse Handoff.`);
     }
 
-    const validationError = validateInput(input);
+    const validationError = validateAnalyzeInput(input);
 
     if (validationError) {
       throwToolError(validationError.code, validationError.message, validationError.nextStep);
     }
 
-    // Determine execution mode (default to orchestrated if runtime is available)
     const executionMode = (options && options.execution_mode) || "orchestrated";
-
-    // Determine if we should use the LLM runtime
-    let useRuntime = false;
-    if (runtime) {
-      if (runtime.provider === "mock") {
-        useRuntime = true;
-      } else if (runtime.provider === "ollama") {
-        try {
-          const available = await runtime.isAvailable();
-          if (available) {
-            const modelName = options.model || runtime.model;
-            const hasModel = await runtime.hasModel(modelName);
-            if (hasModel) {
-              useRuntime = true;
-            }
-          }
-        } catch (err) {
-          useRuntime = false;
-        }
-      }
-    }
+    const useRuntime = await shouldUseRuntime(runtime, options);
 
     if (!useRuntime) {
       return buildDemoResult(input);
@@ -66,7 +56,6 @@ const lighthouseHandoffTool = {
     const start = Date.now();
 
     if (executionMode === "baseline") {
-      // Monolithic baseline: single-pass LLM execution
       const prompt = `Convert this Lighthouse/PageSpeed report data into developer handoff notes.
 Input URL: ${input.url}
 Scores: ${JSON.stringify(input.scores)}
@@ -81,18 +70,17 @@ Make sure to return JSON only conforming to the schema.`;
           temperature: 0.2
         });
 
-        const durationMs = Date.now() - start;
         recordScoreboardEntry({
           track: "lighthouse_handoff",
           mode: "baseline",
-          durationMs,
+          durationMs: Date.now() - start,
           schemaValid: true,
           steps: [
             {
               name: "monolithic_baseline",
               model: options.model || runtime.model,
               role: options.model_role || "default_worker",
-              durationMs
+              durationMs: Date.now() - start
             }
           ]
         });
@@ -108,39 +96,134 @@ Make sure to return JSON only conforming to the schema.`;
         });
         throw err;
       }
-    } else {
-      // Orchestrated mode: Tiny Pit Crew
-      try {
-        const orchestrationResult = await executeLighthouseHandoffTrack({
-          input,
-          runtime,
-          options
-        });
+    }
 
-        recordScoreboardEntry({
-          track: "lighthouse_handoff",
-          mode: "orchestrated",
-          durationMs: orchestrationResult.durationMs,
-          schemaValid: true,
-          steps: orchestrationResult.steps
-        });
+    try {
+      const orchestrationResult = await executeLighthouseHandoffTrack({
+        input,
+        runtime,
+        options,
+        toolRegistry: options.toolRegistry
+      });
 
-        return orchestrationResult.result;
-      } catch (err) {
-        recordScoreboardEntry({
-          track: "lighthouse_handoff",
-          mode: "orchestrated",
-          durationMs: Date.now() - start,
-          schemaValid: false,
-          steps: []
-        });
-        throw err;
-      }
+      recordScoreboardEntry({
+        track: "lighthouse_handoff",
+        mode: "orchestrated",
+        durationMs: orchestrationResult.durationMs,
+        schemaValid: orchestrationResult.schemaValid !== false,
+        steps: orchestrationResult.steps
+      });
+
+      return orchestrationResult.result;
+    } catch (err) {
+      recordScoreboardEntry({
+        track: "lighthouse_handoff",
+        mode: "orchestrated",
+        durationMs: Date.now() - start,
+        schemaValid: false,
+        steps: []
+      });
+      throw err;
     }
   }
 };
 
-function validateInput(input) {
+async function shouldUseRuntime(runtime, options) {
+  if (!runtime) {
+    return false;
+  }
+
+  if (runtime.provider === "mock") {
+    return true;
+  }
+
+  if (runtime.provider !== "ollama") {
+    return false;
+  }
+
+  try {
+    const available = await runtime.isAvailable();
+
+    if (!available) {
+      return false;
+    }
+
+    const modelName = options.model || runtime.model;
+    return runtime.hasModel(modelName);
+  } catch (err) {
+    return false;
+  }
+}
+
+function validateComposeInput(input) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    return {
+      code: "INVALID_INPUT",
+      message: "Compose handoff input must be an object.",
+      nextStep: "Send url, metrics, and prioritized fix artifacts."
+    };
+  }
+
+  if (!isNonEmptyString(input.url)) {
+    return {
+      code: "INVALID_INPUT",
+      message: "Compose handoff input requires url.",
+      nextStep: "Include the tested page URL."
+    };
+  }
+
+  return null;
+}
+
+function buildComposedHandoff(input) {
+  const metrics = input.metrics || {};
+  const priorityFixes = Array.isArray(input.prioritizedFixes?.priorityFixes)
+    ? input.prioritizedFixes.priorityFixes
+    : [];
+  const matchedFixes = Array.isArray(input.matchedFixes?.fixes) ? input.matchedFixes.fixes : [];
+  const weakest = findWeakestScore({
+    performance: metrics.performance,
+    accessibility: metrics.accessibility,
+    bestPractices: metrics.bestPractices,
+    seo: metrics.seo
+  });
+
+  const checklist = matchedFixes.flatMap((fix) => fix.steps || []).slice(0, 5);
+
+  if (checklist.length === 0) {
+    checklist.push(
+      "Review the lowest Lighthouse score first.",
+      "Confirm opportunities and diagnostics against the live page.",
+      "Retest after fixes and compare the score changes."
+    );
+  }
+
+  const handoff = {
+    clientSummary: `Handoff for ${input.url}: lowest score is ${formatScoreName(weakest.name)} at ${weakest.value}.`,
+    developerSummary: input.prioritizedFixes?.thinking
+      || "Prioritized Lighthouse fixes assembled by the pit crew orchestrator for coding agent implementation.",
+    priorityFixes: priorityFixes.length > 0 ? priorityFixes : buildPriorityFixes(weakest, { opportunities: [] }),
+    handoffChecklist: checklist,
+    estimatedImpact: estimateImpact(weakest.value)
+  };
+
+  handoff.markdown = formatHandoffMarkdown({
+    ...handoff,
+    url: input.url
+  });
+
+  return handoff;
+}
+
+function validateToolInput(input) {
+  if (input && typeof input === "object" && (input.metrics || input.prioritizedFixes || input.matchedFixes)) {
+    return validateComposeInput(input);
+  }
+
+  return validateAnalyzeInput(input);
+}
+
+function validateAnalyzeInput(input) {
   if (!input || typeof input !== "object" || Array.isArray(input)) {
     return {
       code: "INVALID_INPUT",

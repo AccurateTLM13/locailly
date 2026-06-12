@@ -1,0 +1,33 @@
+{
+  "id": "lighthouse-parser-pack",
+  "name": "Lighthouse Parser Pack",
+  "version": "0.1.0",
+  "trust": "official",
+  "permissions": [],
+  "tools": [
+    {
+      "id": "lighthouse.parse",
+      "description": "Deterministically extract Lighthouse metrics from report input.",
+      "model_role": null,
+      "permissions": [],
+      "input_schema": "schemas/lighthouse.parse.input.schema.json",
+      "output_schema": "schemas/lighthouse.parse.output.schema.json"
+    },
+    {
+      "id": "lighthouse.match_fixes",
+      "description": "Match prioritized Lighthouse issues to suggested fix steps.",
+      "model_role": null,
+      "permissions": [],
+      "input_schema": "schemas/lighthouse.match_fixes.input.schema.json",
+      "output_schema": "schemas/lighthouse.match_fixes.output.schema.json"
+    },
+    {
+      "id": "lighthouse.verify_handoff",
+      "description": "Validate Lighthouse handoff output structure.",
+      "model_role": null,
+      "permissions": [],
+      "input_schema": "schemas/lighthouse.verify_handoff.input.schema.json",
+      "output_schema": "schemas/lighthouse.verify_handoff.output.schema.json"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": ["issues"],
+  "properties": {
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "category", "severity"],
+        "properties": {
+          "title": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": ["performance", "accessibility", "bestPractices", "seo"]
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          }
+        }
+      }
+    }
+  }
+}

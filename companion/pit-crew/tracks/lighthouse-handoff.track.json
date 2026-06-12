@@ -1,0 +1,59 @@
+{
+  "track_id": "website_audit.lighthouse_handoff",
+  "version": "1.0.0",
+  "name": "Lighthouse Developer Handoff",
+  "description": "First proof track — PageSpeed/Lighthouse report to developer handoff for coding agents.",
+  "output_schema": "companion/schemas/lighthouse-handoff.schema.json",
+  "steps": [
+    {
+      "id": "extract_metrics",
+      "executor": {
+        "type": "tool",
+        "tool": "lighthouse.parse",
+        "task": "run"
+      }
+    },
+    {
+      "id": "classify_issues",
+      "executor": {
+        "type": "model",
+        "role": "fast_worker",
+        "schema": "companion/pit-crew/schemas/classify-issues.schema.json",
+        "prompt_template": "classify_issues"
+      }
+    },
+    {
+      "id": "prioritize_fixes",
+      "executor": {
+        "type": "model",
+        "role": "reasoning_worker",
+        "schema": "companion/pit-crew/schemas/prioritize-fixes.schema.json",
+        "prompt_template": "prioritize_fixes"
+      }
+    },
+    {
+      "id": "match_fixes",
+      "executor": {
+        "type": "tool",
+        "tool": "lighthouse.match_fixes",
+        "task": "run"
+      }
+    },
+    {
+      "id": "write_handoff",
+      "executor": {
+        "type": "tool",
+        "tool": "lighthouse-handoff",
+        "task": "compose-handoff"
+      }
+    },
+    {
+      "id": "verify_output",
+      "executor": {
+        "type": "tool",
+        "tool": "lighthouse.verify_handoff",
+        "task": "run"
+      }
+    }
+  ]
+}
