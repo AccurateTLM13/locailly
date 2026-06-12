@@ -35,7 +35,8 @@ A rally car, drift car, and work truck each win on different tracks. Similarly, 
 |---|---|
 | Model roles (`fast_worker`, `default_worker`, `reasoning_worker`, …) | Implemented |
 | Role → model mapping via `/models/roles` | Implemented (in-memory config) |
-| Multi-step Lighthouse orchestration | Implemented in `orchestrator.js` |
+| Multi-step Lighthouse orchestration | Implemented in `companion/pit-crew/` + `POST /tracks/run` |
+| Track catalog API (`GET /tracks`) | Implemented |
 | Provider router (Ollama, mock) | Implemented |
 | Automatic track classifier | Not implemented |
 | Model suitability profile registry | Not implemented |
@@ -43,11 +44,18 @@ A rally car, drift car, and work truck each win on different tracks. Similarly, 
 
 ## Lighthouse Example Track
 
-When runtime is available, Lighthouse Handoff can run steps such as:
+Track id: `website_audit.lighthouse_handoff` (see `companion/pit-crew/tracks/lighthouse-handoff.track.json`)
 
-1. `extract_metrics` → `fast_worker`
-2. `classify_issues` → `default_worker`
-3. `prioritize_fixes` → `reasoning_worker`
+| Step | Executor |
+|---|---|
+| `extract_metrics` | `lighthouse.parse` tool (deterministic) |
+| `classify_issues` | `fast_worker` model |
+| `prioritize_fixes` | `reasoning_worker` model |
+| `match_fixes` | `lighthouse.match_fixes` tool |
+| `write_handoff` | `lighthouse-handoff` tool (`compose-handoff` task) |
+| `verify_output` | `lighthouse.verify_handoff` checker |
+
+Clients can run the track via `POST /tracks/run` or use `POST /tasks/run` with `lighthouse-handoff` and `options.execution_mode: "orchestrated"` for backward compatibility.
 
 When runtime is unavailable, the tool falls back to deterministic demo output.
 

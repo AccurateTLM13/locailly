@@ -20,10 +20,13 @@ const {
   buildAnalyzeError: createAnalyzeError
 } = require("./core/envelope");
 const { createModelRoleManager } = require("./core/model-roles");
+const { createModelProfileManager } = require("./core/model-profiles");
 const { createPermissionManager } = require("./core/permissions");
 const { runToolWithValidation } = require("./core/result-validator");
 const { createProviderRouter } = require("./providers/router");
 const { createToolRegistry } = require("./tools/registry");
+const { listTracks, runTrack, createJob, updateJob } = require("./pit-crew");
+const { recordScoreboardEntry } = require("./core/scoreboard");
 
 const PLATFORM_VERSION = "0.1.0";
 const SERVICE_NAME = "local-ai-platform";
@@ -53,6 +56,9 @@ const DEFAULT_CONFIG = {
       }
     }
   },
+  modelProfiles: {
+    active: "balanced"
+  },
   tools: {
     enabled: ["deal-sniper", "lighthouse-handoff"]
   },
@@ -73,6 +79,27 @@ const modelRoleManager = createModelRoleManager({
   defaultModel: config.runtime.model,
   ...config.modelRoles
 });
+const modelProfileManager = createModelProfileManager({
+  defaultModel: config.runtime.model,
+  active: config.modelProfiles.active,
+  profiles: config.modelProfiles.profiles
+});
+function getConfiguredProviderIds() {
+  return Array.from(new Set([
+    providerRouter.getActiveProviderId(),
+    ...Object.keys(config.modelRoles.providers || {})
+  ]));
+}
+
+const initialProfileApply = modelProfileManager.applyProfileRoles(
+  modelRoleManager,
+  modelProfileManager.resolveActiveProfileId(),
+  getConfiguredProviderIds()
+);
+
+if (!initialProfileApply.ok) {
+  console.warn(`[Model Profiles] Warning: ${initialProfileApply.error.message}`);
+}
 const toolRegistry = createToolRegistry({
   enabledTools: config.tools.enabled
 });
@@ -106,6 +133,36 @@ const server = http.createServer(async (request, response) => {
         ok: true,
         scoreboard: getScoreboardSummary()
       });
+    }
+
+    if (request.method === "GET" && url.pathname === "/tracks") {
+      return sendJson(response, 200, {
+        ok: true,
+        tracks: listTracks()
+      });
+    }
+
+    if (request.method === "POST" && url.pathname === "/tracks/run") {
+      const bodyResult = await readJsonBody(request);
+
+      if (!bodyResult.ok) {
+        const errorBody = buildTaskRunError({
+          identity,
+          startedAt,
+          code: "BAD_JSON",
+          message: "Request body could not be parsed as JSON.",
+          nextStep: "Send a valid JSON object with track_id and input."
+        });
+
+        return sendJson(response, 400, errorBody);
+      }
+
+      const trackRunResult = await executeTrackRunRequest(bodyResult.body, {
+        identity,
+        startedAt
+      });
+
+      return sendJson(response, trackRunResult.statusCode, trackRunResult.body);
     }
 
     if (request.method === "GET" && url.pathname === "/providers/status") {
@@ -146,6 +203,27 @@ const server = http.createServer(async (request, response) => {
       }
 
       const setResult = setModelRole(bodyResult.body);
+
+      return sendJson(response, setResult.ok ? 200 : 400, setResult);
+    }
+
+    if (request.method === "GET" && url.pathname === "/models/profiles") {
+      return sendJson(response, 200, buildModelProfilesResponse());
+    }
+
+    if (request.method === "POST" && url.pathname === "/models/profiles/set") {
+      const bodyResult = await readJsonBody(request);
+
+      if (!bodyResult.ok) {
+        return sendJson(response, 400, {
+          ok: false,
+          code: "BAD_JSON",
+          message: "Request body could not be parsed as JSON.",
+          nextStep: "Send a valid JSON object with profile or profile_id."
+        });
+      }
+
+      const setResult = setModelProfile(bodyResult.body);
 
       return sendJson(response, setResult.ok ? 200 : 400, setResult);
     }
@@ -223,7 +301,7 @@ const server = http.createServer(async (request, response) => {
       ok: false,
       code: "NOT_FOUND",
       message: `No route matched ${request.method} ${url.pathname}.`,
-      nextStep: "Use GET /health, GET /tools, POST /tasks/run, or legacy POST /analyze."
+      nextStep: "Use GET /health, GET /tools, GET /models/profiles, GET /tracks, POST /tracks/run, POST /tasks/run, or legacy POST /analyze."
     });
   } catch (error) {
     console.error("Unexpected server error.");
@@ -294,6 +372,14 @@ function mergeConfig(base, override) {
         ...((override.modelRoles && override.modelRoles.providers) || {})
       }
     },
+    modelProfiles: {
+      ...base.modelProfiles,
+      ...(override.modelProfiles || {}),
+      profiles: {
+        ...((base.modelProfiles && base.modelProfiles.profiles) || {}),
+        ...((override.modelProfiles && override.modelProfiles.profiles) || {})
+      }
+    },
     audit: {
       ...base.audit,
       ...(override.audit || {})
@@ -346,6 +432,7 @@ async function buildHealthResponse() {
       name: runtimeState.model,
       ready: runtimeState.modelReady
     },
+    model_profile: modelProfileManager.getActive(),
     tools: toolRegistry.listIds()
   };
 
@@ -368,6 +455,7 @@ async function printStartupStatus() {
   console.log("Local AI Platform");
   console.log(`Server URL: ${serverUrl}`);
   console.log("Canonical API: POST /tasks/run");
+  console.log("Track API: POST /tracks/run");
   console.log("Compatibility API: POST /analyze");
   console.log(`Active provider: ${activeProvider}`);
 
@@ -378,6 +466,8 @@ async function printStartupStatus() {
 
     console.log(`Provider status: ${availability}`);
     console.log(`Provider endpoint: ${runtimeState.endpoint}`);
+    const activeProfile = modelProfileManager.getActive();
+    console.log(`Model profile: ${activeProfile.label} (${activeProfile.policy})`);
     console.log(`Default model role: default_worker`);
     console.log(`Selected model: ${defaultRole.ok ? defaultRole.model : runtimeState.model} (${readiness})`);
 
@@ -419,6 +509,7 @@ async function buildProvidersStatusResponse() {
   return {
     ok: true,
     active_provider: providerRouter.getActiveProviderId(),
+    active_profile: modelProfileManager.getActive(),
     providers: await providerRouter.listStatus(),
     roles: modelRoleManager.list(providerRouter.getActiveProviderId())
   };
@@ -495,6 +586,60 @@ function setModelRole(body) {
     model: result.model,
     provider: result.provider,
     roles: modelRoleManager.list(result.provider || providerRouter.getActiveProviderId())
+  };
+}
+
+function buildModelProfilesResponse() {
+  return {
+    ok: true,
+    active_profile: modelProfileManager.resolveActiveProfileId(),
+    profiles: modelProfileManager.list()
+  };
+}
+
+function setModelProfile(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return {
+      ok: false,
+      code: "INVALID_INPUT",
+      message: "Model profile update body must be a JSON object.",
+      nextStep: "Send profile or profile_id."
+    };
+  }
+
+  const profileId = body.profile || body.profile_id || body.id;
+  const setResult = modelProfileManager.setActive(profileId);
+
+  if (!setResult.ok) {
+    return {
+      ok: false,
+      code: setResult.error.code,
+      message: setResult.error.message,
+      nextStep: setResult.error.nextStep
+    };
+  }
+
+  const applyResult = modelProfileManager.applyProfileRoles(
+    modelRoleManager,
+    setResult.active_profile,
+    getConfiguredProviderIds()
+  );
+
+  if (!applyResult.ok) {
+    return {
+      ok: false,
+      code: applyResult.error.code,
+      message: applyResult.error.message,
+      nextStep: applyResult.error.nextStep
+    };
+  }
+
+  return {
+    ok: true,
+    active_profile: setResult.active_profile,
+    profile: setResult.profile,
+    applied_roles: applyResult.applied,
+    roles: modelRoleManager.list(providerRouter.getActiveProviderId())
   };
 }
 
@@ -595,6 +740,16 @@ function getActiveModel(modelOverride = null) {
 
 function resolveModelForRole(modelRole) {
   return modelRoleManager.resolve(modelRole, getActiveProviderId());
+}
+
+function buildModelRoutingOptions(extra = {}) {
+  return {
+    ...extra,
+    profile_id: modelProfileManager.resolveActiveProfileId(),
+    getRoleSuitability: (role) => modelProfileManager.getRoleSuitability(role),
+    resolveModelForRole: (role) => resolveModelForRole(role),
+    toolRegistry
+  };
 }
 
 function getModelUnavailableNextStep(runtimeState) {
@@ -753,12 +908,11 @@ async function executeAnalyzeRequest(body, context) {
         task: body.task,
         input: body.input,
         runtime: getActiveRuntime(),
-        options: {
+        options: buildModelRoutingOptions({
           ...(body.options || {}),
           model: selectedModel,
-          fallback: fallbackContext,
-          resolveModelForRole: (role) => resolveModelForRole(role)
-        },
+          fallback: fallbackContext
+        }),
         meta: {
           requestId: context.identity.requestId,
           run_id: context.identity.run_id,
@@ -1007,12 +1161,11 @@ async function executeTaskRunRequest(body, context) {
         task,
         input: toolInput,
         runtime: getActiveRuntime(),
-        options: {
+        options: buildModelRoutingOptions({
           ...(body.options || {}),
           model: selectedModel,
-          fallback: fallbackContext,
-          resolveModelForRole: (role) => resolveModelForRole(role)
-        },
+          fallback: fallbackContext
+        }),
         meta: {
           requestId: context.identity.requestId,
           run_id: context.identity.run_id,
@@ -1072,6 +1225,173 @@ async function executeTaskRunRequest(body, context) {
       })
     };
   }
+}
+
+async function executeTrackRunRequest(body, context) {
+  const validationError = validateTrackRunRequest(body);
+
+  if (validationError) {
+    return {
+      statusCode: validationError.statusCode || 400,
+      body: buildTaskRunError({
+        identity: context.identity,
+        startedAt: context.startedAt,
+        code: validationError.code,
+        message: validationError.message,
+        nextStep: validationError.nextStep,
+        tool: "track-orchestrator",
+        task: body && body.track_id ? body.track_id : null
+      })
+    };
+  }
+
+  const job = createJob({
+    trackId: body.track_id,
+    input: body.input,
+    context: body.context || {},
+    options: body.options || {}
+  });
+
+  updateJob(job.job_id, { status: "running" });
+
+  const runtime = getActiveRuntime();
+  const runtimeState = await checkRuntimeState(getActiveModel());
+
+  if (!runtimeState.available) {
+    updateJob(job.job_id, {
+      status: "failed",
+      error: runtimeState.warning
+    });
+
+    return {
+      statusCode: 503,
+      body: buildTaskRunError({
+        identity: context.identity,
+        startedAt: context.startedAt,
+        tool: "track-orchestrator",
+        task: body.track_id,
+        code: "PROVIDER_UNAVAILABLE",
+        message: runtimeState.warning.message,
+        nextStep: runtimeState.warning.nextStep
+      })
+    };
+  }
+
+  try {
+    const trackResult = await runTrack({
+      trackId: body.track_id,
+      input: body.input,
+      runtime,
+      toolRegistry,
+      options: buildModelRoutingOptions({
+        ...(body.options || {}),
+        model: getActiveModel()
+      }),
+      meta: {
+        requestId: context.identity.requestId,
+        run_id: context.identity.run_id,
+        trace_id: context.identity.trace_id,
+        job_id: job.job_id
+      }
+    });
+
+    recordScoreboardEntry({
+      track: body.track_id,
+      mode: body.options?.execution_mode || "orchestrated",
+      durationMs: trackResult.durationMs,
+      schemaValid: trackResult.schemaValid !== false,
+      steps: trackResult.steps
+    });
+
+    updateJob(job.job_id, {
+      status: "completed",
+      result: trackResult.result
+    });
+
+    return {
+      statusCode: 200,
+      body: buildEngineSuccess({
+        run_id: context.identity.run_id,
+        trace_id: context.identity.trace_id,
+        tool: "track-orchestrator",
+        task: body.track_id,
+        provider: getActiveProviderId(),
+        model: getActiveModel(),
+        model_role: "default_worker",
+        result: normalizeToolResult(trackResult.result),
+        confidence: 1,
+        warnings: [],
+        fallbacks_used: trackResult.fallbacks_used || [],
+        meta: {
+          ...buildTaskRunMeta(context, { warnings: [], risk_level: "low", flags: [] }, trackResult.schemaValid !== false, { ok: true }),
+          job_id: job.job_id,
+          track_id: body.track_id,
+          steps: trackResult.steps.map((step) => ({
+            step_id: step.name,
+            executor: step.executor,
+            tool: step.tool,
+            model: step.model,
+            role: step.role,
+            durationMs: step.durationMs
+          }))
+        }
+      })
+    };
+  } catch (error) {
+    updateJob(job.job_id, {
+      status: "failed",
+      error: {
+        code: error.code || "TRACK_EXECUTION_FAILED",
+        message: error.message
+      }
+    });
+
+    const code = normalizeTaskRunErrorCode(error.code || "TRACK_EXECUTION_FAILED");
+
+    return {
+      statusCode: code === "TRACK_NOT_FOUND" ? 404 : 500,
+      body: buildTaskRunError({
+        identity: context.identity,
+        startedAt: context.startedAt,
+        tool: "track-orchestrator",
+        task: body.track_id,
+        code,
+        message: error.message || "Track execution failed.",
+        nextStep: error.nextStep || "Check track configuration and tool registration."
+      })
+    };
+  }
+}
+
+function validateTrackRunRequest(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return {
+      statusCode: 400,
+      code: "INVALID_INPUT",
+      message: "Track run request must be a JSON object.",
+      nextStep: "Send track_id and input fields."
+    };
+  }
+
+  if (!body.track_id || typeof body.track_id !== "string" || !body.track_id.trim()) {
+    return {
+      statusCode: 400,
+      code: "INVALID_INPUT",
+      message: "Track run request requires track_id.",
+      nextStep: "Use GET /tracks to list available tracks."
+    };
+  }
+
+  if (!body.input || typeof body.input !== "object" || Array.isArray(body.input)) {
+    return {
+      statusCode: 400,
+      code: "INVALID_INPUT",
+      message: "Track run request requires input object.",
+      nextStep: "Send structured track input such as url and scores."
+    };
+  }
+
+  return null;
 }
 
 function validateTaskRunRequest(body) {

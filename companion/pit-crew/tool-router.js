@@ -1,0 +1,89 @@
+function buildStepInput(step, context) {
+  const input = context.input || {};
+  const artifacts = context.artifacts || {};
+
+  if (step.id === "extract_metrics") {
+    return input;
+  }
+
+  if (step.id === "match_fixes") {
+    return {
+      issues: artifacts.classify_issues?.issues || [],
+      priorityFixes: artifacts.prioritize_fixes?.priorityFixes || []
+    };
+  }
+
+  if (step.id === "write_handoff") {
+    return {
+      url: input.url,
+      metrics: artifacts.extract_metrics || {},
+      classifiedIssues: artifacts.classify_issues || {},
+      prioritizedFixes: artifacts.prioritize_fixes || {},
+      matchedFixes: artifacts.match_fixes || {}
+    };
+  }
+
+  if (step.id === "verify_output") {
+    return {
+      handoff: artifacts.write_handoff || {}
+    };
+  }
+
+  return input;
+}
+
+async function executeToolStep({ step, context, toolRegistry, runtime, options, meta }) {
+  const executor = step.executor;
+  const toolId = executor.tool;
+  const task = executor.task || "run";
+  const tool = toolRegistry.get(toolId);
+  const stepStart = Date.now();
+
+  if (!tool) {
+    const error = new Error(`Tool '${toolId}' is not registered.`);
+    error.code = "TOOL_NOT_FOUND";
+    error.nextStep = "Use GET /tools to list available tools.";
+    throw error;
+  }
+
+  if (!tool.tasks.includes(task)) {
+    const error = new Error(`Task '${task}' is not supported by tool '${toolId}'.`);
+    error.code = "UNKNOWN_TASK";
+    error.nextStep = `Supported tasks: ${tool.tasks.join(", ")}`;
+    throw error;
+  }
+
+  const stepInput = buildStepInput(step, context);
+  const validationError = typeof tool.validateInput === "function" ? tool.validateInput(stepInput) : null;
+
+  if (validationError) {
+    const error = new Error(validationError.message);
+    error.code = validationError.code || "INVALID_INPUT";
+    error.nextStep = validationError.nextStep;
+    throw error;
+  }
+
+  const output = await tool.handle({
+    task,
+    input: stepInput,
+    runtime,
+    options,
+    meta
+  });
+
+  return {
+    output,
+    meta: {
+      step_id: step.id,
+      executor_type: "tool",
+      tool: toolId,
+      task,
+      durationMs: Date.now() - stepStart
+    }
+  };
+}
+
+module.exports = {
+  buildStepInput,
+  executeToolStep
+};

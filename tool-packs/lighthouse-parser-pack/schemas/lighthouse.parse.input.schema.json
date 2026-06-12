@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["url", "scores"],
+  "properties": {
+    "url": { "type": "string" },
+    "scores": { "type": "object" },
+    "opportunities": { "type": "array" },
+    "diagnostics": { "type": "array" },
+    "raw_report": { "type": "object" }
+  }
+}

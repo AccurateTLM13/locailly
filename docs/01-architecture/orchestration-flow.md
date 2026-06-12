@@ -37,15 +37,27 @@ Workflow result
 
 ## Implemented Example: Lighthouse Handoff
 
-`companion/core/orchestrator.js` defines `executeLighthouseHandoffTrack`:
+Platform module: `companion/pit-crew/` (orchestrator, decomposer, model-router, tool-router).
 
-| Step | Purpose | Typical role |
+Legacy wrapper: `companion/core/orchestrator.js` delegates to the pit-crew runner.
+
+| Step | Purpose | Executor |
 |---|---|---|
-| `extract_metrics` | Pull scores and URL | `fast_worker` |
-| `classify_issues` | Group issues by category/severity | `default_worker` |
-| `prioritize_fixes` | Rank fixes with reasoning | `reasoning_worker` |
+| `extract_metrics` | Pull scores and URL | `lighthouse.parse` tool |
+| `classify_issues` | Group issues by category/severity | `fast_worker` model |
+| `prioritize_fixes` | Rank fixes with reasoning | `reasoning_worker` model |
+| `match_fixes` | Map fixes to KB steps | `lighthouse.match_fixes` tool |
+| `write_handoff` | Compose developer handoff | `lighthouse-handoff` `compose-handoff` |
+| `verify_output` | Validate handoff structure | `lighthouse.verify_handoff` |
 
-The tool handler in `companion/tools/lighthouse-handoff.js` chooses orchestrated vs baseline vs deterministic demo paths.
+APIs:
+
+```txt
+GET  /tracks
+POST /tracks/run
+```
+
+The tool handler in `companion/tools/lighthouse-handoff.js` also supports orchestrated vs baseline vs deterministic demo paths via `POST /tasks/run`.
 
 ## Inputs
 

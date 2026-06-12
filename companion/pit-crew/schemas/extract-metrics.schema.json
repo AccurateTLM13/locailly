@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["url", "performance", "accessibility", "bestPractices", "seo"],
+  "properties": {
+    "url": { "type": "string" },
+    "performance": { "type": "number" },
+    "accessibility": { "type": "number" },
+    "bestPractices": { "type": "number" },
+    "seo": { "type": "number" },
+    "opportunityCount": { "type": "integer" },
+    "diagnosticCount": { "type": "integer" }
+  }
+}

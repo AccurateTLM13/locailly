@@ -24,6 +24,45 @@
       }
     }
   },
+  "modelProfiles": {
+    "active": "balanced",
+    "profiles": {
+      "lightweight": {
+        "roles": {
+          "reasoning_worker": null,
+          "voice_worker": null
+        }
+      },
+      "balanced": {
+        "roles": {
+          "fast_worker": "llama3.2",
+          "default_worker": "llama3.2",
+          "reasoning_worker": "llama3.2"
+        },
+        "providers": {
+          "mock": {
+            "fast_worker": "mock-fast-model",
+            "default_worker": "mock-local-model",
+            "reasoning_worker": "mock-reasoning-model"
+          }
+        }
+      },
+      "developer": {
+        "roles": {
+          "fast_worker": "llama3.2",
+          "default_worker": "llama3.2",
+          "reasoning_worker": "llama3.2"
+        },
+        "providers": {
+          "mock": {
+            "fast_worker": "mock-fast-model",
+            "default_worker": "mock-local-model",
+            "reasoning_worker": "mock-reasoning-model"
+          }
+        }
+      }
+    }
+  },
   "tools": {
     "enabled": [
       "deal-sniper",
@@ -33,7 +72,10 @@
       "text.extract_json",
       "text.classify",
       "text.detect_injection",
-      "text.validate_schema"
+      "text.validate_schema",
+      "lighthouse.parse",
+      "lighthouse.match_fixes",
+      "lighthouse.verify_handoff"
     ]
   },
   "permissions": {

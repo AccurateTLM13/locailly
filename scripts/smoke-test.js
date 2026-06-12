@@ -99,6 +99,8 @@ function assertHealthShape(body) {
   assert(typeof body.runtime.available === "boolean", "Expected runtime availability boolean.");
   assert(body.model && typeof body.model.name === "string", "Expected selected model name.");
   assert(typeof body.model.ready === "boolean", "Expected model readiness boolean.");
+  assert(body.model_profile && typeof body.model_profile.id === "string", "Expected active model profile.");
+  assert(typeof body.model_profile.policy === "string", "Expected model profile policy.");
   assert(Array.isArray(body.tools), "Expected registered tools array.");
   assert(body.tools.includes("deal-sniper"), "Expected deal-sniper tool registration.");
   assert(body.tools.includes("lighthouse-handoff"), "Expected lighthouse-handoff tool registration.");
@@ -217,6 +219,56 @@ async function checkModelRoleSet() {
   assert(setRole.body.model === "mock-local-model", "Expected mock role model.");
 }
 
+async function checkModelProfilesEndpoint() {
+  const profiles = await request("/models/profiles");
+  assert(profiles.response.status === 200, "Expected /models/profiles to return HTTP 200.");
+  assertJsonObject(profiles.body, "/models/profiles response");
+  assert(profiles.body.ok === true, "Expected /models/profiles ok true.");
+  assert(profiles.body.active_profile === "balanced", "Expected balanced default profile.");
+  assert(Array.isArray(profiles.body.profiles), "Expected profiles array.");
+
+  const balanced = profiles.body.profiles.find((profile) => profile.id === "balanced");
+  assert(balanced, "Expected balanced profile.");
+  assert(balanced.active === true, "Expected balanced profile active flag.");
+  assert(balanced.policy === "smart_load", "Expected balanced smart_load policy.");
+  assert(Array.isArray(balanced.roles), "Expected profile roles array.");
+
+  const fastWorker = balanced.roles.find((role) => role.role === "fast_worker");
+  assert(fastWorker && fastWorker.suitability, "Expected fast_worker suitability metadata.");
+  assert(Array.isArray(fastWorker.suitability.strengths), "Expected suitability strengths.");
+}
+
+async function checkModelProfileSet() {
+  await request("/providers/set", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      provider: "mock"
+    })
+  });
+
+  const setProfile = await request("/models/profiles/set", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      profile: "balanced"
+    })
+  });
+
+  assert(setProfile.response.status === 200, "Expected /models/profiles/set to return HTTP 200.");
+  assertJsonObject(setProfile.body, "/models/profiles/set response");
+  assert(setProfile.body.ok === true, "Expected /models/profiles/set ok true.");
+  assert(setProfile.body.active_profile === "balanced", "Expected balanced profile selection.");
+  assert(Array.isArray(setProfile.body.applied_roles), "Expected applied role mappings.");
+
+  const mockFast = setProfile.body.roles.find((role) => role.role === "fast_worker");
+  assert(mockFast && mockFast.model === "mock-fast-model", "Expected mock fast worker from profile.");
+}
+
 async function checkTasksRunMockProviderDealSniper() {
   await request("/providers/set", {
     method: "POST",
@@ -254,7 +306,7 @@ async function checkTasksRunMockProviderDealSniper() {
     assert(dealSniper.response.status === 200, "Expected mock-backed DealSniper HTTP 200.");
     assertTaskRunSuccess(dealSniper.body, "deal-sniper", "analyze-listing");
     assert(dealSniper.body.provider === "mock", "Expected mock provider in task result.");
-    assert(dealSniper.body.model === "mock-local-model", "Expected mock model in task result.");
+    assert(dealSniper.body.model === "mock-fast-model", "Expected profile-mapped mock fast_worker model.");
     assert(dealSniper.body.model_role === "fast_worker", "Expected fast_worker model role in task result.");
     assert(dealSniper.body.meta.permissions.used.includes("model.run"), "Expected model.run permission usage.");
     assert(typeof dealSniper.body.result.summary === "string", "Expected mock DealSniper summary.");
@@ -843,6 +895,63 @@ async function checkLighthouseInputValidation() {
   assertAnalyzeError(invalidLighthouse.body, "lighthouse-handoff", "analyze-report", "INVALID_INPUT");
 }
 
+async function checkTracksCatalog() {
+  const tracks = await request("/tracks");
+  assert(tracks.response.status === 200, "Expected GET /tracks to return HTTP 200.");
+  assertJsonObject(tracks.body, "/tracks response");
+  assert(tracks.body.ok === true, "Expected /tracks ok true.");
+  assert(Array.isArray(tracks.body.tracks), "Expected tracks array.");
+  const lighthouseTrack = tracks.body.tracks.find((track) => track.track_id === "website_audit.lighthouse_handoff");
+  assert(lighthouseTrack, "Expected website_audit.lighthouse_handoff track.");
+  assert(Array.isArray(lighthouseTrack.steps), "Expected lighthouse track steps.");
+  assert(lighthouseTrack.steps.includes("write_handoff"), "Expected write_handoff step.");
+}
+
+async function checkTracksRunMockProvider() {
+  await request("/providers/set", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ provider: "mock" })
+  });
+
+  try {
+    const trackRun = await request("/tracks/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        track_id: "website_audit.lighthouse_handoff",
+        input: {
+          url: "https://example.com",
+          scores: {
+            performance: 72,
+            accessibility: 96,
+            bestPractices: 100,
+            seo: 92
+          },
+          opportunities: [{ title: "Reduce render-blocking resources" }],
+          diagnostics: []
+        },
+        context: { source: "smoke-test" },
+        options: { execution_mode: "orchestrated" }
+      })
+    });
+
+    assert(trackRun.response.status === 200, "Expected POST /tracks/run to return HTTP 200.");
+    assertTaskRunSuccess(trackRun.body, "track-orchestrator", "website_audit.lighthouse_handoff");
+    assert(typeof trackRun.body.result.markdown === "string", "Expected markdown handoff in track result.");
+    assert(trackRun.body.result.markdown.includes("# Developer Handoff:"), "Expected markdown heading.");
+    assert(Array.isArray(trackRun.body.meta.steps), "Expected track step metadata.");
+    assert(trackRun.body.meta.steps.length >= 6, "Expected six track steps.");
+    assert(trackRun.body.meta.job_id, "Expected job_id in track run metadata.");
+  } finally {
+    await request("/providers/set", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ provider: "ollama" })
+    });
+  }
+}
+
 async function checkLighthouseOrchestratedAndScoreboard() {
   // Switch to mock provider
   await request("/providers/set", {
@@ -869,6 +978,7 @@ async function checkLighthouseOrchestratedAndScoreboard() {
     assert(orchestrated.response.status === 200, "Orchestrated mock lighthouse run failed");
     assertTaskRunSuccess(orchestrated.body, "lighthouse-handoff", "analyze-report");
     assert(orchestrated.body.meta.schema_valid === true, "Expected valid orchestrated output");
+    assert(typeof orchestrated.body.result.markdown === "string", "Expected orchestrated markdown output.");
 
     // 2. Run baseline
     const baseline = await request("/tasks/run", {
@@ -918,6 +1028,8 @@ async function main() {
   await runCheck("POST /providers/set", checkProviderSwitch);
   await runCheck("GET /models/roles", checkModelRolesEndpoint);
   await runCheck("POST /models/roles/set", checkModelRoleSet);
+  await runCheck("GET /models/profiles", checkModelProfilesEndpoint);
+  await runCheck("POST /models/profiles/set", checkModelProfileSet);
   await runCheck("tasks run DealSniper mock provider", checkTasksRunMockProviderDealSniper);
   await runCheck("tasks run text.clean mock provider", checkTasksRunTextCleanMockProvider);
   await runCheck("tasks run text.validate_schema", checkTasksRunTextValidateSchema);
@@ -939,6 +1051,8 @@ async function main() {
   await runCheck("GET /audit run filter", checkAuditEndpoint);
   await runCheck("GET /audit failure event", checkAuditFailureEvent);
   await runCheck("Lighthouse Handoff input validation", checkLighthouseInputValidation);
+  await runCheck("GET /tracks", checkTracksCatalog);
+  await runCheck("POST /tracks/run mock provider", checkTracksRunMockProvider);
   await runCheck("Lighthouse orchestrated and scoreboard", checkLighthouseOrchestratedAndScoreboard);
 
   const failed = results.filter((result) => !result.ok);
