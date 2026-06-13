@@ -1,0 +1,62 @@
+{
+  "description": "Allowlist examples for Memory Bridge v0. blockedPaths in companion/config.json always override allowedPaths.",
+  "flat_default": {
+    "allowedPaths": [
+      "index.md",
+      "log.md",
+      "SCHEMA.md",
+      "projects/",
+      "topics/"
+    ],
+    "blockedPaths": [
+      "raw/",
+      "private/",
+      "personal/",
+      ".git/",
+      ".memory-bridge/writeback-inbox/"
+    ]
+  },
+  "second_brain_wiki": {
+    "comment": "Use this shape when pointing Locaily at an existing Second Brain / Obsidian-style vault",
+    "allowedPaths": [
+      "index.md",
+      "log.md",
+      "SCHEMA.md",
+      "wiki/projects/",
+      "wiki/topics/",
+      "wiki/concepts/",
+      "wiki/entities/"
+    ],
+    "blockedPaths": [
+      "raw/",
+      "private/",
+      "personal/",
+      ".git/",
+      ".memory-bridge/writeback-inbox/"
+    ]
+  },
+  "companion_config_snippet": {
+    "memoryBridge": {
+      "enabled": true,
+      "vaultPath": "C:/path/to/your/private-vault",
+      "mode": "local_markdown_vault",
+      "readPolicy": "allowlist",
+      "writebackMode": "proposal_only",
+      "rawAccess": false,
+      "allowedPaths": [
+        "index.md",
+        "log.md",
+        "wiki/projects/",
+        "wiki/topics/",
+        "wiki/concepts/",
+        "wiki/entities/"
+      ],
+      "blockedPaths": [
+        "raw/",
+        "private/",
+        "personal/",
+        ".git/"
+      ]
+    }
+  }
+}

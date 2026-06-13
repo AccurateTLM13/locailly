@@ -27,6 +27,10 @@ const { createProviderRouter } = require("./providers/router");
 const { createToolRegistry } = require("./tools/registry");
 const { listTracks, runTrack, createJob, updateJob } = require("./pit-crew");
 const { recordScoreboardEntry } = require("./core/scoreboard");
+const { createVaultAdapter } = require("./memory/vault-adapter");
+const { buildContextPack } = require("./memory/context-pack-builder");
+const { createWritebackProposal } = require("./memory/writeback-proposal");
+const { buildMemoryAuditEvent } = require("./core/audit-log");
 
 const PLATFORM_VERSION = "0.1.0";
 const SERVICE_NAME = "local-ai-platform";
@@ -67,8 +71,18 @@ const DEFAULT_CONFIG = {
   },
   permissions: {
     filePath: join(__dirname, "..", "data", "permissions.json"),
-    approved: ["model.run"],
+    approved: ["model.run", "memory.writeback.propose"],
     denied: ["file.delete", "file.write", "network.send", "browser.write", "memory.delete"]
+  },
+  memoryBridge: {
+    enabled: false,
+    vaultPath: null,
+    mode: "local_markdown_vault",
+    readPolicy: "allowlist",
+    writebackMode: "proposal_only",
+    rawAccess: false,
+    allowedPaths: ["index.md", "log.md", "SCHEMA.md", "projects/", "topics/"],
+    blockedPaths: ["raw/", "private/", "personal/", ".git/", ".memory-bridge/writeback-inbox/"]
   }
 };
 
@@ -107,6 +121,7 @@ const auditLog = createAuditLog({
   filePath: config.audit.filePath
 });
 const permissionManager = createPermissionManager(config.permissions);
+const vaultAdapter = createVaultAdapter(config.memoryBridge);
 
 const server = http.createServer(async (request, response) => {
   const startedAt = Date.now();
@@ -264,6 +279,124 @@ const server = http.createServer(async (request, response) => {
       }));
     }
 
+    if (request.method === "GET" && url.pathname === "/memory/status") {
+      const responseBody = buildMemoryStatusResponse({ identity, startedAt });
+      await recordMemoryAudit({
+        identity,
+        startedAt,
+        endpoint: "memory/status",
+        requestBody: {},
+        responseBody,
+        statusCode: 200
+      });
+      return sendJson(response, 200, responseBody);
+    }
+
+    if (request.method === "POST" && url.pathname === "/memory/context-pack") {
+      const bodyResult = await readJsonBody(request);
+
+      if (!bodyResult.ok) {
+        const responseBody = buildMemoryErrorResponse({
+          identity,
+          startedAt,
+          code: "BAD_JSON",
+          message: "Request body could not be parsed as JSON.",
+          nextStep: "Send a valid JSON object with project and task.",
+          warnings: ["Invalid JSON body."]
+        });
+        await recordMemoryAudit({
+          identity,
+          startedAt,
+          endpoint: "memory/context-pack",
+          requestBody: {},
+          responseBody,
+          statusCode: 400
+        });
+        return sendJson(response, 400, responseBody);
+      }
+
+      const packResult = buildContextPack(vaultAdapter, bodyResult.body);
+      const responseBody = buildMemoryActionResponse({
+        identity,
+        startedAt,
+        actionResult: packResult
+      });
+      await recordMemoryAudit({
+        identity,
+        startedAt,
+        endpoint: "memory/context-pack",
+        requestBody: bodyResult.body,
+        responseBody,
+        statusCode: packResult.ok ? 200 : 400
+      });
+      return sendJson(response, packResult.ok ? 200 : 400, responseBody);
+    }
+
+    if (request.method === "POST" && url.pathname === "/memory/writeback/propose") {
+      const bodyResult = await readJsonBody(request);
+
+      if (!bodyResult.ok) {
+        const responseBody = buildMemoryErrorResponse({
+          identity,
+          startedAt,
+          code: "BAD_JSON",
+          message: "Request body could not be parsed as JSON.",
+          nextStep: "Send a valid writeback proposal JSON object.",
+          warnings: ["Invalid JSON body."]
+        });
+        await recordMemoryAudit({
+          identity,
+          startedAt,
+          endpoint: "memory/writeback/propose",
+          requestBody: {},
+          responseBody,
+          statusCode: 400
+        });
+        return sendJson(response, 400, responseBody);
+      }
+
+      const permissionResult = permissionManager.check({
+        tool: { permissions: ["memory.writeback.propose"] },
+        requestedPermissions: ["memory.writeback.propose"]
+      });
+
+      if (!permissionResult.ok) {
+        const responseBody = buildMemoryErrorResponse({
+          identity,
+          startedAt,
+          code: "PERMISSION_DENIED",
+          message: permissionResult.error.message,
+          nextStep: permissionResult.error.nextStep,
+          warnings: ["memory.writeback.propose permission denied."]
+        });
+        await recordMemoryAudit({
+          identity,
+          startedAt,
+          endpoint: "memory/writeback/propose",
+          requestBody: bodyResult.body,
+          responseBody,
+          statusCode: 403
+        });
+        return sendJson(response, 403, responseBody);
+      }
+
+      const proposalResult = createWritebackProposal(vaultAdapter, bodyResult.body);
+      const responseBody = buildMemoryActionResponse({
+        identity,
+        startedAt,
+        actionResult: proposalResult
+      });
+      await recordMemoryAudit({
+        identity,
+        startedAt,
+        endpoint: "memory/writeback/propose",
+        requestBody: bodyResult.body,
+        responseBody,
+        statusCode: proposalResult.ok ? 200 : 400
+      });
+      return sendJson(response, proposalResult.ok ? 200 : 400, responseBody);
+    }
+
     if (request.method === "POST" && url.pathname === "/analyze") {
       const bodyResult = await readJsonBody(request);
 
@@ -301,7 +434,7 @@ const server = http.createServer(async (request, response) => {
       ok: false,
       code: "NOT_FOUND",
       message: `No route matched ${request.method} ${url.pathname}.`,
-      nextStep: "Use GET /health, GET /tools, GET /models/profiles, GET /tracks, POST /tracks/run, POST /tasks/run, or legacy POST /analyze."
+      nextStep: "Use GET /health, GET /memory/status, POST /memory/context-pack, GET /tools, GET /models/profiles, GET /tracks, POST /tracks/run, POST /tasks/run, or legacy POST /analyze."
     });
   } catch (error) {
     console.error("Unexpected server error.");
@@ -387,6 +520,16 @@ function mergeConfig(base, override) {
     permissions: {
       ...base.permissions,
       ...(override.permissions || {})
+    },
+    memoryBridge: {
+      ...base.memoryBridge,
+      ...(override.memoryBridge || {}),
+      allowedPaths: override.memoryBridge && override.memoryBridge.allowedPaths
+        ? override.memoryBridge.allowedPaths
+        : base.memoryBridge.allowedPaths,
+      blockedPaths: override.memoryBridge && override.memoryBridge.blockedPaths
+        ? override.memoryBridge.blockedPaths
+        : base.memoryBridge.blockedPaths
     }
   };
 }
@@ -415,6 +558,7 @@ function applyEnvironmentOverrides(targetConfig) {
 
 async function buildHealthResponse() {
   const runtimeState = await checkRuntimeState();
+  const memoryStatus = vaultAdapter.getStatus();
   const health = {
     ok: true,
     engine: "local-ai-engine-core",
@@ -433,7 +577,11 @@ async function buildHealthResponse() {
       ready: runtimeState.modelReady
     },
     model_profile: modelProfileManager.getActive(),
-    tools: toolRegistry.listIds()
+    tools: toolRegistry.listIds(),
+    memory: {
+      enabled: memoryStatus.enabled,
+      readable: memoryStatus.readable
+    }
   };
 
   if (runtimeState.warning) {
@@ -748,7 +896,10 @@ function buildModelRoutingOptions(extra = {}) {
     profile_id: modelProfileManager.resolveActiveProfileId(),
     getRoleSuitability: (role) => modelProfileManager.getRoleSuitability(role),
     resolveModelForRole: (role) => resolveModelForRole(role),
-    toolRegistry
+    toolRegistry,
+    memoryBridge: {
+      adapter: vaultAdapter
+    }
   };
 }
 
@@ -1756,6 +1907,82 @@ function getTaskRunErrorNextStep(code) {
   }
 
   return "Check the server logs and try again.";
+}
+
+function buildMemoryMeta({ identity, startedAt }) {
+  return {
+    requestId: identity.requestId,
+    durationMs: Date.now() - startedAt,
+    createdAt: new Date().toISOString()
+  };
+}
+
+function buildMemoryStatusResponse({ identity, startedAt }) {
+  const status = vaultAdapter.getStatus();
+
+  return {
+    ok: true,
+    result: status,
+    warnings: status.warnings,
+    meta: buildMemoryMeta({ identity, startedAt })
+  };
+}
+
+function buildMemoryActionResponse({ identity, startedAt, actionResult }) {
+  if (actionResult.ok) {
+    return {
+      ok: true,
+      result: actionResult.result,
+      warnings: actionResult.warnings || [],
+      meta: buildMemoryMeta({ identity, startedAt })
+    };
+  }
+
+  return buildMemoryErrorResponse({
+    identity,
+    startedAt,
+    code: actionResult.error.code,
+    message: actionResult.error.message,
+    nextStep: actionResult.error.nextStep,
+    warnings: actionResult.warnings || []
+  });
+}
+
+function buildMemoryErrorResponse({ identity, startedAt, code, message, nextStep, warnings = [] }) {
+  return {
+    ok: false,
+    result: null,
+    error: {
+      code,
+      message,
+      nextStep
+    },
+    warnings,
+    meta: buildMemoryMeta({ identity, startedAt })
+  };
+}
+
+async function recordMemoryAudit({
+  identity,
+  startedAt,
+  endpoint,
+  requestBody,
+  responseBody,
+  statusCode
+}) {
+  try {
+    await auditLog.record(buildMemoryAuditEvent({
+      identity,
+      startedAt,
+      endpoint,
+      requestBody,
+      responseBody,
+      statusCode
+    }));
+  } catch (error) {
+    console.error("Failed to write memory audit event.");
+    console.error(error.message);
+  }
 }
 
 async function readJsonBody(request) {

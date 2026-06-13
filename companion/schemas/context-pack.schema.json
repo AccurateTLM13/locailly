@@ -1,0 +1,75 @@
+{
+  "type": "object",
+  "required": [
+    "contextPackId",
+    "project",
+    "task",
+    "summary",
+    "filesUsed",
+    "excerpts",
+    "keyDecisions",
+    "knownConstraints",
+    "openQuestions",
+    "warnings",
+    "recommendedNextStep"
+  ],
+  "properties": {
+    "contextPackId": {
+      "type": "string"
+    },
+    "project": {
+      "type": "string"
+    },
+    "task": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "filesUsed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "excerpts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "heading", "text"],
+        "properties": {
+          "path": { "type": "string" },
+          "heading": { "type": "string" },
+          "text": { "type": "string" }
+        }
+      }
+    },
+    "keyDecisions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "knownConstraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "openQuestions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommendedNextStep": {
+      "type": "string"
+    }
+  }
+}

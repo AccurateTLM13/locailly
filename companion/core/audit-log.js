@@ -1,6 +1,10 @@
 const { randomUUID } = require("node:crypto");
 const { appendFile, mkdir, readFile } = require("node:fs/promises");
 const { dirname } = require("node:path");
+const {
+  redactToolResultMemoryForAudit,
+  buildMemoryAuditEvent
+} = require("../memory/audit-redaction");
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
@@ -27,6 +31,8 @@ function createAuditLog(options = {}) {
 }
 
 function normalizeAuditEvent(event) {
+  const isMemoryAudit = event.tool === "memory-bridge";
+
   return {
     event_id: event.event_id || createEventId(),
     run_id: event.run_id || null,
@@ -39,8 +45,12 @@ function normalizeAuditEvent(event) {
     model: event.model || null,
     model_role: event.model_role || null,
     permissions_used: normalizeStringArray(event.permissions_used),
-    input_summary: summarizeInput(event.input_summary),
-    output_summary: summarizeOutput(event.output_summary),
+    input_summary: isMemoryAudit
+      ? event.input_summary
+      : summarizeInput(event.input_summary),
+    output_summary: isMemoryAudit
+      ? event.output_summary
+      : summarizeOutput(event.output_summary),
     fallbacks_used: normalizeStringArray(event.fallbacks_used),
     duration_ms: normalizeNumber(event.duration_ms),
     status: event.status === "success" ? "success" : "error",
@@ -183,6 +193,14 @@ function summarizeResponseOutput(body) {
     return null;
   }
 
+  if (body.tool === "memory-bridge" || body.result.contextPackId) {
+    return redactToolResultMemoryForAudit(body.result);
+  }
+
+  if (body.result.memory) {
+    return redactToolResultMemoryForAudit(body.result);
+  }
+
   return {
     type: "object",
     keys: Object.keys(body.result).slice(0, 20)
@@ -194,10 +212,24 @@ function summarizeOutput(summary) {
     return null;
   }
 
-  return {
+  const normalized = {
     type: summary.type || "object",
     keys: Array.isArray(summary.keys) ? summary.keys.slice(0, 20) : []
   };
+
+  if (summary.memory && typeof summary.memory === "object") {
+    normalized.memory = summary.memory;
+  }
+
+  if (summary.contextPackId) {
+    normalized.contextPackId = summary.contextPackId;
+    normalized.project = summary.project || null;
+    normalized.task = summary.task || null;
+    normalized.filesUsed = Array.isArray(summary.filesUsed) ? summary.filesUsed : [];
+    normalized.warnings = Array.isArray(summary.warnings) ? summary.warnings : [];
+  }
+
+  return normalized;
 }
 
 function estimateChars(value) {
@@ -247,5 +279,6 @@ function createEventId() {
 module.exports = {
   createAuditLog,
   buildAuditEvent,
+  buildMemoryAuditEvent,
   normalizeAuditEvent
 };

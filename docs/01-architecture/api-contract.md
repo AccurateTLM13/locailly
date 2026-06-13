@@ -26,6 +26,9 @@ GET  /providers/status
 POST /providers/set
 GET  /models/roles
 POST /models/roles/set
+GET  /memory/status
+POST /memory/context-pack
+POST /memory/writeback/propose
 ```
 
 Legacy compatibility API:
@@ -35,6 +38,114 @@ POST /analyze
 ```
 
 `/analyze` remains supported for old clients and keeps its original envelope. New clients should use `/tasks/run`.
+
+## GET /memory/status
+
+Reports memory bridge configuration and vault readability. Does **not** expose the full private `vaultPath` in normal responses.
+
+```json
+{
+  "ok": true,
+  "result": {
+    "enabled": false,
+    "mode": "local_markdown_vault",
+    "vaultPathConfigured": false,
+    "readable": false,
+    "readPolicy": "allowlist",
+    "writebackMode": "proposal_only",
+    "rawAccess": false,
+    "effectiveAllowedPaths": ["index.md", "log.md", "projects/", "topics/"],
+    "effectiveBlockedPaths": ["raw/", "private/", "personal/", ".git/"],
+    "projectCount": 0,
+    "topicCount": 0,
+    "warnings": ["Memory bridge is disabled."]
+  },
+  "warnings": ["Memory bridge is disabled."],
+  "meta": {
+    "requestId": "string",
+    "durationMs": 0,
+    "createdAt": "ISO-8601"
+  }
+}
+```
+
+When enabled and readable, `projectCount` and `topicCount` reflect allowlisted Markdown files under configured project/topic paths (flat or `wiki/`).
+
+## POST /memory/context-pack
+
+Builds a task-specific Context Pack from allowlisted vault Markdown. Returns summaries, heading extraction, limited excerpts, and `filesUsed` — **not** full source files by default.
+
+Request:
+
+```json
+{
+  "project": "Example Project",
+  "task": "Plan Memory Bridge v0",
+  "include": ["current_state", "known_decisions", "constraints", "open_questions"],
+  "maxFiles": 8
+}
+```
+
+Success envelope:
+
+```json
+{
+  "ok": true,
+  "result": {
+    "contextPackId": "ctx_example-project_memory-bridge-v0",
+    "project": "Example Project",
+    "task": "Plan Memory Bridge v0",
+    "summary": "string",
+    "filesUsed": ["index.md"],
+    "excerpts": [{ "path": "index.md", "heading": "Overview", "text": "truncated..." }],
+    "keyDecisions": [],
+    "knownConstraints": [],
+    "openQuestions": [],
+    "warnings": [],
+    "recommendedNextStep": "string"
+  },
+  "warnings": [],
+  "meta": { }
+}
+```
+
+Error codes include `MEMORY_DISABLED`, `VAULT_NOT_READABLE`, `BAD_JSON`, `INVALID_REQUEST`.
+
+## POST /memory/writeback/propose
+
+Writes a reviewable proposal Markdown file to `{vault}/.memory-bridge/writeback-inbox/`. Does not edit wiki pages or `raw/`. `requiresHumanReview` must be `true`.
+
+Request:
+
+```json
+{
+  "taskId": "run_123",
+  "project": "Example Project",
+  "task": "Plan Memory Bridge v0",
+  "whatChanged": [],
+  "decisionsMade": [],
+  "newLessons": [],
+  "suggestedUpdates": [],
+  "requiresHumanReview": true
+}
+```
+
+Success:
+
+```json
+{
+  "ok": true,
+  "result": {
+    "proposalId": "2026-06-12-example-project-memory-bridge-v0",
+    "proposalPath": ".memory-bridge/writeback-inbox/2026-06-12-example-project-memory-bridge-v0.md",
+    "requiresHumanReview": true
+  },
+  "warnings": [],
+  "meta": { }
+}
+```
+
+`POST /memory/writeback/apply` is **not** implemented in v0.
 
 ## GET /health
 

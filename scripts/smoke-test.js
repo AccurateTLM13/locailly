@@ -1,4 +1,20 @@
 const BASE_URL = process.env.LOCAL_AI_BASE_URL || "http://127.0.0.1:31313";
+const path = require("node:path");
+const { cpSync, mkdtempSync, rmSync, existsSync } = require("node:fs");
+const { tmpdir } = require("node:os");
+const { createVaultAdapter, isBlockedPath, isAllowedPath } = require("../companion/memory/vault-adapter");
+const { buildContextPack } = require("../companion/memory/context-pack-builder");
+const { createWritebackProposal } = require("../companion/memory/writeback-proposal");
+const {
+  buildMemoryAuditEvent,
+  auditPayloadContainsPrivateMemory,
+  redactMemoryResultForAudit
+} = require("../companion/memory/audit-redaction");
+const { normalizeAuditEvent, buildAuditEvent } = require("../companion/core/audit-log");
+const { lighthouseHandoffTool } = require("../companion/tools/lighthouse-handoff");
+
+const TEMPLATE_VAULT_PATH = path.join(__dirname, "..", "templates", "memory-vault");
+const WIKI_VAULT_PATH = path.join(__dirname, "..", "templates", "memory-vault-wiki");
 
 const results = [];
 let observedTaskRunId = null;
@@ -1019,6 +1035,464 @@ async function checkLighthouseOrchestratedAndScoreboard() {
   }
 }
 
+function assertMemoryEnvelope(body, label) {
+  assertJsonObject(body, label);
+  assert(typeof body.ok === "boolean", `Expected ${label} ok boolean.`);
+  assert(Array.isArray(body.warnings), `Expected ${label} warnings array.`);
+  assert(body.meta && typeof body.meta === "object", `Expected ${label} meta object.`);
+}
+
+async function checkMemoryStatusDisabled() {
+  const status = await request("/memory/status");
+  assert(status.response.status === 200, "Expected /memory/status HTTP 200.");
+  assertMemoryEnvelope(status.body, "/memory/status response");
+  assert(status.body.ok === true, "Expected /memory/status ok true even when disabled.");
+  assert(status.body.result.enabled === false, "Expected memory bridge disabled by default.");
+  assert(status.body.result.vaultPathConfigured === false, "Expected vaultPathConfigured false.");
+  assert(typeof status.body.result.readPolicy === "string", "Expected readPolicy in status.");
+  assert(Array.isArray(status.body.result.effectiveAllowedPaths), "Expected effectiveAllowedPaths array.");
+  assert(Array.isArray(status.body.result.effectiveBlockedPaths), "Expected effectiveBlockedPaths array.");
+  assert(!("vaultPath" in status.body.result), "Status must not expose full vault path.");
+  assert(status.body.warnings.length > 0, "Expected warnings when memory is disabled.");
+}
+
+async function checkMemoryContextPackDisabled() {
+  const pack = await request("/memory/context-pack", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      project: "Example Project",
+      task: "Smoke test"
+    })
+  });
+
+  assert(pack.response.status === 400, "Expected disabled context-pack HTTP 400.");
+  assertMemoryEnvelope(pack.body, "/memory/context-pack disabled response");
+  assert(pack.body.ok === false, "Expected disabled context-pack ok false.");
+  assert(pack.body.error.code === "MEMORY_DISABLED", "Expected MEMORY_DISABLED error code.");
+}
+
+function checkBlockedPathsOverrideModule() {
+  const allowedDespiteBlock = isAllowedPath("raw/notes.md", ["raw/", "projects/"]);
+  const blockedWins = isBlockedPath("raw/notes.md", ["raw/"]);
+
+  assert(allowedDespiteBlock === true, "allowedPaths can include raw/ prefix in isolation.");
+  assert(blockedWins === true, "blockedPaths must match raw/ files.");
+
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: TEMPLATE_VAULT_PATH,
+    allowedPaths: ["raw/", "projects/", "index.md"],
+    blockedPaths: ["raw/"]
+  });
+
+  assert(adapter.isPathAllowed("raw/secret.md") === false, "blockedPaths must override allowedPaths.");
+  assert(adapter.isPathAllowed("projects/Example Project.md") === true, "Expected allowlisted project file.");
+  assert(adapter.isPathAllowed("index.md") === true, "Expected allowlisted index file.");
+}
+
+function checkMemoryVaultAdapterTemplateModule() {
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: TEMPLATE_VAULT_PATH
+  });
+  const status = adapter.getStatus();
+
+  assert(status.enabled === true, "Expected enabled adapter.");
+  assert(status.vaultPathConfigured === true, "Expected configured vault path.");
+  assert(status.readable === true, "Expected starter template vault readable.");
+  assert(status.projectCount >= 1, "Expected at least one project file.");
+  assert(status.topicCount >= 1, "Expected at least one topic file.");
+  assert(!("vaultPath" in status), "Status must not expose full vault path.");
+
+  const files = adapter.listMarkdownFiles();
+  assert(files.includes("index.md"), "Expected index.md in allowlisted files.");
+  assert(files.some((filePath) => filePath.startsWith("projects/")), "Expected projects file.");
+  assert(files.every((filePath) => !filePath.startsWith("raw/")), "raw/ must never be listed.");
+}
+
+function checkMemoryContextPackTemplateModule() {
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: TEMPLATE_VAULT_PATH
+  });
+  const packResult = buildContextPack(adapter, {
+    project: "Example Project",
+    task: "Memory Bridge smoke test"
+  });
+
+  assert(packResult.ok === true, "Expected context pack build success.");
+  assert(packResult.result.filesUsed.length > 0, "Expected filesUsed entries.");
+  assert(Array.isArray(packResult.result.excerpts), "Expected excerpts array.");
+  assert(typeof packResult.result.summary === "string", "Expected summary string.");
+
+  for (const excerpt of packResult.result.excerpts) {
+    assert(excerpt.text.length <= 400, "Excerpts must be truncated.");
+    assert(!excerpt.text.includes("# "), "Excerpts should not include full markdown headings dump.");
+  }
+
+  const combinedLength = packResult.result.excerpts
+    .map((entry) => entry.text)
+    .join("")
+    .length;
+  const fileCount = packResult.result.filesUsed.length;
+  assert(
+    combinedLength < fileCount * 2000,
+    "Context pack must not return full source files by default."
+  );
+}
+
+function checkMemoryWritebackProposalModule() {
+  const tempRoot = mkdtempSync(path.join(tmpdir(), "locailly-memory-"));
+  const tempVault = path.join(tempRoot, "vault");
+
+  try {
+    cpSync(TEMPLATE_VAULT_PATH, tempVault, { recursive: true });
+
+    const adapter = createVaultAdapter({
+      enabled: true,
+      vaultPath: tempVault,
+      writebackMode: "proposal_only"
+    });
+
+    const proposalResult = createWritebackProposal(adapter, {
+      taskId: "smoke_test_run",
+      project: "Example Project",
+      task: "Memory Bridge smoke test",
+      whatChanged: ["Validated writeback proposal flow."],
+      decisionsMade: ["Writeback remains proposal-only."],
+      newLessons: ["blockedPaths override allowedPaths."],
+      suggestedUpdates: ["Append log.md after review."],
+      requiresHumanReview: true
+    });
+
+    assert(proposalResult.ok === true, "Expected writeback proposal success.");
+    assert(
+      proposalResult.result.proposalPath.startsWith(".memory-bridge/writeback-inbox/"),
+      "Expected inbox-relative proposal path."
+    );
+    assert(
+      existsSync(path.join(tempVault, proposalResult.result.proposalPath)),
+      "Expected proposal file on disk."
+    );
+    assert(proposalResult.result.requiresHumanReview === true, "Expected requiresHumanReview true.");
+  } finally {
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
+function buildComposeHandoffInput() {
+  return {
+    url: "https://example.com",
+    metrics: {
+      performance: 45,
+      accessibility: 96,
+      bestPractices: 100,
+      seo: 92
+    },
+    prioritizedFixes: {
+      priorityFixes: [
+        {
+          title: "Reduce LCP",
+          priority: "high",
+          reason: "Performance score is low."
+        }
+      ],
+      thinking: "Focus on performance first."
+    },
+    matchedFixes: {
+      fixes: [{ steps: ["Optimize hero image"] }]
+    }
+  };
+}
+
+function checkMemoryAuditRedactionModule() {
+  const sensitivePack = {
+    contextPackId: "ctx_test",
+    project: "Example Project",
+    task: "Sensitive task",
+    summary: "SECRET_SUMMARY_TEXT",
+    filesUsed: ["projects/Example Project.md"],
+    excerpts: [{ path: "projects/Example Project.md", heading: "Decisions", text: "SECRET_EXCERPT_BODY" }],
+    keyDecisions: ["Secret decision"],
+    knownConstraints: ["Secret constraint"],
+    openQuestions: [],
+    warnings: []
+  };
+
+  const redacted = redactMemoryResultForAudit(sensitivePack, "memory/context-pack");
+  assert(!("excerpts" in redacted), "Redacted audit must not include excerpts.");
+  assert(!("summary" in redacted), "Redacted audit must not include summary.");
+  assert(redacted.contextPackId === "ctx_test", "Expected contextPackId preserved.");
+  assert(redacted.filesUsed.includes("projects/Example Project.md"), "Expected filesUsed preserved.");
+
+  const auditEvent = normalizeAuditEvent(buildMemoryAuditEvent({
+    identity: { run_id: "run_test", trace_id: "trace_test", requestId: "req_test" },
+    startedAt: Date.now(),
+    endpoint: "memory/context-pack",
+    requestBody: { project: "Example Project", task: "Sensitive task" },
+    responseBody: {
+      ok: true,
+      result: sensitivePack,
+      warnings: []
+    },
+    statusCode: 200
+  }));
+
+  assert(auditEvent.tool === "memory-bridge", "Expected memory-bridge audit tool.");
+  assert(!auditPayloadContainsPrivateMemory(auditEvent), "Audit event must not contain private memory.");
+
+  const writebackAudit = normalizeAuditEvent(buildMemoryAuditEvent({
+    identity: { run_id: "run_wb", trace_id: "trace_wb", requestId: "req_wb" },
+    startedAt: Date.now(),
+    endpoint: "memory/writeback/propose",
+    requestBody: {
+      taskId: "run_wb",
+      project: "Example Project",
+      task: "Writeback task",
+      decisionsMade: ["SECRET_DECISION"],
+      newLessons: ["SECRET_LESSON"],
+      suggestedUpdates: ["Update secret page"],
+      requiresHumanReview: true
+    },
+    responseBody: {
+      ok: true,
+      result: {
+        proposalId: "2026-06-12-test",
+        proposalPath: ".memory-bridge/writeback-inbox/2026-06-12-test.md",
+        requiresHumanReview: true
+      },
+      warnings: []
+    },
+    statusCode: 200
+  }));
+
+  const serializedWritebackAudit = JSON.stringify(writebackAudit);
+  assert(!serializedWritebackAudit.includes("SECRET_DECISION"), "Writeback audit must not store proposal body.");
+  assert(!serializedWritebackAudit.includes("SECRET_LESSON"), "Writeback audit must not store lessons body.");
+}
+
+async function checkMemoryAuditHttpRedaction() {
+  const status = await request("/memory/status");
+  assert(status.response.status === 200, "Expected /memory/status for audit redaction check.");
+
+  const audit = await request("/audit?limit=20");
+  assert(audit.response.status === 200, "Expected /audit HTTP 200.");
+  const memoryEvents = (audit.body.events || []).filter((event) => event.tool === "memory-bridge");
+  assert(memoryEvents.length > 0, "Expected at least one memory-bridge audit event.");
+
+  for (const event of memoryEvents) {
+    assert(!auditPayloadContainsPrivateMemory(event), "HTTP audit must not contain private memory content.");
+    assert(!/"vaultPath"\s*:/.test(JSON.stringify(event)), "Audit must not expose vault path value.");
+    assert(!event.output_summary || !("excerpts" in event.output_summary), "Audit must not include excerpts.");
+  }
+}
+
+function checkWikiVaultAdapterModule() {
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: WIKI_VAULT_PATH,
+    allowedPaths: [
+      "index.md",
+      "log.md",
+      "SCHEMA.md",
+      "wiki/projects/",
+      "wiki/topics/",
+      "wiki/concepts/",
+      "wiki/entities/"
+    ],
+    blockedPaths: [
+      "raw/",
+      "private/",
+      "personal/",
+      ".git/",
+      ".memory-bridge/writeback-inbox/"
+    ]
+  });
+
+  const status = adapter.getStatus();
+  assert(status.readable === true, "Expected wiki vault readable.");
+  assert(status.projectCount >= 1, "Expected wiki project count.");
+  assert(status.topicCount >= 1, "Expected wiki topic count.");
+
+  const files = adapter.listMarkdownFiles();
+  assert(files.some((filePath) => filePath.startsWith("wiki/projects/")), "Expected wiki project file.");
+  assert(files.every((filePath) => !filePath.startsWith("raw/")), "raw/ must remain blocked.");
+
+  const packResult = buildContextPack(adapter, {
+    project: "Lighthouse Handoff",
+    task: "Memory Bridge wiki compatibility"
+  });
+  assert(packResult.ok === true, "Expected wiki context pack success.");
+  assert(
+    packResult.result.filesUsed.some((filePath) => filePath.startsWith("wiki/")),
+    "Expected wiki paths in filesUsed."
+  );
+}
+
+async function checkLighthouseComposeMemoryDisabled() {
+  const input = buildComposeHandoffInput();
+  const result = await lighthouseHandoffTool.handle({
+    task: "compose-handoff",
+    input,
+    runtime: null,
+    options: {
+      memory: { enabled: false }
+    }
+  });
+
+  assert(result.memory.used === false, "Expected memory.used false when disabled.");
+  assert(!result.markdown.includes("## Project Context Used"), "Disabled memory must not add project context section.");
+  assert(result.clientSummary.includes("45"), "Lighthouse metrics must remain in summary.");
+}
+
+async function checkLighthouseComposeMemoryEnabled() {
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: TEMPLATE_VAULT_PATH
+  });
+  const input = buildComposeHandoffInput();
+  const result = await lighthouseHandoffTool.handle({
+    task: "compose-handoff",
+    input,
+    runtime: null,
+    options: {
+      memory: {
+        enabled: "auto",
+        project: "Example Project",
+        task: "Generate coding-agent handoff from PageSpeed report",
+        maxFiles: 6,
+        writeback: false
+      },
+      memoryBridge: { adapter }
+    }
+  });
+
+  assert(result.memory.used === true, "Expected memory.used true when enabled.");
+  assert(typeof result.memory.contextPackId === "string", "Expected contextPackId.");
+  assert(result.memory.filesUsed.length > 0, "Expected filesUsed metadata.");
+  assert(result.markdown.includes("## Project Context Used"), "Expected project context section in markdown.");
+  assert(result.markdown.includes("constraints and guardrails only"), "Expected guardrails disclaimer.");
+}
+
+function checkLighthouseComposeMemoryNoFullVaultContent() {
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: TEMPLATE_VAULT_PATH
+  });
+  const input = buildComposeHandoffInput();
+
+  return lighthouseHandoffTool.handle({
+    task: "compose-handoff",
+    input,
+    runtime: null,
+    options: {
+      memory: {
+        enabled: true,
+        project: "Example Project",
+        task: "Generate coding-agent handoff from PageSpeed report"
+      },
+      memoryBridge: { adapter }
+    }
+  }).then((result) => {
+    assert(!("excerpts" in result), "Handoff result must not include raw excerpts.");
+    assert(result.markdown.includes("## Project Context Used"), "Expected project context section.");
+    assert(
+      !result.markdown.includes("## Current state"),
+      "Handoff markdown must not embed full vault section bodies."
+    );
+    assert(result.markdown.length < 5000, "Handoff markdown should stay compact when using memory.");
+  });
+}
+
+function checkLighthouseComposeMemoryMetricsPreserved() {
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: TEMPLATE_VAULT_PATH
+  });
+  const input = buildComposeHandoffInput();
+
+  return lighthouseHandoffTool.handle({
+    task: "compose-handoff",
+    input,
+    runtime: null,
+    options: {
+      memory: {
+        enabled: "auto",
+        project: "Example Project",
+        task: "Generate coding-agent handoff from PageSpeed report"
+      },
+      memoryBridge: { adapter }
+    }
+  }).then((result) => {
+    assert(result.clientSummary.includes("performance"), "Expected performance metric reference.");
+    assert(result.clientSummary.includes("45"), "Memory must not override Lighthouse performance score.");
+    assert(result.estimatedImpact === "High", "Expected impact derived from metrics, not memory.");
+  });
+}
+
+function checkLighthouseMemoryTaskRunAuditRedaction() {
+  const adapter = createVaultAdapter({
+    enabled: true,
+    vaultPath: TEMPLATE_VAULT_PATH
+  });
+
+  return lighthouseHandoffTool.handle({
+    task: "compose-handoff",
+    input: buildComposeHandoffInput(),
+    runtime: null,
+    options: {
+      memory: {
+        enabled: true,
+        project: "Example Project",
+        task: "Audit redaction handoff test"
+      },
+      memoryBridge: { adapter }
+    }
+  }).then((toolResult) => {
+    const auditEvent = normalizeAuditEvent(buildAuditEvent({
+      identity: { run_id: "run_lh", trace_id: "trace_lh", requestId: "req_lh" },
+      responseBody: {
+        ok: true,
+        tool: "lighthouse-handoff",
+        task: "compose-handoff",
+        result: toolResult
+      },
+      statusCode: 200,
+      startedAt: Date.now()
+    }));
+
+    const serialized = JSON.stringify(auditEvent);
+    assert(!serialized.includes("No private content in the Locaily public repo."), "Task run audit must not store vault excerpt text.");
+    assert(auditEvent.output_summary.memory.used === true, "Expected redacted memory metadata in audit.");
+    assert(Array.isArray(auditEvent.output_summary.memory.filesUsed), "Expected filesUsed in audit memory metadata.");
+  });
+}
+
+async function checkTasksRunLighthouseComposeMemoryDisabledHttp() {
+  const response = await request("/tasks/run", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      tool: "lighthouse-handoff",
+      task: "compose-handoff",
+      input: buildComposeHandoffInput(),
+      options: {
+        memory: {
+          enabled: "auto",
+          project: "Example Project",
+          task: "Generate coding-agent handoff from PageSpeed report"
+        }
+      }
+    })
+  });
+
+  assert(response.response.status === 200, "Expected compose-handoff task run HTTP 200.");
+  assertTaskRunSuccess(response.body, "lighthouse-handoff", "compose-handoff");
+  assert(response.body.result.memory.used === false, "Server memory disabled: memory.used must be false.");
+  assert(response.body.result.clientSummary.includes("45"), "PageSpeed metrics must remain authoritative.");
+}
+
 async function main() {
   console.log(`Smoke testing Local AI Platform at ${BASE_URL}`);
 
@@ -1054,6 +1528,21 @@ async function main() {
   await runCheck("GET /tracks", checkTracksCatalog);
   await runCheck("POST /tracks/run mock provider", checkTracksRunMockProvider);
   await runCheck("Lighthouse orchestrated and scoreboard", checkLighthouseOrchestratedAndScoreboard);
+  await runCheck("GET /memory/status disabled", checkMemoryStatusDisabled);
+  await runCheck("POST /memory/context-pack disabled", checkMemoryContextPackDisabled);
+  await runCheck("memory blockedPaths override", checkBlockedPathsOverrideModule);
+  await runCheck("memory vault adapter starter template", checkMemoryVaultAdapterTemplateModule);
+  await runCheck("memory context pack starter template", checkMemoryContextPackTemplateModule);
+  await runCheck("memory writeback proposal inbox", checkMemoryWritebackProposalModule);
+  await runCheck("memory audit redaction module", checkMemoryAuditRedactionModule);
+  await runCheck("memory audit HTTP redaction", checkMemoryAuditHttpRedaction);
+  await runCheck("wiki vault adapter compatibility", checkWikiVaultAdapterModule);
+  await runCheck("Lighthouse compose-handoff memory disabled", checkLighthouseComposeMemoryDisabled);
+  await runCheck("tasks run Lighthouse compose memory disabled HTTP", checkTasksRunLighthouseComposeMemoryDisabledHttp);
+  await runCheck("Lighthouse compose-handoff memory enabled", checkLighthouseComposeMemoryEnabled);
+  await runCheck("Lighthouse memory handoff no full vault content", checkLighthouseComposeMemoryNoFullVaultContent);
+  await runCheck("Lighthouse memory preserves PageSpeed metrics", checkLighthouseComposeMemoryMetricsPreserved);
+  await runCheck("Lighthouse memory task-run audit redaction", checkLighthouseMemoryTaskRunAuditRedaction);
 
   const failed = results.filter((result) => !result.ok);
   const passed = results.length - failed.length;

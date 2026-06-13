@@ -80,6 +80,17 @@ It is:
 
 It is **not** the entire Locaily system. It proves one track works before expanding to marketplace analysis, code review, and other packs.
 
+### Memory Layer (Optional)
+
+Locaily operates **without** a memory vault. When configured, the **Memory Bridge** reads a user-owned local Markdown vault and supplies **Context Packs** for tasks.
+
+- **Second Brain** (or any compatible vault) stays **private** — outside this repo.
+- Locaily ships bridge code, schemas, and a [starter template](../../templates/memory-vault/README.md).
+- Integration is via explicit endpoints (`/memory/status`, `/memory/context-pack`, `/memory/writeback/propose`), not repo merge.
+- Writeback is **proposal-only** in v0; humans review before vault edits.
+
+See [memory-bridge.md](../01-architecture/memory-bridge.md).
+
 ## Why Local-First?
 
 - Privacy: sensitive inputs stay on the machine by default

@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "mode": "local_markdown_vault",
+  "readPolicy": "allowlist",
+  "writebackMode": "proposal_only",
+  "rawAccess": false,
+  "notes": "Copy to config.json in this folder when using vault-local overrides. Locaily companion/config.json remains the primary config."
+}

@@ -242,6 +242,9 @@ Implemented:
 - `companion/runtime/ollama.js`
 - `companion/tools/registry.js` (manifest-backed tool pack loader)
 - `companion/tools/deal-sniper.js`, `companion/tools/lighthouse-handoff.js`
+- `companion/memory/*` (Memory Bridge v0: vault adapter, context packs, writeback proposals)
+- `templates/memory-vault/` (public starter vault template)
+- `GET /memory/status`, `POST /memory/context-pack`, `POST /memory/writeback/propose`
 - `tool-packs/standard-text-pack/`, `tool-packs/lighthouse-parser-pack/`
 - `POST /tracks/run`, `GET /tracks` track APIs
 - `scripts/smoke-test.js`, `scripts/contract-test.js`
@@ -249,6 +252,7 @@ Implemented:
 
 Next focus areas (see [docs/04-product/roadmap.md](docs/04-product/roadmap.md)):
 
+- Wire Memory Bridge Context Pack into Lighthouse Handoff (one proof workflow)
 - Model Garage evaluation harness and auto model switching (Phase 2)
 - Track Classifier for multi-track auto-routing
 - Harden Lighthouse Handoff validation end-to-end with the extension client

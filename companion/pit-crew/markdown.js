@@ -20,12 +20,23 @@ function formatHandoffMarkdown(handoff) {
     ? checklist.map((item) => `- [ ] ${item}`).join("\n")
     : "- [ ] Review Lighthouse findings manually.";
 
-  return [
+  const sections = [
     `# Developer Handoff: ${url}`,
     "",
     "## Executive Summary",
     summary,
-    "",
+    ""
+  ];
+
+  if (handoff.projectContextSection) {
+    sections.push(
+      "## Project Context Used",
+      handoff.projectContextSection,
+      ""
+    );
+  }
+
+  sections.push(
     "## Priority Fixes",
     priorityLines,
     "",
@@ -37,8 +48,12 @@ function formatHandoffMarkdown(handoff) {
     `- Target estimated impact: ${impact}`,
     "",
     "## Agent Instructions",
-    "Use this handoff to implement fixes. Do not modify unrelated files."
-  ].join("\n");
+    handoff.memoryUsed
+      ? "Use this handoff to implement fixes. Project memory informed constraints only; Lighthouse/PageSpeed metrics remain authoritative. Do not modify unrelated files."
+      : "Use this handoff to implement fixes. Do not modify unrelated files."
+  );
+
+  return sections.join("\n");
 }
 
 module.exports = {

@@ -80,7 +80,29 @@
   },
   "permissions": {
     "filePath": "data/permissions.json",
-    "approved": ["model.run"],
+    "approved": ["model.run", "memory.writeback.propose"],
     "denied": ["file.delete", "file.write", "network.send", "browser.write", "memory.delete"]
+  },
+  "memoryBridge": {
+    "enabled": false,
+    "vaultPath": null,
+    "mode": "local_markdown_vault",
+    "readPolicy": "allowlist",
+    "writebackMode": "proposal_only",
+    "rawAccess": false,
+    "allowedPaths": [
+      "index.md",
+      "log.md",
+      "SCHEMA.md",
+      "projects/",
+      "topics/"
+    ],
+    "blockedPaths": [
+      "raw/",
+      "private/",
+      "personal/",
+      ".git/",
+      ".memory-bridge/writeback-inbox/"
+    ]
   }
 }

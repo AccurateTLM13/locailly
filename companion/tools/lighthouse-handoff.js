@@ -3,6 +3,11 @@ const { join } = require("node:path");
 const { executeLighthouseHandoffTrack } = require("../core/orchestrator");
 const { recordScoreboardEntry } = require("../core/scoreboard");
 const { formatHandoffMarkdown } = require("../pit-crew/markdown");
+const {
+  resolveMemoryBridgeAdapter,
+  runMemoryPreflight,
+  buildProjectContextSection
+} = require("../memory/preflight");
 
 const promptTemplate = readFileSync(join(__dirname, "..", "prompts", "lighthouse-handoff.md"), "utf8");
 const outputSchema = require("../schemas/lighthouse-handoff.schema.json");
@@ -33,7 +38,21 @@ const lighthouseHandoffTool = {
         throwToolError(validationError.code, validationError.message, validationError.nextStep);
       }
 
-      return buildComposedHandoff(input);
+      const memoryPreflight = runMemoryPreflight({
+        memoryOptions: options && options.memory,
+        adapter: resolveMemoryBridgeAdapter(options || {}),
+        project: options && options.memory && options.memory.project
+          ? options.memory.project
+          : "Lighthouse Handoff",
+        task: options && options.memory && options.memory.task
+          ? options.memory.task
+          : "Generate coding-agent handoff from PageSpeed report",
+        maxFiles: options && options.memory && options.memory.maxFiles
+          ? options.memory.maxFiles
+          : 6
+      });
+
+      return buildComposedHandoff(input, memoryPreflight);
     }
 
     if (task !== "analyze-report") {
@@ -175,7 +194,7 @@ function validateComposeInput(input) {
   return null;
 }
 
-function buildComposedHandoff(input) {
+function buildComposedHandoff(input, memoryPreflight = null) {
   const metrics = input.metrics || {};
   const priorityFixes = Array.isArray(input.prioritizedFixes?.priorityFixes)
     ? input.prioritizedFixes.priorityFixes
@@ -207,10 +226,24 @@ function buildComposedHandoff(input) {
     estimatedImpact: estimateImpact(weakest.value)
   };
 
+  const memoryUsed = Boolean(memoryPreflight && memoryPreflight.used && memoryPreflight.pack);
+  const projectContextSection = memoryUsed
+    ? buildProjectContextSection(memoryPreflight.pack)
+    : null;
+
   handoff.markdown = formatHandoffMarkdown({
     ...handoff,
-    url: input.url
+    url: input.url,
+    projectContextSection,
+    memoryUsed
   });
+
+  handoff.memory = {
+    used: memoryUsed,
+    contextPackId: memoryUsed ? memoryPreflight.pack.contextPackId : null,
+    filesUsed: memoryUsed ? memoryPreflight.pack.filesUsed : [],
+    warnings: memoryPreflight ? memoryPreflight.warnings : []
+  };
 
   return handoff;
 }

@@ -24,6 +24,18 @@ Practical sequencing for Locaily. **Dates omitted**—order reflects dependency,
 - [ ] Persistent provider / model role config across restarts
 - [ ] CORS policy (or MV3 background proxy pattern) for extension testing
 
+## Now — Memory Bridge v0
+
+- [x] Architecture docs: memory-bridge, context-packs, memory-writeback
+- [x] Decision: second-brain-as-memory-layer
+- [x] Public starter template (`templates/memory-vault/`)
+- [x] Vault adapter + context pack builder + writeback proposal modules
+- [x] Endpoints: `GET /memory/status`, `POST /memory/context-pack`, `POST /memory/writeback/propose`
+- [x] Smoke tests (disabled + template-enabled module checks, blockedPaths override)
+- [x] Wire Context Pack into Lighthouse Handoff compose-handoff (optional memory preflight)
+- [x] Audit redaction for memory endpoints and handoff memory metadata
+- [ ] Live private Second Brain vault validation (user-local only)
+
 ## Next — Pit Crew Mechanics
 
 - [ ] Model evaluation harness using templates in `03-research/`
@@ -49,6 +61,8 @@ Practical sequencing for Locaily. **Dates omitted**—order reflects dependency,
 - Voice/Mumble pack
 - Cloud fallback gateway
 - Distributed local clusters
+- Memory embeddings / vector search
+- `POST /memory/writeback/apply`
 
 ## Archive Roadmaps
 

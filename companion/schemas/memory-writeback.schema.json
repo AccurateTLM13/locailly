@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "required": [
+    "taskId",
+    "project",
+    "task",
+    "whatChanged",
+    "decisionsMade",
+    "newLessons",
+    "suggestedUpdates",
+    "requiresHumanReview"
+  ],
+  "properties": {
+    "taskId": {
+      "type": "string"
+    },
+    "project": {
+      "type": "string"
+    },
+    "task": {
+      "type": "string"
+    },
+    "whatChanged": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "decisionsMade": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "newLessons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "suggestedUpdates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requiresHumanReview": {
+      "type": "boolean",
+      "enum": [true]
+    }
+  }
+}

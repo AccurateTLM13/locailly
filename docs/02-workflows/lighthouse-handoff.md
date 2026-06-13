@@ -123,6 +123,37 @@ Integration spec (when wiring extension): [lighthouse-handoff-extension-integrat
 - Validated Markdown quality vs human-written handoffs (L3)
 - Benchmarks vs monolithic large-model pass
 
+## Optional Memory Preflight (`compose-handoff`)
+
+`compose-handoff` supports optional Memory Bridge context via `options.memory`. Memory is **off by default** at the platform level; when the vault is not configured or not readable, behavior is unchanged.
+
+```json
+POST /tasks/run
+{
+  "tool": "lighthouse-handoff",
+  "task": "compose-handoff",
+  "input": {
+    "url": "https://example.com",
+    "metrics": { "performance": 45, "accessibility": 96, "bestPractices": 100, "seo": 92 },
+    "prioritizedFixes": { "priorityFixes": [] },
+    "matchedFixes": { "fixes": [] }
+  },
+  "options": {
+    "memory": {
+      "enabled": "auto",
+      "project": "Lighthouse Handoff",
+      "task": "Generate coding-agent handoff from PageSpeed report",
+      "maxFiles": 6,
+      "writeback": false
+    }
+  }
+}
+```
+
+When memory is used, the result includes `memory.used`, `memory.contextPackId`, `memory.filesUsed`, and `memory.warnings`. Markdown gains a **Project Context Used** section with constraints/guardrails only. **Lighthouse/PageSpeed metrics remain authoritative** for scores and diagnostics.
+
+See [../01-architecture/memory-bridge.md](../01-architecture/memory-bridge.md).
+
 ## Related Code and Repos
 
 **Local Brain (this repo)**

@@ -244,6 +244,26 @@ Confirmed (implemented for Standard Text Pack)
 
 ---
 
+## 2026-06-12 — Memory Bridge v0 and Second Brain as Memory Layer
+
+### Decision
+
+**Second Brain** remains a private memory vault. **Locaily** owns the public Memory Bridge (adapter, schemas, starter template, endpoints). Users configure a local `vaultPath`. Context packs use summaries/excerpts by default; writeback is proposal-only; `blockedPaths` always override `allowedPaths`.
+
+### Why
+
+Align two repos without merging private content into the open-source tree. Enable system improvement through memory and reviewable writeback, not model weight changes.
+
+### Status
+
+Confirmed — v0 implemented
+
+### Notes
+
+See `docs/06-decisions/second-brain-as-memory-layer.md`, `docs/01-architecture/memory-bridge.md`.
+
+---
+
 ## Template
 
 ```md
