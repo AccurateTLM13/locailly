@@ -22,7 +22,7 @@ Separated from [assumptions.md](./assumptions.md). Items here are **not decided*
 1. How strict should prompt injection detection be in v1?
 2. Delay website widget clients until origin/auth is mature?
 3. Disable network permissions for community tools by default?
-4. Audit redaction policy for sensitive fields? **Partially resolved for Memory Bridge v0** — see `companion/memory/audit-redaction.js` and `docs/05-validation/memory-bridge-lighthouse-v0.md`. Broader audit policy still open.
+4. Audit redaction policy for sensitive fields? **Partially resolved for Memory Bridge v0** — see `companion/memory/audit-redaction.js` and `docs/04-validation/memory-bridge-lighthouse-v0.md`. Broader audit policy still open.
 
 ## Models and Providers
 

@@ -130,5 +130,5 @@ A workflow may use:
 
 - [glossary.md](./glossary.md)
 - [../01-architecture/locaily-overview.md](../01-architecture/locaily-overview.md)
-- [../02-workflows/lighthouse-handoff.md](../02-workflows/lighthouse-handoff.md)
+- [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md)
 - [../06-decisions/decision-log.md](../06-decisions/decision-log.md)

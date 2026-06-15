@@ -116,10 +116,10 @@ MVP requires:
 - [x] `docs/01-architecture/locaily-overview.md` exists.
 - [x] `docs/01-architecture/api-contract.md` exists.
 - [x] `docs/01-architecture/memory-bridge.md` exists.
-- [x] `docs/05-validation/README.md` exists.
+- [x] `docs/04-validation/README.md` exists.
 - [x] `docs/00-start-here/project-index.md` exists.
-- [x] `docs/05-agents/client-integration-guide.md` exists.
-- [x] `docs/04-product/packaging-plan.md` exists.
+- [x] `docs/08-agents/client-integration-guide.md` exists.
+- [x] `docs/05-product/packaging-plan.md` exists.
 - [x] Docs do not claim unbuilt features as finished.
 
 ## Repo Hygiene

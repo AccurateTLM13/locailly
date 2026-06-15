@@ -48,7 +48,7 @@ Expected (current): `48/48` checks passed when server is healthy (includes memor
 2. `GET /tools`
 3. `POST /tasks/run` (preferred) or legacy `POST /analyze`
 
-See [../05-agents/client-integration-guide.md](../05-agents/client-integration-guide.md).
+See [../08-agents/client-integration-guide.md](../08-agents/client-integration-guide.md).
 
 ## Packaging Stages
 

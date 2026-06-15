@@ -20,41 +20,41 @@ Master index of important Locaily documentation.
 | [../01-architecture/memory-bridge.md](../01-architecture/memory-bridge.md) | Memory Bridge overview | current | coding-agent |
 | [../01-architecture/context-packs.md](../01-architecture/context-packs.md) | Context pack format | current | coding-agent |
 | [../01-architecture/memory-writeback.md](../01-architecture/memory-writeback.md) | Proposal-only writeback | current | coding-agent |
-| [../02-workflows/lighthouse-handoff.md](../02-workflows/lighthouse-handoff.md) | First workflow | current | coding-agent |
-| [../02-workflows/lighthouse-handoff-validation.md](../02-workflows/lighthouse-handoff-validation.md) | L1 validation evidence | current | evaluation-agent |
-| [../05-validation/README.md](../05-validation/README.md) | Validation docs index | current | evaluation-agent |
-| [../05-validation/l2-live-ollama-memory-bridge.md](../05-validation/l2-live-ollama-memory-bridge.md) | L2 live Ollama + Memory Bridge milestone | current | evaluation-agent |
-| [../05-validation/memory-bridge-lighthouse-v0.md](../05-validation/memory-bridge-lighthouse-v0.md) | Memory Bridge + Lighthouse controlled validation | current | evaluation-agent |
+| [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md) | First workflow | current | coding-agent |
+| [../03-workflows/lighthouse-handoff-validation.md](../03-workflows/lighthouse-handoff-validation.md) | L1 validation evidence | current | evaluation-agent |
+| [../04-validation/README.md](../04-validation/README.md) | Validation docs index | current | evaluation-agent |
+| [../04-validation/l2-live-ollama-memory-bridge.md](../04-validation/l2-live-ollama-memory-bridge.md) | L2 live Ollama + Memory Bridge milestone | current | evaluation-agent |
+| [../04-validation/memory-bridge-lighthouse-v0.md](../04-validation/memory-bridge-lighthouse-v0.md) | Memory Bridge + Lighthouse controlled validation | current | evaluation-agent |
 | [../../examples/lighthouse-handoff/slim-mobile.fixture.json](../../examples/lighthouse-handoff/slim-mobile.fixture.json) | Slim Lighthouse fixture (L2 lemonteed.com) | current | evaluation-agent |
 | [../../scripts/lighthouse-memory-compose-regression.js](../../scripts/lighthouse-memory-compose-regression.js) | Memory compose regression script | current | evaluation-agent |
-| [../05-validation/memory-bridge-local-setup.md](../05-validation/memory-bridge-local-setup.md) | Private vault setup (local only) | current | evaluation-agent |
-| [../05-validation/memory-bridge-manual-test-path.md](../05-validation/memory-bridge-manual-test-path.md) | Manual Memory Bridge test path | current | evaluation-agent |
-| [../02-workflows/lighthouse-handoff-extension-integration.md](../02-workflows/lighthouse-handoff-extension-integration.md) | Extension bridge spec | draft | coding-agent |
-| [../02-workflows/workflow-template.md](../02-workflows/workflow-template.md) | New workflow template | draft | documentation-agent |
-| [../02-workflows/task-track-template.md](../02-workflows/task-track-template.md) | Pit Crew track template | draft | documentation-agent |
-| [../02-workflows/validation-template.md](../02-workflows/validation-template.md) | Validation template | draft | evaluation-agent |
-| [../03-research/model-candidates.md](../03-research/model-candidates.md) | Model research list | needs-review | evaluation-agent |
-| [../03-research/model-evaluation-template.md](../03-research/model-evaluation-template.md) | Evaluation template | draft | evaluation-agent |
-| [../03-research/hardware-profiles.md](../03-research/hardware-profiles.md) | Hardware targets | draft | evaluation-agent |
-| [../03-research/hardware-test-matrix.md](../03-research/hardware-test-matrix.md) | Test matrix | draft | evaluation-agent |
-| [../03-research/runtime-options.md](../03-research/runtime-options.md) | Provider options | current | coding-agent |
-| [../03-research/license-notes.md](../03-research/license-notes.md) | License reminders | draft | documentation-agent |
-| [../04-product/locaily-ui-constitution.md](../04-product/locaily-ui-constitution.md) | UI laws and product interface contract | current | documentation-agent |
-| [../04-product/screens/workflow-validation-screen-contract.md](../04-product/screens/workflow-validation-screen-contract.md) | Workflow Validation screen contract | current | documentation-agent |
-| [../04-product/ux-principles.md](../04-product/ux-principles.md) | UX principles | current | documentation-agent |
-| [../04-product/setup-flow.md](../04-product/setup-flow.md) | Setup instructions | current | coding-agent |
-| [../04-product/status-states.md](../04-product/status-states.md) | Health/runtime states | current | coding-agent |
-| [../04-product/roadmap.md](../04-product/roadmap.md) | Sequenced roadmap | current | documentation-agent |
-| [../04-product/tester-feedback-plan.md](../04-product/tester-feedback-plan.md) | Tester feedback | draft | evaluation-agent |
-| [../04-product/packaging-plan.md](../04-product/packaging-plan.md) | Packaging stages | needs-review | coding-agent |
-| [../04-product/publish-readiness-checklist.md](../04-product/publish-readiness-checklist.md) | Publish checklist | needs-review | evaluation-agent |
-| [../04-product/desktop-companion-decision.md](../04-product/desktop-companion-decision.md) | Desktop UI decision | current | coding-agent |
-| [../05-agents/agent-context.md](../05-agents/agent-context.md) | Agent rules summary | current | documentation-agent |
-| [../05-agents/coding-agent-handoff.md](../05-agents/coding-agent-handoff.md) | Coding agent mission | current | coding-agent |
-| [../05-agents/documentation-agent-rules.md](../05-agents/documentation-agent-rules.md) | Doc agent rules | current | documentation-agent |
-| [../05-agents/evaluation-agent-rules.md](../05-agents/evaluation-agent-rules.md) | Evaluation agent rules | current | evaluation-agent |
-| [../05-agents/cleanup-rules.md](../05-agents/cleanup-rules.md) | Docs cleanup rules | current | documentation-agent |
-| [../05-agents/client-integration-guide.md](../05-agents/client-integration-guide.md) | Client integration | current | coding-agent |
+| [../04-validation/memory-bridge-local-setup.md](../04-validation/memory-bridge-local-setup.md) | Private vault setup (local only) | current | evaluation-agent |
+| [../04-validation/memory-bridge-manual-test-path.md](../04-validation/memory-bridge-manual-test-path.md) | Manual Memory Bridge test path | current | evaluation-agent |
+| [../03-workflows/lighthouse-handoff-extension-integration.md](../03-workflows/lighthouse-handoff-extension-integration.md) | Extension bridge spec | draft | coding-agent |
+| [../03-workflows/workflow-template.md](../03-workflows/workflow-template.md) | New workflow template | draft | documentation-agent |
+| [../03-workflows/task-track-template.md](../03-workflows/task-track-template.md) | Pit Crew track template | draft | documentation-agent |
+| [../03-workflows/validation-template.md](../03-workflows/validation-template.md) | Validation template | draft | evaluation-agent |
+| [../99-archive/research-notes/model-candidates.md](../99-archive/research-notes/model-candidates.md) | Model research list | needs-review | evaluation-agent |
+| [../99-archive/research-notes/model-evaluation-template.md](../99-archive/research-notes/model-evaluation-template.md) | Evaluation template | draft | evaluation-agent |
+| [../99-archive/research-notes/hardware-profiles.md](../99-archive/research-notes/hardware-profiles.md) | Hardware targets | draft | evaluation-agent |
+| [../99-archive/research-notes/hardware-test-matrix.md](../99-archive/research-notes/hardware-test-matrix.md) | Test matrix | draft | evaluation-agent |
+| [../99-archive/research-notes/runtime-options.md](../99-archive/research-notes/runtime-options.md) | Provider options | current | coding-agent |
+| [../99-archive/research-notes/license-notes.md](../99-archive/research-notes/license-notes.md) | License reminders | draft | documentation-agent |
+| [../05-product/locaily-ui-constitution.md](../05-product/locaily-ui-constitution.md) | UI laws and product interface contract | current | documentation-agent |
+| [../05-product/screens/workflow-validation-screen-contract.md](../05-product/screens/workflow-validation-screen-contract.md) | Workflow Validation screen contract | current | documentation-agent |
+| [../05-product/ux-principles.md](../05-product/ux-principles.md) | UX principles | current | documentation-agent |
+| [../05-product/setup-flow.md](../05-product/setup-flow.md) | Setup instructions | current | coding-agent |
+| [../05-product/status-states.md](../05-product/status-states.md) | Health/runtime states | current | coding-agent |
+| [../05-product/roadmap.md](../05-product/roadmap.md) | Sequenced roadmap | current | documentation-agent |
+| [../05-product/tester-feedback-plan.md](../05-product/tester-feedback-plan.md) | Tester feedback | draft | evaluation-agent |
+| [../05-product/packaging-plan.md](../05-product/packaging-plan.md) | Packaging stages | needs-review | coding-agent |
+| [../05-product/publish-readiness-checklist.md](../05-product/publish-readiness-checklist.md) | Publish checklist | needs-review | evaluation-agent |
+| [../05-product/desktop-companion-decision.md](../05-product/desktop-companion-decision.md) | Desktop UI decision | current | coding-agent |
+| [../08-agents/agent-context.md](../08-agents/agent-context.md) | Agent rules summary | current | documentation-agent |
+| [../08-agents/coding-agent-handoff.md](../08-agents/coding-agent-handoff.md) | Coding agent mission | current | coding-agent |
+| [../08-agents/documentation-agent-rules.md](../08-agents/documentation-agent-rules.md) | Doc agent rules | current | documentation-agent |
+| [../08-agents/evaluation-agent-rules.md](../08-agents/evaluation-agent-rules.md) | Evaluation agent rules | current | evaluation-agent |
+| [../08-agents/cleanup-rules.md](../08-agents/cleanup-rules.md) | Docs cleanup rules | current | documentation-agent |
+| [../08-agents/client-integration-guide.md](../08-agents/client-integration-guide.md) | Client integration | current | coding-agent |
 | [../06-decisions/decision-log.md](../06-decisions/decision-log.md) | Decisions | current | documentation-agent |
 | [../06-decisions/second-brain-as-memory-layer.md](../06-decisions/second-brain-as-memory-layer.md) | Second Brain memory layer decision | current | documentation-agent |
 | [../06-decisions/open-questions.md](../06-decisions/open-questions.md) | Open questions | current | documentation-agent |

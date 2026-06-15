@@ -2,7 +2,7 @@
 
 This file mirrors the intent of `AGENT.md` for editors and coding tools that look for `AGENTS.md`.
 
-**Read first:** [docs/00-start-here/README.md](docs/00-start-here/README.md) and [docs/05-agents/agent-context.md](docs/05-agents/agent-context.md)
+**Read first:** [docs/00-start-here/README.md](docs/00-start-here/README.md) and [docs/08-agents/agent-context.md](docs/08-agents/agent-context.md)
 
 ## Role of the Coding Agent
 
@@ -250,7 +250,7 @@ Implemented:
 - `scripts/smoke-test.js`, `scripts/contract-test.js`
 - `start-windows.bat`, `start-dev.ps1`
 
-Next focus areas (see [docs/04-product/roadmap.md](docs/04-product/roadmap.md)):
+Next focus areas (see [docs/05-product/roadmap.md](docs/05-product/roadmap.md)):
 
 - Wire Memory Bridge Context Pack into Lighthouse Handoff (one proof workflow)
 - Model Garage evaluation harness and auto model switching (Phase 2)
@@ -267,7 +267,7 @@ Next focus areas (see [docs/04-product/roadmap.md](docs/04-product/roadmap.md)):
 | Vision / glossary | [docs/00-start-here/current-vision.md](docs/00-start-here/current-vision.md) |
 | Architecture | [docs/01-architecture/locaily-overview.md](docs/01-architecture/locaily-overview.md) |
 | Pit Crew gap analysis | [docs/01-architecture/pit-crew-gap-analysis.md](docs/01-architecture/pit-crew-gap-analysis.md) |
-| Lighthouse workflow | [docs/02-workflows/lighthouse-handoff.md](docs/02-workflows/lighthouse-handoff.md) |
-| Agent rules | [docs/05-agents/agent-context.md](docs/05-agents/agent-context.md) |
+| Lighthouse workflow | [docs/03-workflows/lighthouse-handoff.md](docs/03-workflows/lighthouse-handoff.md) |
+| Agent rules | [docs/08-agents/agent-context.md](docs/08-agents/agent-context.md) |
 | Decisions | [docs/06-decisions/decision-log.md](docs/06-decisions/decision-log.md) |
 | Archive (context only) | [docs/99-archive/README.md](docs/99-archive/README.md) |

@@ -43,11 +43,11 @@ Important framing:
 | Full doc index | [project-index.md](./project-index.md) |
 | Architecture | [../01-architecture/locaily-overview.md](../01-architecture/locaily-overview.md) |
 | Memory Bridge | [../01-architecture/memory-bridge.md](../01-architecture/memory-bridge.md) |
-| First workflow | [../02-workflows/lighthouse-handoff.md](../02-workflows/lighthouse-handoff.md) |
-| Validation evidence | [../05-validation/README.md](../05-validation/README.md) |
-| Research notes | [../03-research/](../03-research/) |
-| Product / setup / roadmap | [../04-product/](../04-product/) |
-| Agent rules | [../05-agents/agent-context.md](../05-agents/agent-context.md) |
+| First workflow | [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md) |
+| Validation evidence | [../04-validation/README.md](../04-validation/README.md) |
+| Research notes | [../99-archive/research-notes/](../99-archive/research-notes/) |
+| Product / setup / roadmap | [../05-product/](../05-product/) |
+| Agent rules | [../08-agents/agent-context.md](../08-agents/agent-context.md) |
 | Decisions and open questions | [../06-decisions/](../06-decisions/) |
 | Historical context | [../99-archive/README.md](../99-archive/README.md) |
 
@@ -68,7 +68,7 @@ These are implemented or documented with evidence in the repo:
 - Lighthouse Handoff optional memory preflight on `compose-handoff` (only wired workflow)
 - Smoke and contract test scripts (`48/48` smoke checks including memory compose regression)
 
-See [../04-product/publish-readiness-checklist.md](../04-product/publish-readiness-checklist.md) for a detailed implementation checklist.
+See [../05-product/publish-readiness-checklist.md](../05-product/publish-readiness-checklist.md) for a detailed implementation checklist.
 
 ## What Is Still Experimental
 

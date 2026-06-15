@@ -589,7 +589,7 @@ Suggested files to create/update in Locaily:
 - docs/01-architecture/connector-plan-v0.md
 - docs/06-decisions/real-vs-simulated-progress.md
 - docs/00-start-here/current-vision.md
-- docs/04-product/roadmap.md
+- docs/05-product/roadmap.md
 
 Rules:
 - Locaily remains the implementation repo.
@@ -1625,7 +1625,7 @@ Create or update these files:
 - docs/01-architecture/memory-writeback.md
 - docs/06-decisions/second-brain-as-memory-layer.md
 - docs/00-start-here/current-vision.md
-- docs/04-product/roadmap.md
+- docs/05-product/roadmap.md
 
 Add a public starter template:
 

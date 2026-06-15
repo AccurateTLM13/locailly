@@ -148,7 +148,7 @@ locailly/
 
 Lighthouse extension client repo: https://github.com/mnfrdrsh/lighthouse-handoff
 
-Workflow doc: [docs/02-workflows/lighthouse-handoff.md](docs/02-workflows/lighthouse-handoff.md)
+Workflow doc: [docs/03-workflows/lighthouse-handoff.md](docs/03-workflows/lighthouse-handoff.md)
 
 ## Current Implementation Status
 
@@ -162,7 +162,7 @@ Implemented:
 - `scripts/smoke-test.js`, `scripts/contract-test.js`
 - Windows/PowerShell launch helpers
 
-Next phases: see [docs/04-product/roadmap.md](docs/04-product/roadmap.md)
+Next phases: see [docs/05-product/roadmap.md](docs/05-product/roadmap.md)
 
 ## Expected Client Behavior
 
@@ -177,7 +177,7 @@ They should:
 5. Fall back gracefully when runtime or model is missing.
 6. Never crash because local AI is missing.
 
-Integration guide: [docs/05-agents/client-integration-guide.md](docs/05-agents/client-integration-guide.md)
+Integration guide: [docs/08-agents/client-integration-guide.md](docs/08-agents/client-integration-guide.md)
 
 ## Core Endpoints
 
@@ -251,7 +251,7 @@ The project is close to publish-ready when:
 - Smoke and contract tests pass.
 - Locaily positioning is obvious within 60 seconds.
 
-Checklist: [docs/04-product/publish-readiness-checklist.md](docs/04-product/publish-readiness-checklist.md)
+Checklist: [docs/05-product/publish-readiness-checklist.md](docs/05-product/publish-readiness-checklist.md)
 
 ## Tone for User-Facing Copy
 

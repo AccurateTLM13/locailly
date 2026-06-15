@@ -23,7 +23,7 @@ Live PageSpeed capture
 
 Prior controlled validation (mock AI path): [memory-bridge-lighthouse-v0.md](./memory-bridge-lighthouse-v0.md).
 
-L1 contract baseline: [../02-workflows/lighthouse-handoff-validation.md](../02-workflows/lighthouse-handoff-validation.md).
+L1 contract baseline: [../03-workflows/lighthouse-handoff-validation.md](../03-workflows/lighthouse-handoff-validation.md).
 
 ## L2 Console + Memory Bridge — Post-Cleanup Validation Pass
 
@@ -184,6 +184,6 @@ See [memory-bridge-manual-test-path.md](./memory-bridge-manual-test-path.md) and
 ## Related
 
 - [memory-bridge-lighthouse-v0.md](./memory-bridge-lighthouse-v0.md)
-- [../02-workflows/lighthouse-handoff-validation.md](../02-workflows/lighthouse-handoff-validation.md)
-- [../02-workflows/lighthouse-handoff.md](../02-workflows/lighthouse-handoff.md)
-- [../04-product/roadmap.md](../04-product/roadmap.md)
+- [../03-workflows/lighthouse-handoff-validation.md](../03-workflows/lighthouse-handoff-validation.md)
+- [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md)
+- [../05-product/roadmap.md](../05-product/roadmap.md)

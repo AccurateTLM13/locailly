@@ -80,7 +80,7 @@ Confirmed
 
 ### Notes
 
-Linked from `docs/02-workflows/lighthouse-handoff.md`.
+Linked from `docs/03-workflows/lighthouse-handoff.md`.
 
 ---
 
@@ -100,7 +100,7 @@ Confirmed for L1 only. L2–L4 (Ollama live, extension standalone, extension bri
 
 ### Notes
 
-See `docs/02-workflows/lighthouse-handoff-validation.md`. Extension ↔ Local Brain HTTP bridge is not implemented.
+See `docs/03-workflows/lighthouse-handoff-validation.md`. Extension ↔ Local Brain HTTP bridge is not implemented.
 
 ---
 
@@ -240,7 +240,7 @@ Revisit Later (planning only)
 
 ### Notes
 
-`docs/04-product/desktop-companion-decision.md`
+`docs/05-product/desktop-companion-decision.md`
 
 ---
 
@@ -328,7 +328,7 @@ Confirmed
 
 ### Decision
 
-Record controlled validation as passed for Memory Bridge + Lighthouse `compose-handoff` against a real wiki-style private vault and real Lighthouse CLI capture (user-local). Public evidence in `docs/05-validation/`; commit `f4551b9`.
+Record controlled validation as passed for Memory Bridge + Lighthouse `compose-handoff` against a real wiki-style private vault and real Lighthouse CLI capture (user-local). Public evidence in `docs/04-validation/`; commit `f4551b9`.
 
 ### Why
 
@@ -340,7 +340,7 @@ Confirmed for controlled local validation. L2 live Ollama path remains open.
 
 ### Notes
 
-See `docs/05-validation/memory-bridge-lighthouse-v0.md`. Do not commit private vault paths or validation artifacts.
+See `docs/04-validation/memory-bridge-lighthouse-v0.md`. Do not commit private vault paths or validation artifacts.
 
 ---
 
@@ -360,7 +360,7 @@ Confirmed for documented manual validation. Automated regression: `scripts/light
 
 ### Notes
 
-Evidence doc: `docs/05-validation/l2-live-ollama-memory-bridge.md`. Local artifacts under `data/validation/` (gitignored). Checklist deduplication added in `companion/tools/lighthouse-handoff.js`. Private vault project page enrichment remains a follow-up.
+Evidence doc: `docs/04-validation/l2-live-ollama-memory-bridge.md`. Local artifacts under `data/validation/` (gitignored). Checklist deduplication added in `companion/tools/lighthouse-handoff.js`. Private vault project page enrichment remains a follow-up.
 
 ---
 

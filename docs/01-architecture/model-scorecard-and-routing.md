@@ -269,7 +269,7 @@ Every scorecard field that claims measured performance should point to evidence:
 - Validation failures and retry behavior
 - Scoreboard entry, audit metadata, or validation artifact
 
-Use `docs/03-research/model-evaluation-template.md` for early human-recorded runs. Future automated runs can write summarized results into scorecards after review.
+Use `docs/99-archive/research-notes/model-evaluation-template.md` for early human-recorded runs. Future automated runs can write summarized results into scorecards after review.
 
 ## Example: Lighthouse Handoff
 
@@ -311,7 +311,7 @@ The Lighthouse report remains the source of truth. Model output can improve hand
 
 ## Open Questions
 
-- What file layout should hold scorecards: `registry/models/`, `companion/model-registry/`, or `docs/03-research/` until implemented?
+- What file layout should hold scorecards: `registry/models/`, `companion/model-registry/`, or `docs/99-archive/research-notes/` until implemented?
 - Which score fields are manually curated vs generated from evaluation runs?
 - What is the minimum evidence needed before a scorecard becomes `recommended` instead of `candidate`?
 - How should recent failure history influence routing without making behavior hard to explain?

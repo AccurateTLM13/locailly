@@ -243,13 +243,13 @@ Start at [docs/00-start-here/README.md](docs/00-start-here/README.md).
 - [Architecture overview](docs/01-architecture/locaily-overview.md)
 - [Memory Bridge](docs/01-architecture/memory-bridge.md)
 - [API contract](docs/01-architecture/api-contract.md)
-- [Lighthouse Handoff workflow](docs/02-workflows/lighthouse-handoff.md)
-- [Lighthouse validation record](docs/02-workflows/lighthouse-handoff-validation.md)
-- [Client integration guide](docs/05-agents/client-integration-guide.md)
-- [Agent context](docs/05-agents/agent-context.md)
-- [Roadmap](docs/04-product/roadmap.md)
-- [Packaging plan](docs/04-product/packaging-plan.md)
-- [Publish readiness checklist](docs/04-product/publish-readiness-checklist.md)
+- [Lighthouse Handoff workflow](docs/03-workflows/lighthouse-handoff.md)
+- [Lighthouse validation record](docs/03-workflows/lighthouse-handoff-validation.md)
+- [Client integration guide](docs/08-agents/client-integration-guide.md)
+- [Agent context](docs/08-agents/agent-context.md)
+- [Roadmap](docs/05-product/roadmap.md)
+- [Packaging plan](docs/05-product/packaging-plan.md)
+- [Publish readiness checklist](docs/05-product/publish-readiness-checklist.md)
 
 ## AI Pit Crew Thesis
 

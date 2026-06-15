@@ -161,7 +161,7 @@ await runTool("lighthouse-handoff", {
 });
 ```
 
-Bridge spec and validation tiers: [../02-workflows/lighthouse-handoff-extension-integration.md](../02-workflows/lighthouse-handoff-extension-integration.md), [../02-workflows/lighthouse-handoff-validation.md](../02-workflows/lighthouse-handoff-validation.md).
+Bridge spec and validation tiers: [../03-workflows/lighthouse-handoff-extension-integration.md](../03-workflows/lighthouse-handoff-extension-integration.md), [../03-workflows/lighthouse-handoff-validation.md](../03-workflows/lighthouse-handoff-validation.md).
 
 ## Compatibility Rule
 

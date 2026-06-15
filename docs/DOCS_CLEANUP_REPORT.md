@@ -71,10 +71,10 @@ The docs tree now uses numbered folders (`00`–`06`, `99-archive`) with a clear
 | `docs/implementation-plan.md` | `docs/99-archive/old-summaries/implementation-plan.md` |
 | `docs/current-to-local-ai-engine-implementation-plan.md` | `docs/99-archive/old-summaries/current-to-local-ai-engine-implementation-plan.md` |
 | `docs/api-contract.md` | `docs/01-architecture/api-contract.md` |
-| `docs/tool-integration-guide.md` | `docs/05-agents/client-integration-guide.md` |
-| `docs/packaging-plan.md` | `docs/04-product/packaging-plan.md` |
-| `docs/publish-readiness-checklist.md` | `docs/04-product/publish-readiness-checklist.md` |
-| `docs/desktop-companion-decision.md` | `docs/04-product/desktop-companion-decision.md` |
+| `docs/tool-integration-guide.md` | `docs/08-agents/client-integration-guide.md` |
+| `docs/packaging-plan.md` | `docs/05-product/packaging-plan.md` |
+| `docs/publish-readiness-checklist.md` | `docs/05-product/publish-readiness-checklist.md` |
+| `docs/desktop-companion-decision.md` | `docs/05-product/desktop-companion-decision.md` |
 | `docs/new-local-ai-engine-dev-docs/` | `docs/99-archive/deprecated-plans/new-local-ai-engine-dev-docs/` |
 | `docs/v2/*` | `docs/99-archive/raw-conversation-captures/` |
 | `docs/pit-crew/*` | `docs/99-archive/raw-conversation-captures/` |
@@ -122,7 +122,7 @@ No exact-duplicate files were deleted.
 
 1. Should root `README.md` and `AGENTS.md` be renamed/reframed to Locaily now or in a separate pass?
 2. Should `AGENT.md` mirror `05-agents/agent-context.md`?
-3. Where should populated benchmark results live—`03-research/` only or also `data/`?
+3. Where should populated benchmark results live—`99-archive/research-notes/` only or also `data/`?
 4. Is there an existing Chrome extension repo path to link from `lighthouse-handoff.md`?
 
 ## Recommended Next Docs Work

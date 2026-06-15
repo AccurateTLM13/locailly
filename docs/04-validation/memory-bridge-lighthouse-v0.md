@@ -129,4 +129,4 @@ Manual path: [memory-bridge-manual-test-path.md](./memory-bridge-manual-test-pat
 
 - [memory-bridge-local-setup.md](./memory-bridge-local-setup.md)
 - [../01-architecture/memory-bridge.md](../01-architecture/memory-bridge.md)
-- [../02-workflows/lighthouse-handoff.md](../02-workflows/lighthouse-handoff.md)
+- [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md)

@@ -20,9 +20,9 @@ Bad:
 
 ## Required Templates
 
-- [../02-workflows/validation-template.md](../02-workflows/validation-template.md)
-- [../03-research/model-evaluation-template.md](../03-research/model-evaluation-template.md)
-- [../03-research/hardware-test-matrix.md](../03-research/hardware-test-matrix.md)
+- [../03-workflows/validation-template.md](../03-workflows/validation-template.md)
+- [../99-archive/research-notes/model-evaluation-template.md](../99-archive/research-notes/model-evaluation-template.md)
+- [../99-archive/research-notes/hardware-test-matrix.md](../99-archive/research-notes/hardware-test-matrix.md)
 
 ## Baselines
 

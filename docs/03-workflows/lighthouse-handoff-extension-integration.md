@@ -159,4 +159,4 @@ Local Brain currently uses minimal CORS. Before L4 validation:
 
 - [lighthouse-handoff.md](./lighthouse-handoff.md)
 - [lighthouse-handoff-validation.md](./lighthouse-handoff-validation.md)
-- [../05-agents/client-integration-guide.md](../05-agents/client-integration-guide.md)
+- [../08-agents/client-integration-guide.md](../08-agents/client-integration-guide.md)

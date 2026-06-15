@@ -22,6 +22,7 @@ Useful context that is **not** the current source of truth for Locaily.
 | `old-summaries/` | Superseded top-level plans (`architecture.md`, `implementation-plan.md`, migration plan) |
 | `raw-conversation-captures/` | Exported conversations (txt/docx) on evolution and Pit Crew |
 | `deprecated-plans/new-local-ai-engine-dev-docs/` | Numbered engine-core spec pack (01–16) |
+| `research-notes/` | Model/hardware research (formerly `docs/03-research/`) |
 
 ## Staleness Warning
 
