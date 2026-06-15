@@ -1,5 +1,47 @@
 # Decision Log
 
+## 2026-06-14 — Lighthouse Handoff Remains First Proof Workflow
+
+### Decision
+
+Lighthouse Handoff remains the first official proof workflow and the reference implementation for the track system (`website_audit.lighthouse_handoff`).
+
+### Why
+
+It already exercises extraction, classification, prioritization, validation, markdown assembly, model routing, deterministic tool steps, and deterministic fallback when runtime is unavailable.
+
+### Consequences
+
+- New architecture changes should preserve Lighthouse Handoff compatibility until a migration is documented.
+- Additional workflows should follow the track registry pattern — not embed orchestration inside single tools.
+- Step input mapping debt in `tool-router.js` must be resolved before scaling to a second workflow track.
+
+### Status
+
+Accepted
+
+### Notes
+
+Track system docs: `docs/02-track-system/`. Progress: `docs/07-progress/`.
+
+---
+
+## 2026-06-14 — Docs Restructured Around Track System
+
+### Decision
+
+Reorganize documentation into explicit buckets: track system (`02-track-system`), workflows (`03-workflows`), validation evidence (`04-validation`), product (`05-product`), progress (`07-progress`), agents (`08-agents`), research in archive.
+
+### Why
+
+Vision, implementation, future ideas, and old plans were mixing. Locaily needs a blunt current-state anchor and track-system docs before adding workflows or agent-driven architecture drift.
+
+### Status
+
+Accepted (docs-only; no runtime behavior change in this decision)
+
+---
+
 ## 2026-06-13 — Model Skill Sheets as Routing Data Layer
 
 ### Decision

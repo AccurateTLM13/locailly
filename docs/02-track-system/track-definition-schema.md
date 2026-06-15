@@ -1,0 +1,77 @@
+# Track Definition Schema
+
+JSON shape for track files under `companion/pit-crew/tracks/`. Matches what `decomposer.js` validates today.
+
+## Top-Level Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `track_id` | yes | Stable identifier returned by `GET /tracks` |
+| `version` | recommended | Track definition version |
+| `name` | recommended | Display name |
+| `description` | recommended | Short summary |
+| `output_schema` | recommended | Path to final result JSON schema |
+| `steps` | yes | Non-empty array of step objects |
+
+## Step Object
+
+| Field | Required | Description |
+|---|---|---|
+| `id` | yes | Unique within track; becomes artifact key |
+| `executor` | yes | How the step runs |
+| `input_map` | no | **Not implemented in code yet** — target for declarative mapping |
+
+## Executor: Tool Step
+
+```json
+{
+  "id": "extract_metrics",
+  "executor": {
+    "type": "tool",
+    "tool": "lighthouse.parse",
+    "task": "run"
+  }
+}
+```
+
+## Executor: Model Step
+
+```json
+{
+  "id": "prioritize_fixes",
+  "executor": {
+    "type": "model",
+    "role": "priority_helper",
+    "schema": "companion/pit-crew/schemas/prioritize-fixes.schema.json",
+    "prompt_template": "prioritize_fixes"
+  }
+}
+```
+
+Model steps request a **role**, not a hardcoded model name. The model router resolves role → provider model.
+
+## Reference: Proof Track
+
+Full example: `companion/pit-crew/tracks/lighthouse-handoff.track.json`
+
+Track id: `website_audit.lighthouse_handoff`
+
+Seven steps: extract → classify → prioritize → validate → match → write → verify
+
+## Validation Rules (Loader)
+
+From `decomposer.js`:
+
+- `track_id` must be present
+- `steps` must be non-empty array
+- Each step needs `id` and `executor.type`
+- Invalid JSON or missing fields → `TRACK_CONFIG_INVALID`
+
+## Output Validation
+
+After all steps complete, orchestrator validates final handoff against `output_schema` when configured.
+
+## Related
+
+- [track-registry.md](./track-registry.md)
+- [step-input-mapping.md](./step-input-mapping.md)

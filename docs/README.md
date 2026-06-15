@@ -2,13 +2,15 @@
 
 **Start here:** [00-start-here/README.md](./00-start-here/README.md)
 
+**Blunt status:** [00-start-here/current-state.md](./00-start-here/current-state.md)
+
 Quick links:
 
-- [Vision](./00-start-here/current-vision.md)
-- [Project index](./00-start-here/project-index.md)
+- [Repo map](./00-start-here/repo-map.md)
+- [Track system](./02-track-system/README.md)
 - [Architecture](./01-architecture/locaily-overview.md)
-- [Memory Bridge](./01-architecture/memory-bridge.md)
 - [Lighthouse Handoff workflow](./03-workflows/lighthouse-handoff.md)
-- [Validation evidence](./04-validation/README.md) — includes [L2 live Ollama + Memory Bridge](./04-validation/l2-live-ollama-memory-bridge.md)
+- [Validation evidence](./04-validation/README.md)
+- [Build status / agent brief](./07-progress/build-status.md)
 - [Agent context](./08-agents/agent-context.md)
 - [Archive](./99-archive/README.md)

@@ -1,9 +1,11 @@
 # Validation Docs
 
-Evidence records for Locaily workflow and platform checks.
+Evidence records for Locaily **tracks** and **workflows**.
 
 | Document | Scope |
 |----------|-------|
+| [validation-strategy.md](./validation-strategy.md) | How we validate (tiers, good/bad claims) |
+| [evidence-log.md](./evidence-log.md) | Milestone evidence index |
 | [lighthouse-handoff-validation.md](../03-workflows/lighthouse-handoff-validation.md) | Lighthouse Handoff L1 (Local Brain contract) |
 | [memory-bridge-local-setup.md](./memory-bridge-local-setup.md) | Private wiki vault setup (local only) |
 | [memory-bridge-manual-test-path.md](./memory-bridge-manual-test-path.md) | Manual Memory Bridge + Lighthouse integration steps |

@@ -10,84 +10,43 @@ The thesis: useful AI does not always require one large cloud model. Smaller loc
 
 Locaily is **not** a chatbot product, a model marketplace, or a single Chrome extension. It is the platform layer that connects clients, capabilities, and models on the user's machine (and eventually nearby devices).
 
-## What Problem Is It Solving?
+## Source of Truth Priority
 
-Most AI projects optimize for bigger models. Locaily optimizes for **better coordination**:
-
-- Route each job to the right capability, not the biggest model
-- Keep execution local-first for privacy, cost, and hardware reuse
-- Use strict schemas, validators, and workflows so small models stay useful
-- Let multiple tools and workflows plug in without rewriting the core
-
-## Current Architecture
-
-```txt
-Locaily
-├─ Local Brain        — coordinator / orchestrator (implemented as companion server)
-├─ NearbyNode         — nearby device / capability layer (conceptual; not fully built)
-├─ AI Pit Crew        — specialized model / tool / task-track strategy
-└─ Lighthouse Handoff — first practical workflow and validation test bench
-```
-
-Important framing:
-
-- **Device ≠ AI model.** A device is a **capability**. Not every node needs a model; every node needs a connector.
-- **Local Brain** is the current name for the coordinator. In code today this is mostly `companion/server.js` and related core modules.
-- **Lighthouse Handoff** is the first real workflow. It is not the whole product.
+1. Running code
+2. Root `README.md`
+3. [current-state.md](./current-state.md)
+4. [../07-progress/build-status.md](../07-progress/build-status.md)
+5. [../01-architecture/](../01-architecture/)
+6. [../02-track-system/](../02-track-system/)
+7. [../03-workflows/](../03-workflows/)
+8. Archived docs — historical context only
 
 ## Where To Go Next
 
 | Topic | Path |
 |---|---|
+| **Blunt status (read this)** | [current-state.md](./current-state.md) |
 | Vision and terminology | [current-vision.md](./current-vision.md), [glossary.md](./glossary.md) |
-| Full doc index | [project-index.md](./project-index.md) |
+| Repo map | [repo-map.md](./repo-map.md), [project-index.md](./project-index.md) |
 | Architecture | [../01-architecture/locaily-overview.md](../01-architecture/locaily-overview.md) |
-| Memory Bridge | [../01-architecture/memory-bridge.md](../01-architecture/memory-bridge.md) |
-| First workflow | [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md) |
+| **Track system** | [../02-track-system/README.md](../02-track-system/README.md) |
+| Workflows | [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md) |
 | Validation evidence | [../04-validation/README.md](../04-validation/README.md) |
-| Research notes | [../99-archive/research-notes/](../99-archive/research-notes/) |
 | Product / setup / roadmap | [../05-product/](../05-product/) |
+| Progress / sprint / agent brief | [../07-progress/](../07-progress/) |
 | Agent rules | [../08-agents/agent-context.md](../08-agents/agent-context.md) |
-| Decisions and open questions | [../06-decisions/](../06-decisions/) |
+| Decisions | [../06-decisions/](../06-decisions/) |
+| Research (archived) | [../99-archive/research-notes/](../99-archive/research-notes/) |
 | Historical context | [../99-archive/README.md](../99-archive/README.md) |
 
-## What Is Confirmed Today
+## Current Focus
 
-These are implemented or documented with evidence in the repo:
+**Milestone 1:** Make Locaily's track system explicit.
 
-- Local companion HTTP server on `127.0.0.1:31313` (`companion/server.js`)
-- Engine endpoints: `/health`, `/tools`, `/tracks`, `/tracks/run`, `/tasks/run`, `/audit`, provider and model-role endpoints
-- Legacy `/analyze` compatibility endpoint
-- Ollama and mock providers via provider router
-- Manifest-backed tool pack loading (`tool-packs/standard-text-pack/`, `tool-packs/lighthouse-parser-pack/`)
-- Showcase tools: `deal-sniper`, `lighthouse-handoff`
-- Standard Text Pack tools (`text.clean`, `text.summarize`, etc.)
-- Input gate, context handler, permissions, result validation, audit log (core modules)
-- Lighthouse Handoff multi-step orchestration path when a runtime is available
-- **Memory Bridge v0** — `/memory/status`, `/memory/context-pack`, `/memory/writeback/propose` (disabled by default)
-- Lighthouse Handoff optional memory preflight on `compose-handoff` (only wired workflow)
-- Smoke and contract test scripts (`48/48` smoke checks including memory compose regression)
-
-See [../05-product/publish-readiness-checklist.md](../05-product/publish-readiness-checklist.md) for a detailed implementation checklist.
-
-## What Is Still Experimental
-
-Treat these as direction, not finished product truth:
-
-- **Locaily** as the final public product name
-- **NearbyNode** as a working nearby-device layer
-- Full **AI Pit Crew** routing across many specialized models
-- **Track classifier** that auto-picks workflow, pack, and model profile
-- **Model suitability profiles** beyond basic role assignment
-- Desktop Companion UI (planned; not started)
-- Distributed / multi-machine local clusters
-- Community tool pack marketplace
-- Benchmark claims comparing small-model orchestration vs large models (no validated data in repo yet)
-
-When in doubt, check [../06-decisions/open-questions.md](../06-decisions/open-questions.md) and prefer code + tests over older planning docs.
+The Local Brain dispatches **tracks** (units of work with contracts), not raw models. See [../02-track-system/README.md](../02-track-system/README.md) and [../07-progress/current-sprint.md](../07-progress/current-sprint.md).
 
 ## Naming Note
 
 **Locaily** is the confirmed public product name. **NearbyNode** and **AI Pit Crew** are confirmed public architecture terms.
 
-Some repo files (`README.md`, `AGENTS.md`) still say **Local AI Platform** or **Local AI Engine** from earlier phases. Treat those as legacy aliases being phased out.
+Some repo files still say **Local AI Platform** or **Local AI Engine** from earlier phases. Treat those as legacy aliases being phased out.

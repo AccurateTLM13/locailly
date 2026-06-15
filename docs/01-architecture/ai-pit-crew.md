@@ -1,5 +1,7 @@
 # AI Pit Crew
 
+> **Track system docs:** Implementation details for tracks, registries, and step input mapping live in [../02-track-system/README.md](../02-track-system/README.md). This file covers the strategy layer.
+
 ## What It Is
 
 The **AI Pit Crew** is Locaily's strategy for coordinating multiple small specialists—models, tools, rules, and validators—across a task instead of defaulting to one large general model.

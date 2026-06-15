@@ -236,10 +236,12 @@ Smoke test summary: 48/48 checks passed.
 
 ## Documentation
 
-Start at [docs/00-start-here/README.md](docs/00-start-here/README.md).
+Start at [docs/00-start-here/README.md](docs/00-start-here/README.md). **Blunt status:** [docs/00-start-here/current-state.md](docs/00-start-here/current-state.md).
 
+- [Track system](docs/02-track-system/README.md)
+- [Build status / next agent brief](docs/07-progress/next-agent-brief.md)
 - [Current vision](docs/00-start-here/current-vision.md)
-- [Project index](docs/00-start-here/project-index.md)
+- [Repo map](docs/00-start-here/repo-map.md)
 - [Architecture overview](docs/01-architecture/locaily-overview.md)
 - [Memory Bridge](docs/01-architecture/memory-bridge.md)
 - [API contract](docs/01-architecture/api-contract.md)

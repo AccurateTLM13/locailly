@@ -78,6 +78,7 @@ POST /tasks/run (lighthouse-handoff, orchestrated) → same pit-crew runner (bac
 
 ## Related docs
 
-- [`ai-pit-crew.md`](ai-pit-crew.md)
-- [`orchestration-flow.md`](orchestration-flow.md)
+- [`ai-pit-crew.md`](ai-pit-crew.md) — Pit Crew strategy (architecture)
+- **[`../02-track-system/README.md`](../02-track-system/README.md)** — Track registry, core tracks, step input mapping (primary track docs)
+- [`orchestration-flow.md`](orchestration-flow.md) — Request flow (may reference legacy paths; verify against pit-crew code)
 - [`api-contract.md`](api-contract.md)

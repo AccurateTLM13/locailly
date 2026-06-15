@@ -2,7 +2,7 @@
 
 This file mirrors the intent of `AGENT.md` for editors and coding tools that look for `AGENTS.md`.
 
-**Read first:** [docs/00-start-here/README.md](docs/00-start-here/README.md) and [docs/08-agents/agent-context.md](docs/08-agents/agent-context.md)
+**Read first:** [docs/00-start-here/current-state.md](docs/00-start-here/current-state.md), [docs/07-progress/next-agent-brief.md](docs/07-progress/next-agent-brief.md), and [docs/08-agents/agent-context.md](docs/08-agents/agent-context.md)
 
 ## Role of the Coding Agent
 
@@ -250,13 +250,13 @@ Implemented:
 - `scripts/smoke-test.js`, `scripts/contract-test.js`
 - `start-windows.bat`, `start-dev.ps1`
 
-Next focus areas (see [docs/05-product/roadmap.md](docs/05-product/roadmap.md)):
+Next focus areas (see [docs/07-progress/milestone-map.md](docs/07-progress/milestone-map.md) and [docs/05-product/roadmap.md](docs/05-product/roadmap.md)):
 
-- Wire Memory Bridge Context Pack into Lighthouse Handoff (one proof workflow)
-- Model Garage evaluation harness and auto model switching (Phase 2)
-- Track Classifier for multi-track auto-routing
+- **M1:** Make track system explicit (docs + step input mapping target)
+- Declarative step `input_map` in track JSON (see [docs/02-track-system/step-input-mapping.md](docs/02-track-system/step-input-mapping.md))
+- Model Garage evaluation harness (Phase 2 — spec only until evidence)
 - Harden Lighthouse Handoff validation end-to-end with the extension client
-- NearbyNode capability connectors (spec + prototype)
+- NearbyNode capability connectors (spec + prototype — not implementation yet)
 - Desktop Companion UI (deferred; see desktop companion decision doc)
 
 ## Documentation Map
@@ -264,10 +264,14 @@ Next focus areas (see [docs/05-product/roadmap.md](docs/05-product/roadmap.md)):
 | Need | Path |
 |---|---|
 | Start here | [docs/00-start-here/README.md](docs/00-start-here/README.md) |
+| Current state (blunt) | [docs/00-start-here/current-state.md](docs/00-start-here/current-state.md) |
+| Track system | [docs/02-track-system/README.md](docs/02-track-system/README.md) |
+| Progress / agent brief | [docs/07-progress/next-agent-brief.md](docs/07-progress/next-agent-brief.md) |
 | Vision / glossary | [docs/00-start-here/current-vision.md](docs/00-start-here/current-vision.md) |
 | Architecture | [docs/01-architecture/locaily-overview.md](docs/01-architecture/locaily-overview.md) |
 | Pit Crew gap analysis | [docs/01-architecture/pit-crew-gap-analysis.md](docs/01-architecture/pit-crew-gap-analysis.md) |
 | Lighthouse workflow | [docs/03-workflows/lighthouse-handoff.md](docs/03-workflows/lighthouse-handoff.md) |
+| Validation evidence | [docs/04-validation/README.md](docs/04-validation/README.md) |
 | Agent rules | [docs/08-agents/agent-context.md](docs/08-agents/agent-context.md) |
 | Decisions | [docs/06-decisions/decision-log.md](docs/06-decisions/decision-log.md) |
 | Archive (context only) | [docs/99-archive/README.md](docs/99-archive/README.md) |

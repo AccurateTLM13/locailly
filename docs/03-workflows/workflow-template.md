@@ -1,66 +1,50 @@
 # Workflow Template
 
-Copy this template when documenting a new Locaily workflow. Delete guidance lines before publishing.
+Copy when documenting a new Locaily workflow.
 
 ---
 
-# [Workflow Name]
-
-## Purpose
-
-One paragraph: what user problem this solves and why it belongs in Locaily (not a standalone script).
+# Workflow: [Name]
 
 ## Status
 
-`Confirmed` | `Experimental` | `Archived` | `Needs review`
+`Implemented` | `Partial` | `Planned`
 
-## Position in Locaily
+## Goal
 
-- Client type (extension, CLI, desktop, …)
-- Local Brain tools involved
-- NearbyNode capabilities (if any)
-- AI Pit Crew tracks / roles used
+What useful job this workflow performs.
 
-## Inputs
+## User Input
 
-| Field | Required | Description |
-|---|---|---|
-| | | |
+What the user gives Locaily.
 
-## Outputs
+## Output
 
-| Field | Description |
-|---|---|
-| | |
+What Locaily returns.
 
-## Execution Modes
+## Track Plan
 
-| Mode | Runtime needed | Description |
-|---|---|---|
-| deterministic | no | |
-| baseline | yes | single model pass |
-| orchestrated | yes | multi-step track |
+Core tracks + specialized tracks. Link to track id when implemented.
 
-## Steps (if orchestrated)
+## Current Implementation
 
-| Step | Role | Validator |
-|---|---|---|
-| | | |
+Files, endpoints, tool packs.
 
-## Fallback Behavior
+## Validation Evidence
 
-What happens when runtime, schema validation, or permissions fail.
-
-## Validation Plan
-
-How we know this workflow works. Link to tests, smoke cases, or manual checklist.
+Links to [../04-validation/](../04-validation/) docs or runs.
 
 **Do not claim validation complete without evidence.**
 
-## Open Questions
+## Known Gaps
 
-- 
+What is not done.
 
-## Related Files
+## Next Build Step
 
-- 
+One clear next move.
+
+## Related
+
+- [../02-track-system/workflow-registry.md](../02-track-system/workflow-registry.md)
+- [validation-template.md](./validation-template.md)
