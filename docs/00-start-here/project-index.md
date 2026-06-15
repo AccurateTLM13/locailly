@@ -15,7 +15,7 @@ Master index of Locaily documentation. Prefer [repo-map.md](./repo-map.md) for a
 | [../02-track-system/core-tracks.md](../02-track-system/core-tracks.md) | Reusable track types | current |
 | [../02-track-system/track-registry.md](../02-track-system/track-registry.md) | What a track is | current |
 | [../02-track-system/workflow-registry.md](../02-track-system/workflow-registry.md) | Workflow → track map | current |
-| [../02-track-system/step-input-mapping.md](../02-track-system/step-input-mapping.md) | Input mapping gap + target | current |
+| [../02-track-system/step-input-mapping.md](../02-track-system/step-input-mapping.md) | Declarative step input mapping | current |
 | [../02-track-system/track-graph-planning.md](../02-track-system/track-graph-planning.md) | Linear → DAG evolution | current |
 | **01-architecture/** | System organs | current |
 | [../01-architecture/locaily-overview.md](../01-architecture/locaily-overview.md) | System map | current |
@@ -27,7 +27,7 @@ Master index of Locaily documentation. Prefer [repo-map.md](./repo-map.md) for a
 | **03-workflows/** | User-facing workflows | current |
 | [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md) | Proof workflow | current |
 | [../03-workflows/lighthouse-handoff-validation.md](../03-workflows/lighthouse-handoff-validation.md) | L1 validation | current |
-| [../03-workflows/dealsniper.md](../03-workflows/dealsniper.md) | DealSniper (partial) | draft |
+| [../03-workflows/dealsniper.md](../03-workflows/dealsniper.md) | DealSniper workflow track | current |
 | **04-validation/** | Evidence | current |
 | [../04-validation/README.md](../04-validation/README.md) | Validation index | current |
 | [../04-validation/l2-live-ollama-memory-bridge.md](../04-validation/l2-live-ollama-memory-bridge.md) | L2 milestone | current |

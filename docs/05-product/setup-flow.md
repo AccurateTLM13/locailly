@@ -40,7 +40,7 @@ $env:LOCAL_AI_BASE_URL = "http://127.0.0.1:31314"
 node scripts/smoke-test.js
 ```
 
-Expected (current): `48/48` checks passed when server is healthy (includes memory compose regression script).
+Expected (current): **51/51** checks passed on a clean server (memory bridge disabled; includes DealSniper track + memory compose regression checks).
 
 ## Client Integration
 

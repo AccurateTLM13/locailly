@@ -12,7 +12,7 @@ The track system is how Locaily breaks work into steps, dispatches capabilities,
 | [core-tracks.md](./core-tracks.md) | Reusable base track types |
 | [workflow-registry.md](./workflow-registry.md) | Workflows composed from tracks |
 | [track-definition-schema.md](./track-definition-schema.md) | Track JSON file shape (matches code) |
-| [step-input-mapping.md](./step-input-mapping.md) | How steps receive input — current gap |
+| [step-input-mapping.md](./step-input-mapping.md) | Declarative step input mapping |
 | [track-graph-planning.md](./track-graph-planning.md) | Linear → declarative → DAG evolution |
 | [fallback-and-validation.md](./fallback-and-validation.md) | Validation and fallback today |
 | [future-tracks.md](./future-tracks.md) | Draft catalog — post–Milestone 2 tracks |
@@ -27,6 +27,7 @@ The track system is how Locaily breaks work into steps, dispatches capabilities,
 | Track catalog | `companion/pit-crew/tracks/*.track.json` |
 | Track loader | `companion/pit-crew/decomposer.js` |
 | Track runner | `companion/pit-crew/orchestrator.js` |
+| Step input | `companion/pit-crew/step-input.js`, `input-map-resolver.js` |
 | Model steps | `companion/pit-crew/model-router.js` |
 | Tool steps | `companion/pit-crew/tool-router.js` |
 | HTTP entry | `POST /tracks/run`, `GET /tracks` in `companion/server.js` |
@@ -34,8 +35,8 @@ The track system is how Locaily breaks work into steps, dispatches capabilities,
 ## Current Stage
 
 ```txt
-Implemented:  linear track pipeline (two workflow tracks)
-Next:         remove legacy buildLegacyStepInput(); optional result_step docs in schema
+Implemented:  linear track pipeline (two workflow tracks, declarative input_map on all steps)
+Next:         remove legacy step-input fallbacks in step-input.js
 Future:       DAG planner generated from request
 Not built:    automatic track classification, graph runner
 ```

@@ -2,14 +2,14 @@
 
 Hand this to Cursor, Claude, Codex, or any coding agent continuing Locaily work.
 
-**Updated:** 2026-06-14
+**Updated:** 2026-06-15
 
 ## Read First
 
 1. [../00-start-here/current-state.md](../00-start-here/current-state.md)
 2. [../02-track-system/README.md](../02-track-system/README.md)
 3. [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md)
-4. [../07-progress/current-sprint.md](./current-sprint.md)
+4. [../07-progress/build-status.md](./build-status.md)
 
 Also: root [AGENTS.md](../../AGENTS.md) and [../08-agents/agent-context.md](../08-agents/agent-context.md)
 
@@ -20,19 +20,20 @@ Also: root [AGENTS.md](../../AGENTS.md) and [../08-agents/agent-context.md](../0
 - Claim DAG support, NearbyNode, or automatic track classification exists
 - Add NearbyNode implementation without an explicit milestone decision
 - Make model benchmark claims without evidence in [../04-validation/](../04-validation/)
-- Expand Lighthouse-specific `if (step.id === ...)` in tool-router without a migration plan
+- Add new hardcoded step-id branches in `step-input.js` legacy fallbacks
 
 ## Current Task
 
-**After docs restructure (this sprint):** Implement declarative step `input_map` in track JSON and a resolver in `companion/pit-crew/tool-router.js`, then migrate `website_audit.lighthouse_handoff` off hardcoded step ids.
+**Milestone 4 candidate:** Remove legacy step-input fallbacks in `companion/pit-crew/step-input.js` now that both catalog tracks declare `input_map` on every step (including Lighthouse `prioritize_fixes` model step).
 
-See [../02-track-system/step-input-mapping.md](../02-track-system/step-input-mapping.md).
+See [../02-track-system/step-input-mapping.md](../02-track-system/step-input-mapping.md) and [milestone-map.md](./milestone-map.md).
 
 ## Architecture Reminder
 
 ```txt
 Models plug into tracks.
 Tools plug into tracks.
+Track JSON declares input_map for tool and model steps.
 NearbyNodes will provide track capabilities (future).
 Workflows compose tracks.
 Validation scores tracks.
@@ -46,9 +47,10 @@ Local Brain dispatches tracks — not raw model names.
 | Server | `companion/server.js` |
 | Track run | `companion/pit-crew/orchestrator.js` |
 | Track files | `companion/pit-crew/tracks/` |
-| Step input (debt) | `companion/pit-crew/tool-router.js` |
+| Step input | `companion/pit-crew/step-input.js`, `input-map-resolver.js` |
+| Model / tool routers | `companion/pit-crew/model-router.js`, `tool-router.js` |
 | Tools | `companion/tools/registry.js`, `tool-packs/` |
-| Proof workflow tool | `companion/tools/lighthouse-handoff.js` |
+| Proof workflows | `lighthouse-handoff.track.json`, `dealsniper.track.json` |
 
 ## When Done
 

@@ -14,6 +14,7 @@ Pipeline-stage **Local Brain** with **Pit Crew track runner** — linear steps, 
 | **1B — Declarative track input mapping (tools)** | **Complete** |
 | **2 — Second workflow track** | **Complete** |
 | **3 — Model-step input mapping** | **Complete** |
+| **4 — Legacy fallback removal** | **Next** |
 
 ## Current Proof
 

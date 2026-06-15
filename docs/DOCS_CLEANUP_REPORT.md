@@ -160,3 +160,15 @@ Aligned active docs with Memory Bridge v0, privacy stabilization, Lighthouse mem
 **Added:** `.cursor/commands/sync-docs.md` — repeatable `/sync-docs` agent command.
 
 **Still needs-review:** `docs/LocAIly_ and_Second Brain_Alignment_and_Connection.md` (raw PM conversation; pre-v0). Archive or summarize when convenient.
+
+## Docs Sync Pass (2026-06-15)
+
+Post–Milestone 3 (`PR #8` merged): aligned docs with model-step `input_map`, two-track catalog, and **51/51** clean-server smoke baseline.
+
+**Updated:** `00-start-here/current-state.md`, `project-index.md`, root `README.md`, `AGENTS.md`, `02-track-system/` (README, track-registry, step-input-mapping), `03-workflows/` (lighthouse-handoff, lighthouse-handoff-validation), `04-validation/` (evidence-log, validation-strategy, memory-bridge-manual-test-path), `05-product/setup-flow.md`, `07-progress/` (build-status, milestone-map, progress-log, next-agent-brief, current-sprint), `.cursor/commands/sync-docs.md`.
+
+**Verified current:** `build-status.md` and `milestone-map.md` already reflected M3 from merge commit; added M4 legacy-fallback milestone and progress-log entry.
+
+**Stale / deferred (not rewritten):** `docs/06-decisions/decision-log.md` L1 row still cites 28/28 (historical evidence — addendum optional); `companion/prompts/lighthouse-handoff.md` internal stub wording; archive docs under `99-archive/`.
+
+**Suggested follow-ups:** Milestone 4 doc pass after legacy fallback removal; DealSniper L2 validation doc under `04-validation/`; update `AGENT.md` if it mirrors stale smoke counts.

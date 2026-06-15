@@ -45,18 +45,26 @@ Any step id not listed falls through to `return input` (full original input).
 | `analyze_listing` | `$artifacts.prepare_listing` |
 | `validate_analysis` | `$artifacts.analyze_listing` |
 
-## Problem
+## Remaining Debt
 
-This does **not** scale to more workflows:
+For **current catalog tracks**, input mapping is fully declarative. Legacy fallbacks remain for unmigrated steps only:
+
+- `buildLegacyToolStepInput()` / `buildLegacyModelStepInput()` in `step-input.js` (remove in Milestone 4)
+- `prompts.js` `classify_issues` template still reads broad context if invoked (unused by current tracks)
+- `prioritize_fixes` legacy prompt path when `stepInput` is null (deprecated)
+
+Adding new workflows should **not** extend legacy branches — declare `input_map` in track JSON.
+
+## Historical Problem (pre–Milestone 1B)
 
 - Every new track requires editing shared router code
 - Step ids are global strings — collision risk across tracks
 - Mapping logic is invisible in track JSON files
 - Agents reading track files cannot see data flow without reading router source
 
-## Target
+## Example (implemented)
 
-Track files should declare how each step receives input from `$input` and `$artifacts`:
+Track files declare how each step receives input from `$input` and `$artifacts`:
 
 ```json
 {
@@ -85,7 +93,7 @@ Resolver rules (target behavior):
 
 ## Legacy Fallback
 
-Deprecated step-id branches remain in `buildLegacyStepInput()` for tracks that omit `input_map`. Do not add new step ids there.
+Deprecated step-id branches remain in `buildLegacyToolStepInput()` and `buildLegacyModelStepInput()` inside `step-input.js`. Do not add new step ids there.
 
 ## Transition Plan
 
@@ -99,7 +107,7 @@ Deprecated step-id branches remain in `buildLegacyStepInput()` for tracks that o
 
 ## Do Not
 
-- Add new workflows by extending `buildLegacyStepInput()` step-id branches
+- Add new workflows by extending legacy step-id branches in `step-input.js`
 
 ## Related
 

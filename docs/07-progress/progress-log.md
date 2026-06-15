@@ -4,6 +4,30 @@ Dated record of meaningful build and planning sessions.
 
 ---
 
+## 2026-06-15 — Milestone 3 Complete: Model-Step Input Mapping
+
+**Milestone 3: Model-step input mapping — complete.**
+
+### Changed
+
+- Merged PR #8 (`c186e70`): shared `step-input.js`, model-step `input_map`, Lighthouse `prioritize_fixes` migration, unit + smoke coverage.
+
+### Why
+
+Tool and model steps both resolve declared `input_map` — track JSON becomes the workflow data-flow contract.
+
+### Evidence
+
+- Squash merge on `main`: `feat: add model step input maps`
+- Clean-server validation: **51/51 smoke**, unit + contract tests pass
+- PR #8: 1 commit, 12 files
+
+### Next
+
+- Milestone 4: remove legacy step-input fallbacks in `step-input.js`
+
+---
+
 ## 2026-06-15 — Milestone 2 Complete: Second Workflow Track
 
 **Milestone 2: Second workflow track — complete.**

@@ -236,7 +236,8 @@ Implemented:
 
 - `companion/server.js` (Local Brain / companion server)
 - `companion/core/*` (input gate, context, permissions, validator, audit, orchestrator)
-- `companion/pit-crew/*` (track orchestrator, decomposer, model/tool routers, session jobs)
+- `companion/pit-crew/*` (track orchestrator, decomposer, step-input, model/tool routers, session jobs)
+- `companion/pit-crew/tracks/` — `website_audit.lighthouse_handoff`, `marketplace.dealsniper`
 - `companion/core/model-profiles.js` (Model Garage profiles / suitability metadata)
 - `companion/providers/router.js` (Ollama + mock)
 - `companion/runtime/ollama.js`
@@ -247,13 +248,12 @@ Implemented:
 - `GET /memory/status`, `POST /memory/context-pack`, `POST /memory/writeback/propose`
 - `tool-packs/standard-text-pack/`, `tool-packs/lighthouse-parser-pack/`
 - `POST /tracks/run`, `GET /tracks` track APIs
-- `scripts/smoke-test.js`, `scripts/contract-test.js`
+- `scripts/smoke-test.js`, `scripts/contract-test.js` (51/51 clean-server baseline)
 - `start-windows.bat`, `start-dev.ps1`
 
 Next focus areas (see [docs/07-progress/milestone-map.md](docs/07-progress/milestone-map.md) and [docs/05-product/roadmap.md](docs/05-product/roadmap.md)):
 
-- **M1:** Make track system explicit (docs + step input mapping target)
-- Declarative step `input_map` in track JSON (see [docs/02-track-system/step-input-mapping.md](docs/02-track-system/step-input-mapping.md))
+- **M4:** Remove legacy step-input fallbacks in `step-input.js` (all catalog steps declare `input_map`)
 - Model Garage evaluation harness (Phase 2 — spec only until evidence)
 - Harden Lighthouse Handoff validation end-to-end with the extension client
 - NearbyNode capability connectors (spec + prototype — not implementation yet)

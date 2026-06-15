@@ -40,9 +40,8 @@ Loaded by `companion/pit-crew/decomposer.js`. Listed via `GET /tracks`.
 
 | Track ID | File | Status |
 |---|---|---|
-| `website_audit.lighthouse_handoff` | `lighthouse-handoff.track.json` | **Implemented** — proof track |
-
-No other track files exist in the repo today.
+| `website_audit.lighthouse_handoff` | `lighthouse-handoff.track.json` | **Implemented** — proof track (7 steps, all `input_map`) |
+| `marketplace.dealsniper` | `dealsniper.track.json` | **Implemented** — second workflow track (3 steps, all `input_map`) |
 
 ## Track Contract (Conceptual)
 
@@ -61,6 +60,7 @@ Each step declares:
 | Field | Description |
 |---|---|
 | `id` | Stable step id (used for artifacts and input mapping) |
+| `input_map` | Declarative input from `$input` / `$artifacts` (tool and model steps) |
 | `executor.type` | `tool` or `model` |
 | `executor.tool` / `executor.task` | For tool steps |
 | `executor.role` | For model steps (requests model role, not raw model name) |
@@ -89,7 +89,7 @@ Steps run **sequentially** in array order. There is no dependency graph runner.
 | Registry | What it indexes | Status |
 |---|---|---|
 | **Tool registry** | Manifest-backed tools and packs | Implemented |
-| **Track registry** | Track JSON files | Partial — one track |
+| **Track registry** | Track JSON files | Implemented — two tracks |
 | **Workflow registry** | Named user-facing workflows → track plans | Documented only — see [workflow-registry.md](./workflow-registry.md) |
 | **Capability registry** | All executable capabilities (tools + future nodes) | Partial — tools only |
 | **Worker registry** | Models/devices by role and scorecard | Planned |

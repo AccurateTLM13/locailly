@@ -183,13 +183,13 @@ $env:LOCAL_AI_BASE_URL = "http://127.0.0.1:31314"
 node scripts/smoke-test.js
 ```
 
-Expected current result:
+Expected current result (clean server, memory bridge disabled in config / local setup):
 
 ```txt
-Smoke test summary: 48/48 checks passed.
+Smoke test summary: 51/51 checks passed.
 ```
 
-(Memory Bridge checks pass with memory disabled in default `companion/config.json`.)
+(Memory Bridge checks pass with memory disabled in default `companion/config.json`. Clear `memoryValidationVaultPath` in `data/console/local-setup.json` for a clean-server run.)
 
 ## Example `/tasks/run`
 

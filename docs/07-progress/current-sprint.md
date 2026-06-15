@@ -1,35 +1,33 @@
 # Current Sprint
 
-**Updated:** 2026-06-14
+**Updated:** 2026-06-15
 
 ## Goal
 
-Make the track system explicit, documented, and ready for additional workflows.
+Close Milestone 3 documentation and prepare Milestone 4 (legacy step-input fallback removal).
 
-## In Scope
+## Completed (recent)
 
-- Create `docs/02-track-system/` (core tracks, registry, workflow registry, step input mapping gap)
-- Create `docs/07-progress/` (build status, sprint, agent brief)
-- Add `docs/00-start-here/current-state.md`
-- Reorganize docs folders (workflows, validation, product, archive research)
-- Align entry-point READMEs with source-of-truth order
-- Document Lighthouse track as proof workflow without overstating DAG/classifier
+- Milestone 1B: declarative tool-step `input_map` (PR #5)
+- Milestone 2: DealSniper workflow track (PR #7)
+- Milestone 3: model-step `input_map` (PR #8)
+- Clean-server smoke baseline: **51/51**
+
+## In Scope (next)
+
+- Remove `buildLegacyToolStepInput()` / `buildLegacyModelStepInput()` when safe
+- Keep Lighthouse + DealSniper tracks passing smoke/contract/unit tests
+- Sync progress docs after each merge
 
 ## Out of Scope
 
 - DAG runner implementation
 - NearbyNode implementation
-- Cloud providers
-- New UI polish
-- Runtime behavior changes
+- Model Garage harness implementation (spec/docs only until evidence)
+- Endpoint envelope changes
 
 ## Done When
 
-- Docs reflect current architecture (pipeline-stage runner)
-- An agent can read `current-state.md` + `next-agent-brief.md` and know what to build next
-- No major vision docs contradict `current-state.md` or `build-status.md`
-- Step input mapping debt is documented with a clear target
-
-## Next Sprint Candidate
-
-Implement declarative `input_map` in track JSON + resolver in tool-router; migrate Lighthouse track.
+- Legacy fallbacks removed or explicitly deferred with decision-log entry
+- `current-state.md`, `build-status.md`, and `next-agent-brief.md` match code
+- Smoke suite remains **51/51** on clean server

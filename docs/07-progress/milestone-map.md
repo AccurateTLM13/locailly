@@ -45,7 +45,16 @@ Layered planning — not a six-month prophecy.
 
 ---
 
-## Milestone 4 — Model Garage Evidence (Later)
+## Milestone 4 — Legacy Fallback Removal (Next)
+
+**Status:** Not started
+
+- Remove `buildLegacyToolStepInput()` / `buildLegacyModelStepInput()` from `step-input.js`
+- All current catalog tracks declare `input_map` on every step
+
+---
+
+## Milestone 5 — Model Garage Evidence (Later)
 **Status:** Spec only
 
 - Evaluation harness using [../99-archive/research-notes/model-evaluation-template.md](../99-archive/research-notes/model-evaluation-template.md)
@@ -54,7 +63,7 @@ Layered planning — not a six-month prophecy.
 
 ---
 
-## Milestone 5 — Simple Dependency Graph (Later)
+## Milestone 6 — Simple Dependency Graph (Later)
 **Status:** Research gate
 
 - Topological runner for explicit `depends_on` in track files
@@ -62,7 +71,7 @@ Layered planning — not a six-month prophecy.
 
 ---
 
-## Milestone 6 — NearbyNode (Future)
+## Milestone 7 — NearbyNode (Future)
 
 **Status:** Not built
 
@@ -71,7 +80,7 @@ Layered planning — not a six-month prophecy.
 
 ---
 
-## Milestone 7 — Planner-Generated DAG (Research)
+## Milestone 8 — Planner-Generated DAG (Research)
 
 **Status:** Archive-ready research
 

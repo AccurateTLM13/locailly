@@ -10,7 +10,7 @@ Writeback stays **disabled** for the first validation (`writeback: false`).
 node scripts/smoke-test.js
 ```
 
-Expect `48/48` checks passed.
+Expect **51/51** checks passed (clean server; memory disabled in default config).
 
 ## 2. Memory status
 

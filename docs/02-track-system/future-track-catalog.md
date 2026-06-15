@@ -458,7 +458,7 @@ Run a structured evaluation pass for a model + role against a track step fixture
 
 ### When it should run
 
-- Model Garage evaluation harness (Milestone 4 target)
+- Model Garage evaluation harness (Milestone 5 target)
 - After adding a new local model or changing role → model mapping
 - CI nightly against mock + optional Ollama (when configured)
 

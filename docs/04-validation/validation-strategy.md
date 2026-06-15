@@ -23,7 +23,7 @@ Locaily validates **tracks** and **workflows**, not the whole product in one vag
 **Good:**
 
 ```txt
-website_audit.lighthouse_handoff passes smoke on mock provider (48/48 suite).
+website_audit.lighthouse_handoff and marketplace.dealsniper pass smoke on mock provider (**51/51** suite on clean server).
 L2 Ollama Memory Bridge passed on lemonteed fixture (2026-06-13).
 ```
 
