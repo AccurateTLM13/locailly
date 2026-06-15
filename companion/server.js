@@ -37,6 +37,7 @@ const { createRunStore } = require("./console/run-store");
 const { createValidationRunner } = require("./console/validation-runner");
 const { createLocalSetupStore } = require("./console/local-setup");
 const { configurePageSpeed, getPageSpeedStatus } = require("./console/pagespeed");
+const { normalizeValidationModel } = require("./console/model-slug");
 
 const PLATFORM_VERSION = "0.1.0";
 const SERVICE_NAME = "local-ai-platform";
@@ -173,7 +174,7 @@ const consoleRunStore = createRunStore();
 const consoleValidationRunner = createValidationRunner({
   runStore: consoleRunStore,
   runTask: executeConsoleTaskRun,
-  getStatusSnapshot: buildConsoleStatusResponse,
+  getStatusSnapshot: (modelOverride) => buildConsoleStatusResponse(modelOverride),
   listAuditEvents: listConsoleAuditEvents
 });
 const consoleController = createConsoleController({
@@ -198,7 +199,8 @@ const server = http.createServer(async (request, response) => {
     }
 
     if (request.method === "GET" && url.pathname === "/console/status") {
-      const consoleStatus = await consoleController.getStatus();
+      const modelOverride = url.searchParams.get("model");
+      const consoleStatus = await consoleController.getStatus(modelOverride);
       return sendJson(response, consoleStatus.statusCode, consoleStatus.body);
     }
 
@@ -782,14 +784,16 @@ async function buildAuditResponse(searchParams) {
   };
 }
 
-async function buildConsoleStatusResponse() {
-  const runtimeState = await checkRuntimeState();
+async function buildConsoleStatusResponse(modelOverride = null) {
+  const normalizedModelOverride = normalizeConsoleModelOverride(modelOverride);
+  const runtimeState = await checkRuntimeState(normalizedModelOverride);
   const providers = await providerRouter.listStatus();
   const memoryStatus = vaultAdapter.getStatus();
   const pageSpeed = getPageSpeedStatus();
   const auditStatus = await buildConsoleAuditStatus();
   const toolIds = toolRegistry.listIds();
   const ollama = providers.find((provider) => provider.id === "ollama") || null;
+  const activeModel = normalizedModelOverride || runtimeState.model;
   const warnings = [
     ...(pageSpeed.warnings || []),
     ...(memoryStatus.warnings || []),
@@ -817,13 +821,15 @@ async function buildConsoleStatusResponse() {
     },
     ollama: {
       available: ollama ? ollama.status === "available" : false,
-      modelReady: ollama ? ollama.model_ready === true : false,
-      model: ollama ? ollama.model : runtimeState.model,
+      modelReady: normalizedModelOverride ? runtimeState.modelReady : (ollama ? ollama.model_ready === true : false),
+      model: activeModel,
+      requestedModel: normalizedModelOverride,
       warning: ollama ? ollama.warning : null
     },
     model: {
-      name: runtimeState.model,
+      name: activeModel,
       ready: runtimeState.modelReady,
+      requestedModel: normalizedModelOverride,
       profile: modelProfileManager.getActive()
     },
     tools: {
@@ -1488,7 +1494,10 @@ async function executeTaskRunRequest(body, context) {
   }
 
   if (tool.requiresRuntime !== false) {
-    if (!modelResolution.ok) {
+    const explicitModel = resolveExplicitModel(body);
+    const selectedModel = explicitModel || (modelResolution.ok ? modelResolution.model : getActiveModel());
+
+    if (!modelResolution.ok && !explicitModel) {
       return {
         statusCode: 503,
         tool,
@@ -1509,7 +1518,7 @@ async function executeTaskRunRequest(body, context) {
       };
     }
 
-    const runtimeState = await checkRuntimeState(modelResolution.model);
+    const runtimeState = await checkRuntimeState(selectedModel);
 
     if (!runtimeState.available) {
       return {
@@ -1526,7 +1535,7 @@ async function executeTaskRunRequest(body, context) {
           message: runtimeState.warning.message,
           nextStep: runtimeState.warning.nextStep,
           modelRole,
-          model: modelResolution.model,
+          model: selectedModel,
           inputGateResult,
           permissionResult
         })
@@ -1548,7 +1557,7 @@ async function executeTaskRunRequest(body, context) {
           message: `The local model '${runtimeState.model}' is not ready.`,
           nextStep: getModelUnavailableNextStep(runtimeState),
           modelRole,
-          model: modelResolution.model,
+          model: selectedModel,
           inputGateResult,
           permissionResult
         })
@@ -1557,7 +1566,10 @@ async function executeTaskRunRequest(body, context) {
   }
 
   try {
-    const selectedModel = modelResolution.ok ? modelResolution.model : getActiveModel();
+    const explicitModel = resolveExplicitModel(body);
+    const selectedModel = explicitModel || (modelResolution.ok ? modelResolution.model : getActiveModel());
+    const runtimeDisabled = isRuntimeDisabled(body);
+    const envelopeModel = runtimeDisabled ? null : selectedModel;
     const execution = await runToolWithValidation({
       tool,
       fallbackPolicy: contextPacket.fallback,
@@ -1594,8 +1606,9 @@ async function executeTaskRunRequest(body, context) {
         tool: body.tool,
         task,
         provider: getActiveProviderId(),
-        model: selectedModel,
+        model: envelopeModel,
         model_role: modelRole,
+        runtime_used: !runtimeDisabled,
         result: normalizeToolResult(execution.result),
         confidence: 1,
         warnings: inputGateResult.warnings,
@@ -1946,6 +1959,25 @@ function resolveModelRole(body, tool) {
   }
 
   return tool.modelRole || "default_worker";
+}
+
+function resolveExplicitModel(body) {
+  if (!body || !body.options || typeof body.options !== "object") {
+    return null;
+  }
+
+  return normalizeValidationModel(body.options.model || body.options.modelName);
+}
+
+function normalizeConsoleModelOverride(modelOverride) {
+  return normalizeValidationModel(modelOverride);
+}
+
+function isRuntimeDisabled(body) {
+  return Boolean(
+    body.options
+    && (body.options.use_runtime === false || body.options.useRuntime === false)
+  );
 }
 
 function resolveRequestedPermissions(body, tool) {

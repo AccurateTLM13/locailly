@@ -13,20 +13,20 @@ const PROMPT_TEMPLATES = {
     const classified = context.artifacts.classify_issues || {};
     const input = context.input || {};
     const scores = input.scores || {};
+    const ranked = classified.rankedOpportunities || [];
+
     return [
-      "Review the classified Lighthouse issues below.",
-      "Select the top critical priority fixes (max 3) and explain the reason for each.",
+      "Review the deterministically classified Lighthouse issues below.",
+      "Select up to 3 priority fixes using only audit titles that appear in the opportunities list.",
+      "Do not invent audits such as 'Unused images'.",
+      "Do not prioritize audits with score 1.",
       "Return JSON only conforming to the schema.",
       "",
-      'In "thinking", write a 2-4 sentence executive summary for a developer.',
-      "Include: page URL, weakest Lighthouse category/score, and the top priority theme.",
-      "Mention the top 2-3 fix areas by plain-language theme.",
-      'Do not use filler phrases like "Based on the severity of each issue".',
-      "Do not restate that you are analyzing the report.",
-      "Make it useful as the Executive Summary section of a coding-agent handoff.",
+      "Optional thinking text may refine wording only. Do not include opportunity count, diagnostic count, or guaranteed improvement claims.",
       "",
       `Page URL: ${input.url || "unknown"}`,
       `Scores: ${JSON.stringify(scores)}`,
+      `Ranked actionable opportunities: ${JSON.stringify(ranked.slice(0, 8))}`,
       `Classified Issues: ${JSON.stringify(classified.issues || [])}`
     ].join("\n");
   }

@@ -6,10 +6,24 @@ function buildStepInput(step, context) {
     return input;
   }
 
+  if (step.id === "classify_issues") {
+    return {
+      opportunities: input.opportunities || []
+    };
+  }
+
+  if (step.id === "validate_priority_fixes") {
+    return {
+      opportunities: input.opportunities || [],
+      priorityFixes: artifacts.prioritize_fixes?.priorityFixes || [],
+      thinking: artifacts.prioritize_fixes?.thinking || ""
+    };
+  }
+
   if (step.id === "match_fixes") {
     return {
       issues: artifacts.classify_issues?.issues || [],
-      priorityFixes: artifacts.prioritize_fixes?.priorityFixes || []
+      priorityFixes: artifacts.validate_priority_fixes?.priorityFixes || []
     };
   }
 
@@ -18,8 +32,12 @@ function buildStepInput(step, context) {
       url: input.url,
       metrics: artifacts.extract_metrics || {},
       classifiedIssues: artifacts.classify_issues || {},
-      prioritizedFixes: artifacts.prioritize_fixes || {},
-      matchedFixes: artifacts.match_fixes || {}
+      prioritizedFixes: artifacts.validate_priority_fixes || artifacts.prioritize_fixes || {},
+      matchedFixes: artifacts.match_fixes || {},
+      opportunities: input.opportunities || [],
+      rankedOpportunities: artifacts.classify_issues?.rankedOpportunities
+        || artifacts.extract_metrics?.rankedOpportunities
+        || []
     };
   }
 

@@ -15,6 +15,8 @@ const elements = {
   runButton: document.getElementById("runButton"),
   runnerMessage: document.getElementById("runnerMessage"),
   modeInput: document.getElementById("modeInput"),
+  modelInput: document.getElementById("modelInput"),
+  modelField: document.getElementById("modelField"),
   modeOptions: document.querySelectorAll(".mode-option"),
   setupPageSpeedButton: document.getElementById("setupPageSpeedButton"),
   setupMemoryButton: document.getElementById("setupMemoryButton"),
@@ -56,12 +58,27 @@ for (const option of elements.modeOptions) {
   option.addEventListener("click", () => selectMode(option.dataset.mode));
 }
 
+if (elements.modelInput) {
+  elements.modelInput.addEventListener("change", () => {
+    if (state.selectedMode === "l2_ollama" || state.selectedMode === "l2_ollama_memory") {
+      loadStatus();
+    }
+  });
+}
+
 loadStatus();
 loadRuns();
+if (elements.modelField) {
+  elements.modelField.hidden = true;
+}
 
 async function loadStatus() {
   try {
-    const status = await fetchJson("/console/status");
+    const modelOverride = getSelectedModelOverride();
+    const statusPath = modelOverride
+      ? `/console/status?model=${encodeURIComponent(modelOverride)}`
+      : "/console/status";
+    const status = await fetchJson(statusPath);
     state.lastStatus = status;
     renderStatus(status);
   } catch (error) {
@@ -106,6 +123,11 @@ async function runValidation({ pastedReport } = {}) {
     url: formData.get("url"),
     mode: formData.get("mode")
   };
+  const modelOverride = getSelectedModelOverride();
+
+  if (modelOverride) {
+    payload.model = modelOverride;
+  }
 
   if (pastedReport) {
     try {
@@ -206,10 +228,16 @@ function renderStatus(status) {
     readinessRow(
       "Model",
       status.model && status.model.ready,
-      status.model && status.model.ready ? `${status.model.name} ready` : "Not ready",
+      status.model && status.model.ready
+        ? `${status.model.name} ready`
+        : status.model && status.model.requestedModel
+          ? `${status.model.requestedModel} not ready`
+          : "Not ready",
       status.model && status.model.ready
         ? null
-        : "Pull the configured model in Ollama for Local AI modes."
+        : status.model && status.model.requestedModel
+          ? `Run 'ollama run ${status.model.requestedModel}' before benchmarking.`
+          : "Pull the configured model in Ollama for Local AI modes."
     ),
     readinessRow(
       "PageSpeed",
@@ -301,7 +329,10 @@ function renderResults(run) {
     ? result.filesUsed.join("\n")
     : "None";
   const artifactLines = Object.entries(artifacts)
-    .map(([name, artifactPath]) => `${name}: ${artifactPath}`);
+    .map(([name, artifactPath]) => `${name}: ${artifactPath || "(in bundle)"}`);
+  if (run.bundlePath) {
+    artifactLines.unshift(`bundle: ${run.bundlePath}`);
+  }
   const warningLines = uniqueStrings([...(run.warnings || []), ...(result.warnings || [])]);
 
   elements.validationEvidence.replaceChildren(
@@ -309,7 +340,12 @@ function renderResults(run) {
     advancedBlock("Mode", formatMode(run.mode)),
     advancedBlock("URL", run.url),
     advancedBlock("Provider", result.provider || "Pending"),
-    advancedBlock("Model", result.model || "Pending"),
+    advancedBlock("Requested model", result.requestedModel || run.model || "Server default"),
+    advancedBlock("Analyze model", result.actualAnalyzeModel || "Pending"),
+    advancedBlock("Compose model", result.actualComposeModel || "Pending"),
+    advancedBlock("Provider default", result.providerModel || "Pending"),
+    advancedBlock("Benchmark valid", formatBenchmarkValid(result.benchmarkValid)),
+    advancedBlock("Model mismatch", result.modelMismatch === true ? "Yes" : result.modelMismatch === false ? "No" : "Pending"),
     advancedBlock("Files used", filesUsed),
     advancedBlock("Warnings", warningLines.length > 0 ? warningLines.map(humanizeMessage).join("\n") : "None"),
     advancedBlock("Artifacts", artifactLines.length > 0 ? artifactLines.join("\n") : "No artifacts yet"),
@@ -422,9 +458,36 @@ function selectMode(mode) {
     option.setAttribute("aria-pressed", active ? "true" : "false");
   }
 
-  if (state.lastStatus) {
+  if (elements.modelField) {
+    const showModelField = mode === "l2_ollama" || mode === "l2_ollama_memory";
+    elements.modelField.hidden = !showModelField;
+  }
+
+  if (mode === "l2_ollama" || mode === "l2_ollama_memory") {
+    loadStatus();
+  } else if (state.lastStatus) {
     renderStatus(state.lastStatus);
   }
+}
+
+function getSelectedModelOverride() {
+  if (!elements.modelInput) {
+    return "";
+  }
+
+  return String(elements.modelInput.value || "").trim();
+}
+
+function formatBenchmarkValid(value) {
+  if (value === true) {
+    return "Yes";
+  }
+
+  if (value === false) {
+    return "No";
+  }
+
+  return "Pending";
 }
 
 function openSetupPanel(kind) {
@@ -675,6 +738,7 @@ function formatStepLabel(label) {
   return String(label || "")
     .replace(/Live PageSpeed capture/i, "PageSpeed Capture")
     .replace(/Local Ollama analyze-report|Deterministic analyze-report/i, "Local Analysis")
+    .replace(/Model provenance check/i, "Model Provenance")
     .replace(/Compose handoff.*/i, "Compose Handoff")
     .replace(/Save validation artifacts/i, "Save Artifacts")
     .replace(/Schema validation/i, "Schema Validation")

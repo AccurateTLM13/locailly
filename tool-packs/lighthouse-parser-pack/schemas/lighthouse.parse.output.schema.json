@@ -8,6 +8,7 @@
     "bestPractices": { "type": "number" },
     "seo": { "type": "number" },
     "opportunityCount": { "type": "integer" },
-    "diagnosticCount": { "type": "integer" }
+    "diagnosticCount": { "type": "integer" },
+    "rankedOpportunities": { "type": "array" }
   }
 }

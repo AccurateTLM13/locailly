@@ -62,6 +62,19 @@
                   <input type="hidden" name="mode" id="modeInput" value="standard">
                 </fieldset>
 
+                <div class="field" id="modelField">
+                  <label for="modelInput" class="field__label">Ollama model override</label>
+                  <input
+                    id="modelInput"
+                    name="model"
+                    type="text"
+                    class="field__input"
+                    placeholder="llama3.2 or hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF"
+                    autocomplete="off"
+                  >
+                  <p class="field__hint">Optional. Used for Local AI modes only. Leave blank to use server default (<code>llama3.2</code>).</p>
+                </div>
+
                 <div class="setup-actions">
                   <button id="setupPageSpeedButton" type="button" class="btn btn--setup">Add PageSpeed API key</button>
                   <button id="setupMemoryButton" type="button" class="btn btn--setup">Add Memory vault path</button>

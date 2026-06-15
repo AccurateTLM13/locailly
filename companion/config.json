@@ -10,9 +10,11 @@
   },
   "modelRoles": {
     "roles": {
-      "fast_worker": "llama3.2",
-      "default_worker": "llama3.2",
-      "reasoning_worker": "llama3.2",
+      "fast_worker": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+      "default_worker": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+      "priority_helper": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+      "reasoning_worker": "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+      "fallback_worker": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
       "voice_worker": null
     },
     "providers": {
@@ -35,9 +37,11 @@
       },
       "balanced": {
         "roles": {
-          "fast_worker": "llama3.2",
-          "default_worker": "llama3.2",
-          "reasoning_worker": "llama3.2"
+          "fast_worker": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+          "default_worker": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+          "priority_helper": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+          "reasoning_worker": "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+          "fallback_worker": "hf.co/LiquidAI/LFM2.5-350M-GGUF"
         },
         "providers": {
           "mock": {
@@ -49,9 +53,11 @@
       },
       "developer": {
         "roles": {
-          "fast_worker": "llama3.2",
-          "default_worker": "llama3.2",
-          "reasoning_worker": "llama3.2"
+          "fast_worker": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+          "default_worker": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+          "priority_helper": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+          "reasoning_worker": "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+          "fallback_worker": "hf.co/LiquidAI/LFM2.5-350M-GGUF"
         },
         "providers": {
           "mock": {
@@ -74,6 +80,8 @@
       "text.detect_injection",
       "text.validate_schema",
       "lighthouse.parse",
+      "lighthouse.classify_audits",
+      "lighthouse.validate_priority_fixes",
       "lighthouse.match_fixes",
       "lighthouse.verify_handoff"
     ]

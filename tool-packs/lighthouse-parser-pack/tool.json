@@ -14,6 +14,22 @@
       "output_schema": "schemas/lighthouse.parse.output.schema.json"
     },
     {
+      "id": "lighthouse.classify_audits",
+      "description": "Deterministically classify Lighthouse audits by id and score.",
+      "model_role": null,
+      "permissions": [],
+      "input_schema": "schemas/lighthouse.classify_audits.input.schema.json",
+      "output_schema": "schemas/lighthouse.classify_audits.output.schema.json"
+    },
+    {
+      "id": "lighthouse.validate_priority_fixes",
+      "description": "Validate model priority fixes against measured Lighthouse audit data.",
+      "model_role": null,
+      "permissions": [],
+      "input_schema": "schemas/lighthouse.validate_priority_fixes.input.schema.json",
+      "output_schema": "schemas/lighthouse.validate_priority_fixes.output.schema.json"
+    },
+    {
       "id": "lighthouse.match_fixes",
       "description": "Match prioritized Lighthouse issues to suggested fix steps.",
       "model_role": null,

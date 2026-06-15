@@ -47,10 +47,10 @@ function createConsoleController({
     };
   }
 
-  async function getStatus() {
+  async function getStatus(modelOverride = null) {
     return {
       statusCode: 200,
-      body: await getStatusSnapshot()
+      body: await getStatusSnapshot(modelOverride)
     };
   }
 
@@ -59,7 +59,8 @@ function createConsoleController({
       const run = await validationRunner.startValidation({
         url: body && body.url,
         mode: body && body.mode,
-        pastedReport: body && body.pastedReport
+        pastedReport: body && body.pastedReport,
+        model: body && body.model
       });
 
       return {

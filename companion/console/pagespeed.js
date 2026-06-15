@@ -160,7 +160,14 @@ function extractOpportunities(audits) {
       description: audit.description || null,
       displayValue: audit.displayValue || null,
       score: typeof audit.score === "number" ? audit.score : null,
+      scoreDisplayMode: audit.scoreDisplayMode || null,
       numericValue: typeof audit.numericValue === "number" ? audit.numericValue : null,
+      overallSavingsMs: audit.details && typeof audit.details.overallSavingsMs === "number"
+        ? audit.details.overallSavingsMs
+        : null,
+      overallSavingsBytes: audit.details && typeof audit.details.overallSavingsBytes === "number"
+        ? audit.details.overallSavingsBytes
+        : null,
       metricSavings: audit.details && audit.details.metricSavings
         ? audit.details.metricSavings
         : null

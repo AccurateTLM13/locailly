@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["issues", "rankedOpportunities", "source"],
+  "properties": {
+    "issues": { "type": "array" },
+    "rankedOpportunities": { "type": "array" },
+    "source": { "type": "string" }
+  }
+}

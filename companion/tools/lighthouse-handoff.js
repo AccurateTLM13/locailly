@@ -8,6 +8,10 @@ const {
   runMemoryPreflight,
   buildProjectContextSection
 } = require("../memory/preflight");
+const {
+  resolveExecutiveSummary: resolveDeterministicExecutiveSummary,
+  validateAndEnrichPriorityFixes
+} = require("../../tool-packs/lighthouse-parser-pack/audit-truth");
 
 const promptTemplate = readFileSync(join(__dirname, "..", "prompts", "lighthouse-handoff.md"), "utf8");
 const outputSchema = require("../schemas/lighthouse-handoff.schema.json");
@@ -133,7 +137,13 @@ Make sure to return JSON only conforming to the schema.`;
         steps: orchestrationResult.steps
       });
 
-      return orchestrationResult.result;
+      return {
+        ...orchestrationResult.result,
+        meta: {
+          ...(orchestrationResult.result.meta || {}),
+          orchestration_steps: orchestrationResult.steps
+        }
+      };
     } catch (err) {
       recordScoreboardEntry({
         track: "lighthouse_handoff",
@@ -421,16 +431,40 @@ function ensureExecutiveSummaryLead({ summary, url, weakest, metrics }) {
 
 function buildComposedHandoff(input, memoryPreflight = null) {
   const metrics = input.metrics || {};
-  const priorityFixes = Array.isArray(input.prioritizedFixes?.priorityFixes)
+  const modelPriorityFixes = Array.isArray(input.prioritizedFixes?.priorityFixes)
     ? input.prioritizedFixes.priorityFixes
     : [];
+  const needsReview = Array.isArray(input.prioritizedFixes?.needsReview)
+    ? input.prioritizedFixes.needsReview
+    : [];
   const matchedFixes = Array.isArray(input.matchedFixes?.fixes) ? input.matchedFixes.fixes : [];
+  const opportunities = Array.isArray(input.opportunities) ? input.opportunities : [];
+  const rankedOpportunities = Array.isArray(input.rankedOpportunities) ? input.rankedOpportunities : [];
   const weakest = findWeakestScore({
     performance: metrics.performance,
     accessibility: metrics.accessibility,
     bestPractices: metrics.bestPractices,
     seo: metrics.seo
   });
+
+  const validated = validateAndEnrichPriorityFixes({
+    priorityFixes: modelPriorityFixes,
+    opportunities,
+    maxFixes: 3
+  });
+
+  const resolvedPriorityFixes = sanitizePriorityFixes(
+    validated.priorityFixes.length > 0
+      ? validated.priorityFixes
+      : buildPriorityFixes(weakest, { opportunities }).map((fix) => ({
+        ...fix,
+        unsupported_priority_fix: false
+      }))
+  );
+
+  const resolvedNeedsReview = needsReview.length > 0
+    ? needsReview
+    : validated.needsReview;
 
   const checklist = dedupeChecklistSteps(matchedFixes.flatMap((fix) => fix.steps || [])).slice(0, 5);
 
@@ -442,16 +476,24 @@ function buildComposedHandoff(input, memoryPreflight = null) {
     );
   }
 
-  const resolvedPriorityFixes = sanitizePriorityFixes(
-    priorityFixes.length > 0
-      ? priorityFixes
-      : buildPriorityFixes(weakest, { opportunities: [] })
-  );
-
   const handoff = {
     clientSummary: `Handoff for ${input.url}: lowest score is ${formatScoreName(weakest.name)} at ${weakest.value}.`,
-    developerSummary: resolveExecutiveSummary(input, weakest, resolvedPriorityFixes, metrics),
+    developerSummary: resolveDeterministicExecutiveSummary({
+      url: input.url,
+      metrics: {
+        performance: metrics.performance,
+        accessibility: metrics.accessibility,
+        bestPractices: metrics.bestPractices,
+        seo: metrics.seo
+      },
+      weakest,
+      rankedOpportunities: rankedOpportunities.length > 0
+        ? rankedOpportunities
+        : resolvedPriorityFixes,
+      modelThinking: input.prioritizedFixes?.thinking
+    }),
     priorityFixes: resolvedPriorityFixes,
+    needsReview: resolvedNeedsReview,
     handoffChecklist: checklist,
     estimatedImpact: estimateImpact(weakest.value)
   };
@@ -465,7 +507,8 @@ function buildComposedHandoff(input, memoryPreflight = null) {
     ...handoff,
     url: input.url,
     projectContextSection,
-    memoryUsed
+    memoryUsed,
+    needsReview: handoff.needsReview
   });
 
   handoff.memory = {

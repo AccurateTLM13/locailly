@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-06-14T21:21:38.326Z",
+  "postDeterministicAuditTruth": true,
+  "benchmarkReport": "ai-models/benchmark-results/lighthouse-handoff/benchmark-lemonteed-fixture-2026-06-14T21-21-38-326Z.json",
+  "priorBenchmarkReport": "ai-models/benchmark-results/lighthouse-handoff/benchmark-lemonteed-fixture-2026-06-14T21-06-48-132Z.json",
+  "fixture": "examples/lighthouse-handoff/lemonteed-pagespeed-raw.fixture.json",
+  "url": "https://lemonteed.com/",
+  "mode": "l2_ollama_memory",
+  "allBenchmarkValid": true,
+  "allSchemaValid": true,
+  "weakestCategory": "performance",
+  "weakestScore": 77,
+  "speedRanking": [
+    "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+    "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+    "llama3.2",
+    "hf.co/LiquidAI/LFM2.5-1.2B-Thinking-GGUF",
+    "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF"
+  ],
+  "recommendedRouting": {
+    "fast_worker": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+    "classification_worker": "deterministic-audit-mapping",
+    "priority_helper": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+    "reasoning_worker": "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+    "summary_worker": "deterministic-template",
+    "fallback_worker": "hf.co/LiquidAI/LFM2.5-350M-GGUF"
+  },
+  "postDeterministicOutcomes": {
+    "sharedTopPriority": "unused-javascript",
+    "passingAuditsInPriorityFixes": false,
+    "executiveSummaryUsesDeterministicTemplate": true,
+    "classifyStepSource": "deterministic-audit-mapping",
+    "unsupportedFixesRoutedToNeedsReview": true
+  },
+  "models": [
+    {
+      "model": "llama3.2",
+      "bundlePath": "data/validation/console-validation_20260614T212143Z_ee82a7496a-llama3-2.bundle.local.json",
+      "durationMs": 6811,
+      "speedRank": 3,
+      "recommendedRoles": ["fallback_worker"],
+      "topPriorityFixes": ["Reduce unused JavaScript", "Image elements do not have explicit `width` and `height`"],
+      "needsReviewCount": 0
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+      "bundlePath": "data/validation/console-validation_20260614T212055Z_e735a5bcd1-liquidai-lfm2-5-350m-gguf.bundle.local.json",
+      "durationMs": 2842,
+      "speedRank": 2,
+      "recommendedRoles": ["priority_helper", "fallback_worker"],
+      "topPriorityFixes": ["Reduce unused JavaScript", "Image elements do not have explicit `width` and `height`"],
+      "needsReviewCount": 2,
+      "needsReviewTitles": ["Unused CSS", "Duplicated JavaScript"]
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+      "bundlePath": "data/validation/console-validation_20260614T212059Z_e40aba2a00-liquidai-lfm2-5-1-2b-instruct-gguf.bundle.local.json",
+      "durationMs": 1315,
+      "speedRank": 1,
+      "recommendedRoles": ["fast_worker"],
+      "topPriorityFixes": ["Reduce unused JavaScript", "Image elements do not have explicit `width` and `height`"],
+      "needsReviewCount": 0
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-1.2B-Thinking-GGUF",
+      "bundlePath": "data/validation/console-validation_20260614T212101Z_3ee3822da8-liquidai-lfm2-5-1-2b-thinking-gguf.bundle.local.json",
+      "durationMs": 8341,
+      "speedRank": 4,
+      "recommendedRoles": [],
+      "topPriorityFixes": ["Reduce unused JavaScript", "Image elements do not have explicit `width` and `height`"],
+      "needsReviewCount": 1,
+      "needsReviewTitles": ["Minimizes main-thread work"]
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+      "bundlePath": "data/validation/console-validation_20260614T212111Z_4db770e7e7-liquidai-lfm2-5-8b-a1b-gguf.bundle.local.json",
+      "durationMs": 24454,
+      "speedRank": 5,
+      "recommendedRoles": ["reasoning_worker"],
+      "topPriorityFixes": ["Reduce unused JavaScript", "Image elements do not have explicit `width` and `height`"],
+      "needsReviewCount": 0
+    }
+  ]
+}

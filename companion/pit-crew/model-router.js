@@ -13,15 +13,32 @@ function resolveModel(role, resolveModelForRole) {
     return {
       ok: true,
       role: role || "default_worker",
-      model: result.model
+      model: result.model,
+      source: "role_resolution"
     };
   }
 
   return {
     ok: true,
     role: role || "default_worker",
-    model: "mock-local-model"
+    model: "mock-local-model",
+    source: "role_resolution"
   };
+}
+
+function resolveStepModel(role, options = {}) {
+  const explicitModel = typeof options.model === "string" ? options.model.trim() : "";
+
+  if (explicitModel) {
+    return {
+      ok: true,
+      role: role || "default_worker",
+      model: explicitModel,
+      source: "request_override"
+    };
+  }
+
+  return resolveModel(role, options.resolveModelForRole);
 }
 
 function loadStepSchema(schemaPath) {
@@ -32,7 +49,7 @@ function loadStepSchema(schemaPath) {
 async function executeModelStep({ step, context, runtime, options }) {
   const executor = step.executor;
   const role = executor.role || "default_worker";
-  const modelResolution = resolveModel(role, options.resolveModelForRole);
+  const modelResolution = resolveStepModel(role, options);
   const schema = loadStepSchema(executor.schema);
   const prompt = buildPrompt(executor.prompt_template, context);
   const stepStart = Date.now();
@@ -54,6 +71,7 @@ async function executeModelStep({ step, context, runtime, options }) {
       executor_type: "model",
       model: modelResolution.model,
       role: modelResolution.role,
+      model_source: modelResolution.source || "role_resolution",
       profile_id: options.profile_id || null,
       suitability,
       durationMs: Date.now() - stepStart
@@ -63,5 +81,6 @@ async function executeModelStep({ step, context, runtime, options }) {
 
 module.exports = {
   resolveModel,
+  resolveStepModel,
   executeModelStep
 };

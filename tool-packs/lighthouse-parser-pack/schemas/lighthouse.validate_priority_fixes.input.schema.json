@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["priorityFixes", "opportunities"],
+  "properties": {
+    "priorityFixes": { "type": "array" },
+    "opportunities": { "type": "array" },
+    "thinking": { "type": "string" }
+  }
+}

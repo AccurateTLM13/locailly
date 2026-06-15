@@ -1,3 +1,9 @@
+const {
+  classifyAudits,
+  validateAndEnrichPriorityFixes,
+  enrichOpportunity
+} = require("./audit-truth");
+
 const FIX_KB = {
   performance: {
     effort: "medium",
@@ -64,6 +70,8 @@ const implementations = {
     },
     async handle({ input }) {
       const scores = input.scores || {};
+      const classified = classifyAudits(input.opportunities || []);
+
       return {
         url: input.url.trim(),
         performance: normalizeScore(scores.performance),
@@ -71,7 +79,60 @@ const implementations = {
         bestPractices: normalizeScore(scores.bestPractices),
         seo: normalizeScore(scores.seo),
         opportunityCount: Array.isArray(input.opportunities) ? input.opportunities.length : 0,
-        diagnosticCount: Array.isArray(input.diagnostics) ? input.diagnostics.length : 0
+        diagnosticCount: Array.isArray(input.diagnostics) ? input.diagnostics.length : 0,
+        rankedOpportunities: classified.rankedOpportunities
+      };
+    }
+  },
+  "lighthouse.classify_audits": {
+    validateInput(input) {
+      if (!input || typeof input !== "object" || Array.isArray(input)) {
+        return invalidInput("Classify audits input must be an object.", "Send opportunities array.");
+      }
+
+      if (!Array.isArray(input.opportunities)) {
+        return invalidInput("Classify audits input requires opportunities.", "Include parsed Lighthouse opportunities.");
+      }
+
+      return null;
+    },
+    async handle({ input }) {
+      const classified = classifyAudits(input.opportunities || []);
+
+      return {
+        issues: classified.issues,
+        rankedOpportunities: classified.rankedOpportunities,
+        source: "deterministic-audit-mapping"
+      };
+    }
+  },
+  "lighthouse.validate_priority_fixes": {
+    validateInput(input) {
+      if (!input || typeof input !== "object" || Array.isArray(input)) {
+        return invalidInput("Validate priority fixes input must be an object.", "Send priorityFixes and opportunities.");
+      }
+
+      if (!Array.isArray(input.priorityFixes)) {
+        return invalidInput("Validate priority fixes input requires priorityFixes.", "Include model priority fixes.");
+      }
+
+      if (!Array.isArray(input.opportunities)) {
+        return invalidInput("Validate priority fixes input requires opportunities.", "Include fixture opportunities.");
+      }
+
+      return null;
+    },
+    async handle({ input }) {
+      const validated = validateAndEnrichPriorityFixes({
+        priorityFixes: input.priorityFixes || [],
+        opportunities: input.opportunities || [],
+        maxFixes: 3
+      });
+
+      return {
+        thinking: input.thinking || "",
+        priorityFixes: validated.priorityFixes,
+        needsReview: validated.needsReview
       };
     }
   },
@@ -97,7 +158,7 @@ const implementations = {
           effort: kb.effort,
           impact: priorityToImpact(fix.priority),
           steps: kb.steps,
-          needs_review: !FIX_KB[category]
+          needs_review: Boolean(fix.unsupported_priority_fix) || !FIX_KB[category]
         };
       });
 
@@ -156,6 +217,10 @@ const implementations = {
 };
 
 function inferCategory(fix, issues) {
+  if (fix && fix.sourceCategory) {
+    return fix.sourceCategory;
+  }
+
   const match = issues.find((issue) => issue.title === fix.title);
   return match && match.category ? match.category : "performance";
 }

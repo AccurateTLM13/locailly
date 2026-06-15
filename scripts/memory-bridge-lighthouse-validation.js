@@ -228,6 +228,8 @@ async function main() {
     enabledTools: [
       "lighthouse-handoff",
       "lighthouse.parse",
+      "lighthouse.classify_audits",
+      "lighthouse.validate_priority_fixes",
       "lighthouse.match_fixes",
       "lighthouse.verify_handoff"
     ]

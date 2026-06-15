@@ -65,13 +65,14 @@ function buildEngineSuccess({
   provider = null,
   model = null,
   model_role = null,
+  runtime_used = null,
   result,
   confidence = 1,
   warnings = [],
   fallbacks_used = [],
   meta
 }) {
-  return {
+  const envelope = {
     ok: true,
     run_id,
     trace_id,
@@ -86,6 +87,12 @@ function buildEngineSuccess({
     fallbacks_used,
     meta
   };
+
+  if (runtime_used !== null) {
+    envelope.runtime_used = runtime_used;
+  }
+
+  return envelope;
 }
 
 function buildEngineError({

@@ -199,9 +199,14 @@ Request:
 ```json
 {
   "url": "https://example.com/",
-  "mode": "l2_ollama_memory"
+  "mode": "l2_ollama_memory",
+  "model": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF"
 }
 ```
+
+Optional `model` overrides the Ollama runtime id for L2 `analyze-report` preflight and execution. When omitted, the server uses configured role defaults (usually `llama3.2`).
+
+Validation summaries include model provenance fields: `requestedModel`, `actualAnalyzeModel`, `actualComposeModel`, `providerModel`, `modelMismatch`, and `benchmarkValid`. L2 runs with a requested model fail at the `model_provenance` step when analyze orchestration uses a different runtime model.
 
 Supported `mode` values:
 

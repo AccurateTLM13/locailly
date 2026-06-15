@@ -2,6 +2,8 @@ const lighthouseHandoffSchema = require("../schemas/lighthouse-handoff.schema.js
 const { validateResult } = require("../core/result-validator");
 const { auditPayloadContainsPrivateMemory } = require("../memory/audit-redaction");
 const { capturePageSpeed, parsePastedPageSpeedReport } = require("./pagespeed");
+const { normalizeValidationModel } = require("./model-slug");
+const { buildModelProvenance, buildProvenanceWarning } = require("./model-provenance");
 
 const VALIDATION_MODES = new Set(["standard", "l2_ollama", "l2_ollama_memory"]);
 const CONSOLE_SOURCE = {
@@ -12,16 +14,17 @@ const CONSOLE_SOURCE = {
 };
 
 function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAuditEvents }) {
-  async function startValidation({ url, mode, pastedReport }) {
+  async function startValidation({ url, mode, pastedReport, model }) {
     const normalizedPastedReport = normalizePastedReport(pastedReport);
     const normalizedMode = normalizeMode(mode);
+    const normalizedModel = normalizeValidationModel(model);
     const normalizedUrl = normalizedPastedReport
       ? normalizeValidationUrl(url, { allowEmpty: true })
       : normalizeValidationUrl(url);
     const run = await runStore.createRun({
       url: normalizedUrl,
       mode: normalizedMode,
-      inputSource: normalizedPastedReport ? "pasted" : "live"
+      model: normalizedModel
     });
 
     if (normalizedPastedReport) {
@@ -53,11 +56,13 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
       const runSnapshot = (await runStore.getRun(runId)).run;
       const mode = runSnapshot.mode;
       const url = runSnapshot.url;
+      const model = runSnapshot.model || null;
 
       currentStep = "preflight";
       await startStep(runId, currentStep);
-      const status = await getStatusSnapshot();
-      const preflightWarnings = validatePreflight(status, mode);
+      const status = await getStatusSnapshot(model);
+      const providerModel = status.model && status.model.name ? status.model.name : null;
+      const preflightWarnings = validatePreflight(status, mode, model);
       await addWarnings(runId, preflightWarnings);
       await finishStep(runId, currentStep, preflightWarnings.length > 0 ? "warning" : "passed", "System check complete.");
 
@@ -92,7 +97,7 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
 
       currentStep = "analyze_report";
       await startStep(runId, currentStep);
-      const analyzeEnvelope = await runAnalyzeReport(pageSpeed.slim, mode);
+      const analyzeEnvelope = await runAnalyzeReport(pageSpeed.slim, mode, model);
       const analyzeArtifact = await runStore.writeJsonArtifact(runId, "analyze-report", analyzeEnvelope.body);
       await runStore.updateRun(runId, (run) => {
         run.artifacts.analyzeReport = analyzeArtifact;
@@ -100,6 +105,43 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
       });
       assertEnvelopeOk(analyzeEnvelope, "analyze-report");
       await finishStep(runId, currentStep, "passed", "Analyze report completed.");
+
+      currentStep = "model_provenance";
+      await startStep(runId, currentStep);
+      const analyzeProvenance = buildModelProvenance({
+        requestedModel: model,
+        analyzeEnvelope,
+        composeEnvelope: null,
+        providerModel,
+        mode
+      });
+      const provenanceArtifact = await runStore.writeJsonArtifact(runId, "model-provenance", analyzeProvenance);
+      await runStore.updateRun(runId, (run) => {
+        run.artifacts.modelProvenance = provenanceArtifact;
+        run.modelProvenance = analyzeProvenance;
+        return run;
+      });
+
+      if (model && (mode === "l2_ollama" || mode === "l2_ollama_memory") && analyzeProvenance.analyzeMismatch) {
+        const warning = buildProvenanceWarning(analyzeProvenance);
+        await addWarnings(runId, warning);
+        await finishStep(runId, currentStep, "failed", warning);
+        throw stepError(
+          "MODEL_PROVENANCE_MISMATCH",
+          warning,
+          "model_provenance",
+          `Expected analyze-report to run on '${model}' but orchestration used '${analyzeProvenance.actualAnalyzeModel}'.`
+        );
+      }
+
+      await finishStep(
+        runId,
+        currentStep,
+        "passed",
+        model
+          ? `Analyze model confirmed: ${analyzeProvenance.actualAnalyzeModel || "unknown"}.`
+          : "No requested model override; provenance recorded."
+      );
 
       currentStep = "compose_handoff";
       await startStep(runId, currentStep);
@@ -120,7 +162,7 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
       const schemaEvidence = await validateHandoffSchema(composeEnvelope.body.result);
       const verifyEnvelope = await runVerifyHandoff(composeEnvelope.body.result);
       assertEnvelopeOk(verifyEnvelope, "verify-handoff");
-      await runStore.writeJsonArtifact(runId, "verify-handoff", verifyEnvelope.body);
+      await runStore.recordJsonArtifact(runId, "verify-handoff", verifyEnvelope.body);
       const verifierValid = verifyEnvelope.body.result && verifyEnvelope.body.result.valid === true;
       await finishStep(runId, currentStep, schemaEvidence.valid && verifierValid ? "passed" : "failed", schemaEvidence.valid && verifierValid ? "Schema validation passed." : "Schema validation failed.");
 
@@ -148,11 +190,14 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
 
       currentStep = "artifact_save";
       await startStep(runId, currentStep);
-      const markdownArtifact = await runStore.writeTextArtifact(runId, "handoff", composeEnvelope.body.result.markdown || "");
+      const handoffMarkdown = composeEnvelope.body.result.markdown || "";
       const finalSummary = buildFinalSummary({
         runId,
         mode,
         url,
+        model,
+        modelSlug: runSnapshot.modelSlug || null,
+        providerModel,
         startedAt,
         slim: pageSpeed.slim,
         analyzeEnvelope,
@@ -160,21 +205,36 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
         schemaEvidence,
         verifyEnvelope,
         metricEvidence,
-        privacyEvidence,
-        markdownArtifact
+        privacyEvidence
       });
-      const summaryArtifact = await runStore.writeJsonArtifact(runId, "summary", finalSummary);
+      await runStore.recordTextArtifact(runId, "handoff", handoffMarkdown);
+      await runStore.recordJsonArtifact(runId, "summary", finalSummary);
       await runStore.updateRun(runId, (run) => {
         run.status = "success";
         run.completedAt = new Date().toISOString();
         run.durationMs = Date.now() - startedAt;
         run.result = finalSummary.result;
         run.evidence = finalSummary.evidence;
-        run.artifacts.markdown = markdownArtifact;
-        run.artifacts.summary = summaryArtifact;
         return run;
       });
-      await finishStep(runId, currentStep, "passed", "Validation artifacts saved.");
+      const finalized = await runStore.finalizeRunArtifacts(runId, {
+        summary: finalSummary,
+        handoffMarkdown
+      });
+      await runStore.updateRun(runId, (run) => {
+        if (finalized.bundlePath) {
+          run.bundlePath = finalized.bundlePath;
+        }
+        return run;
+      });
+      await finishStep(
+        runId,
+        currentStep,
+        "passed",
+        finalized.bundlePath
+          ? `Validation bundle saved (${finalized.bundlePath}).`
+          : "Validation artifacts saved."
+      );
     } catch (error) {
       if (currentStep && !error.step) {
         error.step = currentStep;
@@ -192,7 +252,19 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
     }
   }
 
-  async function runAnalyzeReport(slim, mode) {
+  async function runAnalyzeReport(slim, mode, model) {
+    const options = {
+      execution_mode: "orchestrated",
+      use_runtime: mode !== "standard",
+      memory: {
+        enabled: false
+      }
+    };
+
+    if (model) {
+      options.model = model;
+    }
+
     return runTask({
       tool: "lighthouse-handoff",
       task: "analyze-report",
@@ -203,13 +275,7 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
           user_action: "validation.analyze-report"
         }
       },
-      options: {
-        execution_mode: "orchestrated",
-        use_runtime: mode !== "standard",
-        memory: {
-          enabled: false
-        }
-      }
+      options
     });
   }
 
@@ -310,7 +376,7 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
   };
 }
 
-function validatePreflight(status, mode) {
+function validatePreflight(status, mode, modelOverride = null) {
   const warnings = [];
 
   if (!status.ok) {
@@ -333,7 +399,15 @@ function validatePreflight(status, mode) {
     }
 
     if (!status.model.ready) {
-      throw stepError("MODEL_NOT_READY", "The selected Ollama model is not ready.", "preflight");
+      const modelLabel = modelOverride || status.model.name || "configured model";
+      throw stepError(
+        "MODEL_NOT_READY",
+        `The selected Ollama model '${modelLabel}' is not ready.`,
+        "preflight",
+        modelOverride
+          ? `Run 'ollama run ${modelOverride}' or 'ollama pull ${modelOverride}', then try again.`
+          : null
+      );
     }
   }
 
@@ -456,6 +530,9 @@ function buildFinalSummary({
   runId,
   mode,
   url,
+  model,
+  modelSlug,
+  providerModel,
   startedAt,
   slim,
   analyzeEnvelope,
@@ -463,38 +540,56 @@ function buildFinalSummary({
   schemaEvidence,
   verifyEnvelope,
   metricEvidence,
-  privacyEvidence,
-  markdownArtifact
+  privacyEvidence
 }) {
   const handoff = composeEnvelope.body.result;
   const memory = handoff.memory || {};
+  const modelProvenance = buildModelProvenance({
+    requestedModel: model,
+    analyzeEnvelope,
+    composeEnvelope,
+    providerModel,
+    mode
+  });
 
   return {
     runId,
     workflow: "lighthouse_handoff_validation",
     mode,
+    model: modelProvenance.actualAnalyzeModel || modelProvenance.requestedModel || null,
+    modelSlug: modelSlug || null,
+    requestedModel: modelProvenance.requestedModel,
+    actualAnalyzeModel: modelProvenance.actualAnalyzeModel,
+    actualComposeModel: modelProvenance.actualComposeModel,
+    providerModel: modelProvenance.providerModel,
+    modelMismatch: modelProvenance.modelMismatch,
+    benchmarkValid: modelProvenance.benchmarkValid,
     result: {
       url,
       scores: slim.scores,
       weakestCategory: metricEvidence.weakestCategory,
       weakestScore: metricEvidence.weakestScore,
       provider: composeEnvelope.body.provider || analyzeEnvelope.body.provider || null,
-      model: composeEnvelope.body.model || analyzeEnvelope.body.model || null,
+      model: modelProvenance.actualAnalyzeModel || modelProvenance.requestedModel || null,
+      requestedModel: modelProvenance.requestedModel,
+      actualAnalyzeModel: modelProvenance.actualAnalyzeModel,
+      actualComposeModel: modelProvenance.actualComposeModel,
+      providerModel: modelProvenance.providerModel,
+      modelMismatch: modelProvenance.modelMismatch,
+      benchmarkValid: modelProvenance.benchmarkValid,
       memoryUsed: Boolean(memory.used),
       filesUsed: Array.isArray(memory.filesUsed) ? memory.filesUsed : [],
       schemaValid: schemaEvidence.valid && verifyEnvelope.body.ok === true && verifyEnvelope.body.result.valid === true,
       durationMs: Date.now() - startedAt,
       warnings: Array.isArray(memory.warnings) ? memory.warnings : [],
-      markdown: handoff.markdown || "",
-      artifactPaths: {
-        markdown: markdownArtifact
-      }
+      markdown: handoff.markdown || ""
     },
     evidence: {
       schema: schemaEvidence,
       handoffVerifier: verifyEnvelope.body.result || null,
       metricPreservation: metricEvidence,
       privacyAudit: privacyEvidence,
+      modelProvenance,
       analyzeRunId: analyzeEnvelope.body.run_id,
       composeRunId: composeEnvelope.body.run_id,
       pageSpeedCapturedAt: slim.capturedAt

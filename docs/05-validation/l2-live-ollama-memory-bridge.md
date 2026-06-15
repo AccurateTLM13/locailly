@@ -149,6 +149,25 @@ Also exercised via smoke checks when the companion server is running:
 node scripts/smoke-test.js
 ```
 
+## Model swap benchmarks (LiquidAI / Ollama)
+
+Registry: [ai-models/registry.models.json](../../ai-models/registry.models.json)
+
+Single run with model override (default mode `l2_ollama_memory`):
+
+```powershell
+ollama run hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF
+node scripts/validate-console.js --mode l2_ollama_memory --model hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF --url https://web.dev/
+```
+
+Side-by-side baseline + Liquid candidates:
+
+```powershell
+node scripts/benchmark-lighthouse-handoff.js --mode l2_ollama_memory --url https://web.dev/
+```
+
+Summaries land in `ai-models/benchmark-results/lighthouse-handoff/` with `model`, `modelSlug`, duration, schema, memory, and metric preservation fields for comparison.
+
 ## Recommended Next Steps
 
 1. Add or refresh a **Lighthouse Handoff** project memory page in the private vault (`wiki/projects/`) with `## Constraints` and `## Decisions`.

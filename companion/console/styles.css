@@ -395,6 +395,17 @@ input {
   border-color: var(--locaily-green);
 }
 
+.field__hint {
+  margin: 0.35rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.field__hint code {
+  font-size: 0.82rem;
+}
+
 .launcher-form {
   display: grid;
   gap: 14px;

@@ -39,7 +39,24 @@ function formatHandoffMarkdown(handoff) {
   sections.push(
     "## Priority Fixes",
     priorityLines,
-    "",
+    ""
+  );
+
+  if (Array.isArray(handoff.needsReview) && handoff.needsReview.length > 0) {
+    const reviewLines = handoff.needsReview.map((fix, index) => {
+      const label = String(fix.priority || "medium").toUpperCase();
+      return `${index + 1}. **${fix.title}** (${label}) — ${fix.reason || "Needs review before implementation."}`;
+    }).join("\n");
+
+    sections.push(
+      "## Needs Review",
+      "These model-suggested fixes were not confirmed against measured Lighthouse audit data.",
+      reviewLines,
+      ""
+    );
+  }
+
+  sections.push(
     "## Implementation Checklist",
     checklistLines,
     "",

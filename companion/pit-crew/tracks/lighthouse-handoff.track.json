@@ -16,19 +16,26 @@
     {
       "id": "classify_issues",
       "executor": {
-        "type": "model",
-        "role": "fast_worker",
-        "schema": "companion/pit-crew/schemas/classify-issues.schema.json",
-        "prompt_template": "classify_issues"
+        "type": "tool",
+        "tool": "lighthouse.classify_audits",
+        "task": "run"
       }
     },
     {
       "id": "prioritize_fixes",
       "executor": {
         "type": "model",
-        "role": "reasoning_worker",
+        "role": "priority_helper",
         "schema": "companion/pit-crew/schemas/prioritize-fixes.schema.json",
         "prompt_template": "prioritize_fixes"
+      }
+    },
+    {
+      "id": "validate_priority_fixes",
+      "executor": {
+        "type": "tool",
+        "tool": "lighthouse.validate_priority_fixes",
+        "task": "run"
       }
     },
     {

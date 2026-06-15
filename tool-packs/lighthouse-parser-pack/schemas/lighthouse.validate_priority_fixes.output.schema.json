@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["priorityFixes", "needsReview"],
+  "properties": {
+    "thinking": { "type": "string" },
+    "priorityFixes": { "type": "array" },
+    "needsReview": { "type": "array" }
+  }
+}

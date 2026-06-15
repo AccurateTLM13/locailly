@@ -985,7 +985,7 @@ async function checkTracksRunMockProvider() {
     assert(typeof trackRun.body.result.markdown === "string", "Expected markdown handoff in track result.");
     assert(trackRun.body.result.markdown.includes("# Developer Handoff:"), "Expected markdown heading.");
     assert(Array.isArray(trackRun.body.meta.steps), "Expected track step metadata.");
-    assert(trackRun.body.meta.steps.length >= 6, "Expected six track steps.");
+    assert(trackRun.body.meta.steps.length >= 7, "Expected seven track steps.");
     assert(trackRun.body.meta.job_id, "Expected job_id in track run metadata.");
   } finally {
     await request("/providers/set", {

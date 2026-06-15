@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-06-14T21:06:20.109Z",
+  "fixture": "examples/lighthouse-handoff/lemonteed-pagespeed-raw.fixture.json",
+  "url": "https://lemonteed.com/",
+  "mode": "l2_ollama_memory",
+  "comparison": [
+    {
+      "model": "llama3.2",
+      "status": "success",
+      "exitCode": 0,
+      "durationMs": 11637,
+      "benchmarkValid": true,
+      "modelMismatch": false,
+      "actualAnalyzeModel": "llama3.2",
+      "actualComposeModel": "deterministic",
+      "schemaValid": true,
+      "weakestCategory": "performance",
+      "weakestScore": 77,
+      "memoryUsed": true,
+      "filesUsedCount": 6,
+      "bundlePath": "data/validation/console-validation_20260614T200510Z_11fe11a4ce-llama3-2.bundle.local.json",
+      "runId": "validation_20260614T200510Z_11fe11a4ce",
+      "source": "existing_baseline"
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 1200879,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-350M-GGUF\n  url:     https://lemonteed.com/\nRun queued: validation_20260614T201355Z_0a29f4a0cf\nTimed out waiting for run 'validation_20260614T201355Z_0a29f4a0cf'."
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 1201069,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF\n  url:     https://lemonteed.com/\nRun queued: validation_20260614T203356Z_dabc5464fd\nTimed out waiting for run 'validation_20260614T203356Z_dabc5464fd'."
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-1.2B-Thinking-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 742423,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-1.2B-Thinking-GGUF\n  url:     https://lemonteed.com/\nRun queued: validation_20260614T205357Z_9d82d86ebe\nfetch failed"
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 100,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF\n  url:     https://lemonteed.com/\nfetch failed"
+    }
+  ],
+  "runs": [
+    {
+      "model": "llama3.2",
+      "status": "success",
+      "exitCode": 0,
+      "durationMs": 11637,
+      "benchmarkValid": true,
+      "modelMismatch": false,
+      "actualAnalyzeModel": "llama3.2",
+      "actualComposeModel": "deterministic",
+      "schemaValid": true,
+      "weakestCategory": "performance",
+      "weakestScore": 77,
+      "memoryUsed": true,
+      "filesUsedCount": 6,
+      "bundlePath": "data/validation/console-validation_20260614T200510Z_11fe11a4ce-llama3-2.bundle.local.json",
+      "runId": "validation_20260614T200510Z_11fe11a4ce",
+      "source": "existing_baseline"
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-350M-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 1200879,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-350M-GGUF\n  url:     https://lemonteed.com/\nRun queued: validation_20260614T201355Z_0a29f4a0cf\nTimed out waiting for run 'validation_20260614T201355Z_0a29f4a0cf'."
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 1201069,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-1.2B-Instruct-GGUF\n  url:     https://lemonteed.com/\nRun queued: validation_20260614T203356Z_dabc5464fd\nTimed out waiting for run 'validation_20260614T203356Z_dabc5464fd'."
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-1.2B-Thinking-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 742423,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-1.2B-Thinking-GGUF\n  url:     https://lemonteed.com/\nRun queued: validation_20260614T205357Z_9d82d86ebe\nfetch failed"
+    },
+    {
+      "model": "hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 100,
+      "error": "Starting console validation…\n  baseUrl: http://127.0.0.1:31313\n  mode:    l2_ollama_memory\n  model:   hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF\n  url:     https://lemonteed.com/\nfetch failed"
+    }
+  ]
+}
