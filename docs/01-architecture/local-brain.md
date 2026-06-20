@@ -4,6 +4,10 @@
 
 The **Local Brain** is Locaily's coordinator: the localhost service that accepts structured requests, enforces boundaries, routes work, and returns predictable JSON envelopes.
 
+**JSON = how Locaily thinks.** Workflow plans, routing decisions, task tracks, capability records, validation results, retries, and audit logs are represented as structured JSON internally. **Markdown = how Locaily explains** — reserved for human-facing exports, documentation, and coding-agent handoffs, rendered from JSON state rather than assembled as the orchestration source of truth.
+
+See [json-first-internal-format.md](./json-first-internal-format.md).
+
 In this repository it is implemented as the **companion server** plus **core modules** under `companion/`.
 
 ## What It Owns
@@ -18,6 +22,8 @@ In this repository it is implemented as the **companion server** plus **core mod
 - Result validation and schema retries
 - Summary-only audit logging (`data/` JSONL)
 - Success and error response envelopes
+- JSON-first orchestration state (run plans, step artifacts, validation records)
+- Markdown export rendering for workflows that need human-readable handoffs (e.g. Lighthouse Handoff `write_handoff`)
 
 ## What It Does Not Own
 

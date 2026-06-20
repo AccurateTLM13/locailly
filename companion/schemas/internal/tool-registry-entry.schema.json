@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://locaily.dev/schemas/internal/tool-registry-entry.schema.json",
+  "title": "Tool Registry Entry",
+  "description": "Metadata for a single callable tool exposed via GET /tools and resolved by the tool registry.",
+  "type": "object",
+  "required": ["id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable tool identifier (e.g. text.clean, lighthouse-handoff)"
+    },
+    "name": { "type": "string" },
+    "pack": {
+      "type": "string",
+      "description": "Source pack id when manifest-backed"
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Supported task ids for this tool"
+    },
+    "permissions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "model_role": {
+      "type": ["string", "null"],
+      "description": "Default model role when tool is model-backed"
+    },
+    "runtime_required": {
+      "type": "boolean",
+      "description": "Whether a live provider is required"
+    },
+    "input_schema": {
+      "type": "string",
+      "description": "Path to input JSON schema relative to pack root"
+    },
+    "output_schema": {
+      "type": "string",
+      "description": "Path to output JSON schema relative to pack root"
+    },
+    "description": { "type": "string" },
+    "trust": {
+      "type": "string",
+      "enum": ["official", "community", "local", "experimental"]
+    }
+  },
+  "additionalProperties": true
+}

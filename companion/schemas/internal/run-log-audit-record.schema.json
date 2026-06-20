@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://locaily.dev/schemas/internal/run-log-audit-record.schema.json",
+  "title": "Run Log / Audit Record",
+  "description": "Summary-only audit event written to JSONL by companion/core/audit-log.js.",
+  "type": "object",
+  "required": ["event_id", "timestamp", "status"],
+  "properties": {
+    "event_id": { "type": "string" },
+    "run_id": { "type": ["string", "null"] },
+    "trace_id": { "type": ["string", "null"] },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "description": "Summarized request source metadata"
+    },
+    "tool": { "type": ["string", "null"] },
+    "task": { "type": ["string", "null"] },
+    "provider": { "type": ["string", "null"] },
+    "model": { "type": ["string", "null"] },
+    "model_role": { "type": ["string", "null"] },
+    "permissions_used": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "input_summary": {
+      "type": "object",
+      "description": "Redacted / summarized input — not raw payloads"
+    },
+    "output_summary": {
+      "type": "object",
+      "description": "Redacted / summarized output — not raw payloads"
+    },
+    "fallbacks_used": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "duration_ms": { "type": ["number", "null"] },
+    "status": {
+      "type": "string",
+      "enum": ["success", "error"]
+    },
+    "error_code": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

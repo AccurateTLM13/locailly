@@ -1,6 +1,8 @@
 # Fallback and Validation
 
-How track runs validate output and recover from failures **today**.
+How track runs validate output and recover from failures **today**. Validation outcomes are **JSON** (`valid`, `errors`, optional `warnings`). Schema: `companion/schemas/internal/validation-result.schema.json`.
+
+See [../01-architecture/json-first-internal-format.md](../01-architecture/json-first-internal-format.md).
 
 ## Per-Step Validation
 

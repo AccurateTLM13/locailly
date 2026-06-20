@@ -2,6 +2,10 @@
 
 JSON shape for track files under `companion/pit-crew/tracks/`. Matches what `decomposer.js` validates today.
 
+**JSON Schema:** [../../companion/schemas/internal/task-track.schema.json](../../companion/schemas/internal/task-track.schema.json)
+
+See also [../01-architecture/json-first-internal-format.md](../01-architecture/json-first-internal-format.md).
+
 ## Top-Level Fields
 
 | Field | Required | Description |
