@@ -171,7 +171,7 @@ JSON objects are produced throughout the stack. Enforcement uses **`validateResu
 
 ## Safest Next Implementation Step
 
-**Validate workflow plans and task tracks against internal schemas at existing boundaries.**
+**Validate task track files at load time** (workflow plan validation is done).
 
 | Priority | Action | Risk | Why |
 |---|---|---|---|
