@@ -16,16 +16,16 @@ Markdown output support is **not removed**. It is reframed as an **export / rend
 | Concern | Internal representation | Notes |
 |---|---|---|
 | HTTP API envelopes | JSON | Implemented — `ok`, `tool`, `result` / `error`, `meta` |
-| Workflow run plans | JSON | Implemented — `companion/orchestration/run-plan-builder.js` |
-| Task track definitions | JSON | Implemented — `companion/pit-crew/tracks/*.track.json` |
-| Step artifacts | JSON | Implemented — per-step tool/model outputs |
-| Tool registry entries | JSON | Implemented — `tool-packs/*/tool.json` + showcase handlers |
-| Model role resolution | JSON | Implemented — in-memory role map + `model-profiles.js` |
-| Validation results | JSON | Implemented — e.g. `verify_output`, `validate_priority_fixes` |
-| Audit / run logs | JSONL | Implemented — summary-only events in `data/` |
+| Workflow run plans | JSON | Produced — `run-plan-builder.js`; **not** validated against `workflow-plan.schema.json` |
+| Task track definitions | JSON | Loaded — `decomposer.js` imperative checks only; **not** validated against `task-track.schema.json` |
+| Step artifacts | JSON | Produced per step; model steps use step schemas; tool outputs often unchecked on `/tracks/run` |
+| Tool registry entries | JSON | Exposed via `/tools`; imperative registration; **not** validated against `tool-registry-entry.schema.json` |
+| Model role resolution | JSON | In-memory role map + `model-profiles.js` — **not** `model-registry-entry.schema.json` |
+| Validation results | JSON | `{ valid, errors }` from `verify_output` only; **not** schema-validated; other steps use different shapes |
+| Audit / run logs | JSONL | Normalized in `audit-log.js`; **not** validated against `run-log-audit-record.schema.json` |
 | Routing decisions | JSON (partial) | Role → model mapping logged; full decision record spec only |
 | NearbyNode capability ads | JSON (spec) | Not implemented — schema defined for future connectors |
-| Final output manifest | JSON (partial) | Handoff object is JSON; `markdown` field is rendered export |
+| Final output manifest | JSON (spec) | Lighthouse emits flat handoff + `markdown`; manifest wrapper **not** produced |
 
 Do **not** claim full JSON-first coverage across every subsystem until code validates each schema. See [internal-json-schemas.md](./internal-json-schemas.md) for per-schema implementation status.
 

@@ -8,14 +8,16 @@ Canonical JSON Schema files for Local Brain internal state. These document the *
 
 | Schema | File | Runtime validation | Description |
 |---|---|---|---|
-| Workflow plan | [workflow-plan.schema.json](../../companion/schemas/internal/workflow-plan.schema.json) | **Partial** — produced by orchestration; shape enforced in builder/executor | Run plan from `POST /workflows/plan` and `/workflows/run` |
-| Task track | [task-track.schema.json](../../companion/schemas/internal/task-track.schema.json) | **Partial** — `decomposer.js` validates core fields | Track definition files under `companion/pit-crew/tracks/` |
-| Tool registry entry | [tool-registry-entry.schema.json](../../companion/schemas/internal/tool-registry-entry.schema.json) | **Partial** — manifest load + `/tools` metadata | Single tool from a pack manifest or showcase registration |
-| Model registry entry | [model-registry-entry.schema.json](../../companion/schemas/internal/model-registry-entry.schema.json) | **Spec only** — roles/profiles exist; no file-backed registry yet | Model scorecard / skill sheet row for routing |
+| Workflow plan | [workflow-plan.schema.json](../../companion/schemas/internal/workflow-plan.schema.json) | **Produced, not schema-validated** — built by `run-plan-builder.js`; imperative checks only | Run plan from `POST /workflows/plan` and `/workflows/run` |
+| Task track | [task-track.schema.json](../../companion/schemas/internal/task-track.schema.json) | **Loaded, minimally validated** — `decomposer.js` checks core fields only | Track definition files under `companion/pit-crew/tracks/` |
+| Tool registry entry | [tool-registry-entry.schema.json](../../companion/schemas/internal/tool-registry-entry.schema.json) | **Produced, not schema-validated** — `/tools` shape differs (`pack_trust`, etc.) | Single tool from a pack manifest or showcase registration |
+| Model registry entry | [model-registry-entry.schema.json](../../companion/schemas/internal/model-registry-entry.schema.json) | **Spec only** — `model-profiles.js` uses a different shape | Model scorecard / skill sheet row for routing |
 | NearbyNode capability | [nearby-node-capability.schema.json](../../companion/schemas/internal/nearby-node-capability.schema.json) | **Spec only** — NearbyNode not implemented | Capability advertisement from a nearby device |
-| Validation result | [validation-result.schema.json](../../companion/schemas/internal/validation-result.schema.json) | **Partial** — used by verify/validate tool steps | Per-step or final structural validation outcome |
-| Run log / audit record | [run-log-audit-record.schema.json](../../companion/schemas/internal/run-log-audit-record.schema.json) | **Partial** — `audit-log.js` normalizes events | Summary-only audit JSONL event |
-| Final output manifest | [final-output-manifest.schema.json](../../companion/schemas/internal/final-output-manifest.schema.json) | **Partial** — Lighthouse handoff result shape | Structured result + export references (e.g. `markdown`) |
+| Validation result | [validation-result.schema.json](../../companion/schemas/internal/validation-result.schema.json) | **Partial shape only** — `verify_output` returns `{ valid, errors }`; not validated against this file; `validate_priority_fixes` uses a different shape | Per-step or final structural validation outcome |
+| Run log / audit record | [run-log-audit-record.schema.json](../../companion/schemas/internal/run-log-audit-record.schema.json) | **Normalized, not schema-validated** — `audit-log.js` writes JSONL | Summary-only audit JSONL event |
+| Final output manifest | [final-output-manifest.schema.json](../../companion/schemas/internal/final-output-manifest.schema.json) | **Spec only** — runtime emits flat handoff + `markdown`, not manifest wrapper | Target export contract; not current API shape |
+
+**Audit:** [../04-validation/json-first-schema-audit.md](../04-validation/json-first-schema-audit.md)
 
 ## Usage Rules
 
