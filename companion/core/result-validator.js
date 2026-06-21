@@ -1,11 +1,34 @@
 function validateResult(result, schema, path = "result") {
   const errors = [];
-  validateValue(result, schema, path, errors);
+  validateValue(result, schema, path, errors, schema);
 
   return {
     ok: errors.length === 0,
     errors
   };
+}
+
+function resolveSchemaReference(schema, rootSchema) {
+  if (!schema || typeof schema !== "object" || !schema.$ref || !rootSchema) {
+    return schema;
+  }
+
+  if (!schema.$ref.startsWith("#/")) {
+    return schema;
+  }
+
+  const parts = schema.$ref.slice(2).split("/");
+  let node = rootSchema;
+
+  for (const part of parts) {
+    if (!node || typeof node !== "object") {
+      return schema;
+    }
+
+    node = node[part];
+  }
+
+  return node || schema;
 }
 
 async function runToolWithValidation({
@@ -64,8 +87,15 @@ function buildSchemaFailure(validation, fallbacksUsed) {
   throw error;
 }
 
-function validateValue(value, schema, path, errors) {
+function validateValue(value, schema, path, errors, rootSchema) {
   if (!schema || typeof schema !== "object") {
+    return;
+  }
+
+  const resolvedSchema = resolveSchemaReference(schema, rootSchema);
+
+  if (resolvedSchema !== schema) {
+    validateValue(value, resolvedSchema, path, errors, rootSchema);
     return;
   }
 
@@ -88,15 +118,22 @@ function validateValue(value, schema, path, errors) {
   }
 
   if (schema.type === "object" && value && typeof value === "object" && !Array.isArray(value)) {
-    validateObject(value, schema, path, errors);
+    validateObject(value, schema, path, errors, rootSchema);
   }
 
-  if (schema.type === "array" && Array.isArray(value) && schema.items) {
-    value.forEach((item, index) => validateValue(item, schema.items, `${path}[${index}]`, errors));
+  if (schema.type === "array" && Array.isArray(value)) {
+    if (typeof schema.minItems === "number" && value.length < schema.minItems) {
+      errors.push(`${path} must contain at least ${schema.minItems} item(s).`);
+    }
+
+    if (schema.items) {
+      const itemSchema = resolveSchemaReference(schema.items, rootSchema);
+      value.forEach((item, index) => validateValue(item, itemSchema, `${path}[${index}]`, errors, rootSchema));
+    }
   }
 }
 
-function validateObject(value, schema, path, errors) {
+function validateObject(value, schema, path, errors, rootSchema) {
   const required = Array.isArray(schema.required) ? schema.required : [];
 
   for (const key of required) {
@@ -109,7 +146,7 @@ function validateObject(value, schema, path, errors) {
 
   for (const [key, propertySchema] of Object.entries(properties)) {
     if (Object.prototype.hasOwnProperty.call(value, key)) {
-      validateValue(value[key], propertySchema, `${path}.${key}`, errors);
+      validateValue(value[key], propertySchema, `${path}.${key}`, errors, rootSchema);
     }
   }
 }

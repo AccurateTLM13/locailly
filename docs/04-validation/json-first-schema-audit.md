@@ -5,11 +5,11 @@
 
 ## Executive Summary
 
-All eight internal JSON schemas are **documentation-only today**. No runtime module loads or validates against `companion/schemas/internal/*.schema.json`.
+Seven of eight internal JSON schemas remain **documentation-only**. **`workflow-plan.schema.json` is runtime-enforced** at the `buildRunPlan()` boundary via `validateBuiltRunPlan()` in `run-plan-builder.js`.
 
-JSON objects are produced throughout the stack, but enforcement uses **imperative checks** and **workflow-specific schemas** (`companion/schemas/`, `companion/pit-crew/schemas/`, `tool-packs/*/schemas/`) — not the internal schema catalog.
+JSON objects are produced throughout the stack. Enforcement uses **`validateResult()`** (now with `$ref` / `minItems` support for workflow plans), **imperative checks**, and **workflow-specific schemas** (`companion/schemas/`, `companion/pit-crew/schemas/`, `tool-packs/*/schemas/`).
 
-**Safest next implementation step:** validate **workflow plans** and **task track files** at their existing producer/consumer boundaries using the existing `validateResult()` helper in `companion/core/result-validator.js`. Both are small, in-repo, and fail fast without changing API envelopes.
+**Safest next implementation step:** validate **task track files** in `decomposer.loadTrackFile()` using `task-track.schema.json` and the existing `validateResult()` helper.
 
 ---
 
@@ -17,7 +17,7 @@ JSON objects are produced throughout the stack, but enforcement uses **imperativ
 
 | Finding | Detail |
 |---|---|
-| Internal schemas referenced in code | **None** — grep finds references only in docs |
+| Internal schemas referenced in code | **`workflow-plan.schema.json`** loaded in `run-plan-builder.js`; other internal schemas not yet wired |
 | Shared validator | `companion/core/result-validator.js` — lightweight JSON Schema subset, already used for tool outputs and step schemas |
 | `/tracks/run` vs `/workflows/run` | Workflow path adds per-step validation in `run-plan-validator.js`; direct track path does not validate intermediate tool outputs |
 | Lighthouse pipeline | JSON artifacts are real; `final-output-manifest` wrapper is **not** emitted; result is a flat handoff object + `markdown` + `meta.verification` |
@@ -30,15 +30,15 @@ JSON objects are produced throughout the stack, but enforcement uses **imperativ
 
 | | |
 |---|---|
-| **Runtime status** | **Produced, not schema-validated** |
+| **Runtime status** | **Runtime-enforced at build** — validated in `buildRunPlan()` via `validateBuiltRunPlan()` |
 | **Producer** | `companion/orchestration/run-plan-builder.js` → `buildRunPlan()` |
 | **Consumers** | `run-plan-executor.js` → `executeRunPlan()`; `run-logger.js` → `buildOrchestrationLogEvent()`; `server.js` → `POST /workflows/plan`, `POST /workflows/run` |
-| **Validation coverage** | Imperative only: workflow input checks (`validateWorkflowInput`), step existence check in executor. **No** load of `workflow-plan.schema.json`. |
-| **Partial vs complete** | **Partial** — core fields are always set by builder; executor mutates `status`, `output`, `worker_used`, `completed_at`, `duration_ms`. Enum/status transitions are not schema-checked. |
+| **Validation coverage** | `validateResult(plan, workflowPlanSchema)` immediately after plan construction. Schema loaded from `companion/schemas/internal/workflow-plan.schema.json`. Failures throw `WORKFLOW_PLAN_INVALID` with `error.validation.errors`. `$ref` / `minItems` supported in `result-validator.js` for this schema. |
+| **Partial vs complete** | **Enforced at build boundary only** — executed plans (mutated step `output`, `worker_used`, etc.) are not re-validated against this schema after `executeRunPlan()` |
 | **Schema fields unused at runtime** | None required by schema are missing from builder output. |
 | **Runtime fields not in schema** | `registry.validation_expectations` (nested under `registry`) |
-| **Missing enforcement** | No post-build or pre-execute validation against internal schema; no contract test asserting plan shape |
-| **Recommended next step** | After `buildRunPlan()` and before returning from `executeRunPlan()`, call `validateResult(plan, workflowPlanSchema)` and surface `TRACK_CONFIG_INVALID`-style errors in dev/test |
+| **Missing enforcement** | Post-execution plan re-validation; contract test on HTTP error envelope for `WORKFLOW_PLAN_INVALID` |
+| **Recommended next step** | ~~After `buildRunPlan()`~~ **Done (2026-06-20).** Next: validate task tracks in `decomposer.loadTrackFile()` |
 
 ---
 
@@ -175,10 +175,10 @@ JSON objects are produced throughout the stack, but enforcement uses **imperativ
 
 | Priority | Action | Risk | Why |
 |---|---|---|---|
-| **1 (recommended)** | `validateResult(plan, workflowPlanSchema)` after `buildRunPlan()` | Low | Single producer, tests already exercise `/workflows/plan`; catches orchestration regressions |
-| **2** | `validateResult(track, taskTrackSchema)` in `decomposer.loadTrackFile()` | Low | Two track files; fails at server start / first load |
-| **3** | Contract test: audit JSONL lines match `run-log-audit-record` core fields | Low | Read-only validation in tests |
-| **4** | Align `tool-registry-entry` schema with `toPublicToolMetadata()` | Medium | Doc/schema drift fix before enforcement |
+| ~~**1 (recommended)**~~ | ~~`validateResult(plan, workflowPlanSchema)` after `buildRunPlan()`~~ | — | **Done (2026-06-20)** — `validateBuiltRunPlan()` in `run-plan-builder.js` |
+| **1 (recommended)** | `validateResult(track, taskTrackSchema)` in `decomposer.loadTrackFile()` | Low | Two track files; fails at server start / first load |
+| **2** | Contract test: audit JSONL lines match `run-log-audit-record` core fields | Low | Read-only validation in tests |
+| **3** | Align `tool-registry-entry` schema with `toPublicToolMetadata()` | Medium | Doc/schema drift fix before enforcement |
 | **Defer** | `final-output-manifest` wrapper, `model-registry-entry`, `nearby-node-capability` | — | No producer code yet |
 
 Use existing `validateResult()` — no new dependencies. Do **not** start by wrapping API responses in `final-output-manifest`; that would break client contracts.

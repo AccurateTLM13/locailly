@@ -16,7 +16,7 @@ Markdown output support is **not removed**. It is reframed as an **export / rend
 | Concern | Internal representation | Notes |
 |---|---|---|
 | HTTP API envelopes | JSON | Implemented — `ok`, `tool`, `result` / `error`, `meta` |
-| Workflow run plans | JSON | Produced — `run-plan-builder.js`; **not** validated against `workflow-plan.schema.json` |
+| Workflow run plans | JSON | **Runtime-enforced at build** — `validateBuiltRunPlan()` loads `workflow-plan.schema.json` after `buildRunPlan()` |
 | Task track definitions | JSON | Loaded — `decomposer.js` imperative checks only; **not** validated against `task-track.schema.json` |
 | Step artifacts | JSON | Produced per step; model steps use step schemas; tool outputs often unchecked on `/tracks/run` |
 | Tool registry entries | JSON | Exposed via `/tools`; imperative registration; **not** validated against `tool-registry-entry.schema.json` |

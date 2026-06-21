@@ -7,6 +7,9 @@ const {
   buildRunPlan,
   executeRunPlan
 } = require("../companion/orchestration");
+const { validateBuiltRunPlan } = require("../companion/orchestration/run-plan-builder");
+const { validateResult } = require("../companion/core/result-validator");
+const workflowPlanSchema = require("../companion/schemas/internal/workflow-plan.schema.json");
 
 const LIGHTHOUSE_INPUT = {
   url: "https://example.com",
@@ -68,6 +71,31 @@ function checkRunPlanBuilder() {
   assert.equal(prioritize.worker_type.role, "priority_helper");
 }
 
+function checkRunPlanSchemaValidation() {
+  const plan = buildRunPlan({
+    workflowId: "lighthouse_handoff",
+    input: LIGHTHOUSE_INPUT,
+    taskId: "task_schema_test"
+  });
+
+  const validation = validateResult(plan, workflowPlanSchema, "plan");
+  assert(validation.ok, `Expected built plan to pass schema validation: ${validation.errors.join("; ")}`);
+  assert.doesNotThrow(() => validateBuiltRunPlan(plan), "validateBuiltRunPlan should accept a built plan.");
+
+  const invalidPlan = {
+    plan_id: "plan_invalid",
+    status: "pending"
+  };
+
+  assert.throws(
+    () => validateBuiltRunPlan(invalidPlan),
+    (error) => error.code === "WORKFLOW_PLAN_INVALID"
+      && Array.isArray(error.validation.errors)
+      && error.validation.errors.length > 0,
+    "Expected invalid plan to throw WORKFLOW_PLAN_INVALID with validation errors."
+  );
+}
+
 async function checkRunPlanExecution() {
   const runtime = createMockRuntime();
   const toolRegistry = createToolRegistry();
@@ -98,6 +126,7 @@ async function main() {
   checkTrackRegistryShape();
   checkWorkflowRegistry();
   checkRunPlanBuilder();
+  checkRunPlanSchemaValidation();
   await checkRunPlanExecution();
   console.log("Orchestration unit tests passed.");
 }

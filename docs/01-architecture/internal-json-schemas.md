@@ -8,7 +8,7 @@ Canonical JSON Schema files for Local Brain internal state. These document the *
 
 | Schema | File | Runtime validation | Description |
 |---|---|---|---|
-| Workflow plan | [workflow-plan.schema.json](../../companion/schemas/internal/workflow-plan.schema.json) | **Produced, not schema-validated** — built by `run-plan-builder.js`; imperative checks only | Run plan from `POST /workflows/plan` and `/workflows/run` |
+| Workflow plan | [workflow-plan.schema.json](../../companion/schemas/internal/workflow-plan.schema.json) | **Runtime-enforced at build** — `validateBuiltRunPlan()` in `run-plan-builder.js` after `buildRunPlan()` | Run plan from `POST /workflows/plan` and `/workflows/run` |
 | Task track | [task-track.schema.json](../../companion/schemas/internal/task-track.schema.json) | **Loaded, minimally validated** — `decomposer.js` checks core fields only | Track definition files under `companion/pit-crew/tracks/` |
 | Tool registry entry | [tool-registry-entry.schema.json](../../companion/schemas/internal/tool-registry-entry.schema.json) | **Produced, not schema-validated** — `/tools` shape differs (`pack_trust`, etc.) | Single tool from a pack manifest or showcase registration |
 | Model registry entry | [model-registry-entry.schema.json](../../companion/schemas/internal/model-registry-entry.schema.json) | **Spec only** — `model-profiles.js` uses a different shape | Model scorecard / skill sheet row for routing |
