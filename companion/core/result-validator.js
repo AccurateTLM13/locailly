@@ -99,6 +99,15 @@ function validateValue(value, schema, path, errors, rootSchema) {
     return;
   }
 
+  if (Array.isArray(schema.oneOf) && schema.oneOf.length > 0) {
+    validateOneOf(value, schema, path, errors, rootSchema);
+    return;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(schema, "const") && value !== schema.const) {
+    errors.push(`${path} must be ${JSON.stringify(schema.const)}.`);
+  }
+
   if (schema.type) {
     validateType(value, schema, path, errors);
   }
@@ -149,6 +158,47 @@ function validateObject(value, schema, path, errors, rootSchema) {
       validateValue(value[key], propertySchema, `${path}.${key}`, errors, rootSchema);
     }
   }
+
+  if (schema.additionalProperties === false) {
+    const allowedKeys = new Set([
+      ...required,
+      ...Object.keys(properties)
+    ]);
+
+    for (const key of Object.keys(value)) {
+      if (!allowedKeys.has(key)) {
+        errors.push(`${path}.${key} is not allowed.`);
+      }
+    }
+  }
+}
+
+function validateOneOf(value, schema, path, errors, rootSchema) {
+  const passing = [];
+
+  for (const option of schema.oneOf) {
+    const branchErrors = [];
+    validateValue(value, option, path, branchErrors, rootSchema);
+
+    if (branchErrors.length === 0) {
+      passing.push(option);
+    }
+  }
+
+  if (passing.length === 1) {
+    return;
+  }
+
+  if (passing.length === 0) {
+    errors.push(`${path} must match one of the allowed shapes defined in the schema.`);
+
+    const sampleErrors = [];
+    validateValue(value, schema.oneOf[0], path, sampleErrors, rootSchema);
+    sampleErrors.slice(0, 3).forEach((message) => errors.push(message));
+    return;
+  }
+
+  errors.push(`${path} is ambiguous: it matches more than one allowed schema shape.`);
 }
 
 function validateType(value, schema, path, errors) {

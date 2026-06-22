@@ -8,8 +8,10 @@ const {
   executeRunPlan
 } = require("../companion/orchestration");
 const { validateBuiltRunPlan } = require("../companion/orchestration/run-plan-builder");
+const { loadTrack, validateLoadedTrackFile } = require("../companion/pit-crew/decomposer");
 const { validateResult } = require("../companion/core/result-validator");
 const workflowPlanSchema = require("../companion/schemas/internal/workflow-plan.schema.json");
+const taskTrackSchema = require("../companion/schemas/internal/task-track.schema.json");
 
 const LIGHTHOUSE_INPUT = {
   url: "https://example.com",
@@ -96,6 +98,37 @@ function checkRunPlanSchemaValidation() {
   );
 }
 
+function checkTaskTrackSchemaValidation() {
+  const lighthouse = loadTrack("website_audit.lighthouse_handoff");
+  const dealsniper = loadTrack("marketplace.dealsniper");
+
+  for (const track of [lighthouse, dealsniper]) {
+    const validation = validateResult(track, taskTrackSchema, "track");
+    assert(validation.ok, `Expected ${track.track_id} to pass schema validation: ${validation.errors.join("; ")}`);
+  }
+
+  const invalidTrack = {
+    track_id: "invalid.example",
+    steps: [
+      {
+        id: "broken_step",
+        executor: {
+          type: "model"
+        }
+      }
+    ]
+  };
+
+  assert.throws(
+    () => validateLoadedTrackFile(invalidTrack, "invalid.example.track.json"),
+    (error) => error.code === "TASK_TRACK_INVALID"
+      && error.trackName === "invalid.example.track.json"
+      && Array.isArray(error.validation.errors)
+      && error.validation.errors.length > 0,
+    "Expected invalid track to throw TASK_TRACK_INVALID with validation errors."
+  );
+}
+
 async function checkRunPlanExecution() {
   const runtime = createMockRuntime();
   const toolRegistry = createToolRegistry();
@@ -127,6 +160,7 @@ async function main() {
   checkWorkflowRegistry();
   checkRunPlanBuilder();
   checkRunPlanSchemaValidation();
+  checkTaskTrackSchemaValidation();
   await checkRunPlanExecution();
   console.log("Orchestration unit tests passed.");
 }

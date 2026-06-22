@@ -68,7 +68,7 @@ From `decomposer.js`:
 - `track_id` must be present
 - `steps` must be non-empty array
 - Each step needs `id` and `executor.type`
-- Invalid JSON or missing fields → `TRACK_CONFIG_INVALID`
+- Invalid JSON or schema validation failure → `TRACK_CONFIG_INVALID` (parse) or `TASK_TRACK_INVALID` (schema)
 
 ## Output Validation
 

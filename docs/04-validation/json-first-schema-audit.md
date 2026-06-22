@@ -5,7 +5,7 @@
 
 ## Executive Summary
 
-Seven of eight internal JSON schemas remain **documentation-only**. **`workflow-plan.schema.json` is runtime-enforced** at the `buildRunPlan()` boundary via `validateBuiltRunPlan()` in `run-plan-builder.js`.
+Six of eight internal JSON schemas remain **documentation-only**. **`workflow-plan.schema.json`** and **`task-track.schema.json`** are **runtime-enforced** at build/load boundaries.
 
 JSON objects are produced throughout the stack. Enforcement uses **`validateResult()`** (now with `$ref` / `minItems` support for workflow plans), **imperative checks**, and **workflow-specific schemas** (`companion/schemas/`, `companion/pit-crew/schemas/`, `tool-packs/*/schemas/`).
 
