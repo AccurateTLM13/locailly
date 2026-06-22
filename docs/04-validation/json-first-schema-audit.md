@@ -9,7 +9,7 @@ Six of eight internal JSON schemas remain **documentation-only**. **`workflow-pl
 
 JSON objects are produced throughout the stack. Enforcement uses **`validateResult()`** (now with `$ref` / `minItems` support for workflow plans), **imperative checks**, and **workflow-specific schemas** (`companion/schemas/`, `companion/pit-crew/schemas/`, `tool-packs/*/schemas/`).
 
-**Safest next implementation step:** validate **task track files** in `decomposer.loadTrackFile()` using `task-track.schema.json` and the existing `validateResult()` helper.
+**Safest next implementation step:** enforce **`tool-packs/*/tool.json` at load** (schemas aligned — see [tool-metadata-contract-audit.md](./tool-metadata-contract-audit.md)), or contract-test audit JSONL lines.
 
 ---
 
@@ -17,8 +17,8 @@ JSON objects are produced throughout the stack. Enforcement uses **`validateResu
 
 | Finding | Detail |
 |---|---|
-| Internal schemas referenced in code | **`workflow-plan.schema.json`** loaded in `run-plan-builder.js`; other internal schemas not yet wired |
-| Shared validator | `companion/core/result-validator.js` — lightweight JSON Schema subset, already used for tool outputs and step schemas |
+| Internal schemas referenced in code | **`workflow-plan.schema.json`** in `run-plan-builder.js`; **`task-track.schema.json`** in `decomposer.js`; other internal schemas not yet wired |
+| Shared validator | `companion/core/result-validator.js` — supports `$ref`, `minItems`, `oneOf`, `const`, `additionalProperties: false` |
 | `/tracks/run` vs `/workflows/run` | Workflow path adds per-step validation in `run-plan-validator.js`; direct track path does not validate intermediate tool outputs |
 | Lighthouse pipeline | JSON artifacts are real; `final-output-manifest` wrapper is **not** emitted; result is a flat handoff object + `markdown` + `meta.verification` |
 
@@ -46,32 +46,30 @@ JSON objects are produced throughout the stack. Enforcement uses **`validateResu
 
 | | |
 |---|---|
-| **Runtime status** | **Loaded, minimally validated** |
+| **Runtime status** | **Runtime-enforced at load** — validated in `loadTrackFile()` via `validateLoadedTrackFile()` |
 | **Producer** | Hand-authored `companion/pit-crew/tracks/*.track.json` |
 | **Consumers** | `decomposer.js` → `loadTrack()`; `pit-crew/orchestrator.js`; `run-plan-builder.js`; `track-registry.js` |
-| **Validation coverage** | `decomposer.js` checks: parseable JSON, `track_id`, non-empty `steps`, each step has `id` + `executor.type`. Does **not** check: `version`, `name`, `output_schema` path exists, `input_map` shape, model `schema`/`prompt_template`, executor field completeness per type. |
-| **Partial vs complete** | **Partial** — structural minimum only |
-| **Schema fields unused at runtime** | `version`, `name`, `description`, `result_step`, `verification_step` — accepted but not validated |
-| **Runtime behavior not in schema** | Lighthouse track uses `priority_helper` role; schema allows any role string |
-| **Missing enforcement** | No JSON Schema validation on load; invalid `input_map` fails at step execution instead of load time |
-| **Recommended next step** | Validate each track file against `task-track.schema.json` inside `loadTrackFile()`; extend imperative checks for model executor `schema` + `prompt_template` when `type === "model"` |
+| **Validation coverage** | `validateResult(track, taskTrackSchema, "track")` after JSON parse. Executor shapes enforced via schema `oneOf` (tool vs model). JSON parse failures still use `TRACK_CONFIG_INVALID`. |
+| **Partial vs complete** | **Enforced at load only** — does not verify `output_schema` path exists on disk; optional metadata fields (`version`, `name`, etc.) validated when present |
+| **Schema fields unused at runtime** | None required by schema are missing from current track files |
+| **Runtime behavior not in schema** | `output_schema` file existence not checked; `priority_helper` role allowed as any string |
+| **Missing enforcement** | Output schema path existence check; invalid `input_map` still fails at step execution |
+| **Recommended next step** | ~~Validate in `loadTrackFile()`~~ **Done (2026-06-20).** Next: contract test audit JSONL or tool registry alignment |
 
 ---
 
-### 3. Tool Registry Entry (`tool-registry-entry.schema.json`)
+### 3. Tool metadata (split schemas)
 
-| | |
+Replaced merged `tool-registry-entry.schema.json` with four stage-specific schemas. See [tool-metadata-contract-audit.md](./tool-metadata-contract-audit.md).
+
+| Schema | Runtime status |
 |---|---|
-| **Runtime status** | **Produced, differently shaped** |
-| **Producer** | `companion/tools/registry.js` → `loadToolPack()`, `toPublicToolMetadata()`; built-in tools in `deal-sniper.js`, `lighthouse-handoff.js` |
-| **Consumers** | `GET /tools`; `tool-router.js` → `executeToolStep()`; `server.js` task dispatch |
-| **Validation coverage** | `validateTool()` (id, name, tasks, handle); manifest checks (pack id, trust enum, tools array). Pack tool `output_schema` files are loaded and attached to handler — validated on **tool result**, not on registry metadata row. |
-| **Partial vs complete** | **Partial** — registration works; public metadata does not match internal schema field-for-field |
-| **Schema fields unused at runtime** | `trust` as named — runtime exposes `pack_trust` |
-| **Runtime fields not in schema** | `pack_trust`, `pack_version`, `input` (required/optional summary), `output` (required keys summary) |
-| **Enum mismatch** | Schema `trust`: `official`, `community`, `local`, `experimental`. Registry `TRUST_LEVELS`: `official`, `verified`, `community`, `experimental`, `local_private` |
-| **Missing enforcement** | No validation of `GET /tools` rows against `tool-registry-entry.schema.json` |
-| **Recommended next step** | Align schema with `toPublicToolMetadata()` output (rename `trust` → `pack_trust`, add `pack_version`) **or** add a mapping layer — then validate in `listPublic()` under a feature flag |
+| `tool-pack-manifest.schema.json` | Contract tests only |
+| `tool-pack-manifest-tool.schema.json` | Contract tests only |
+| `internal-tool-registry-entry.schema.json` | Contract tests only |
+| `public-tool-metadata.schema.json` | Contract tests only |
+
+**Recommended enforcement boundary:** validate `tool-packs/*/tool.json` at load in `loadToolPack()` (no runtime enforcement in this pass).
 
 ---
 
@@ -171,14 +169,15 @@ JSON objects are produced throughout the stack. Enforcement uses **`validateResu
 
 ## Safest Next Implementation Step
 
-**Validate task track files at load time** (workflow plan validation is done).
+**Contract-test audit JSONL or align tool registry schema** (workflow plan and task track validation are done).
 
 | Priority | Action | Risk | Why |
 |---|---|---|---|
-| ~~**1 (recommended)**~~ | ~~`validateResult(plan, workflowPlanSchema)` after `buildRunPlan()`~~ | — | **Done (2026-06-20)** — `validateBuiltRunPlan()` in `run-plan-builder.js` |
-| **1 (recommended)** | `validateResult(track, taskTrackSchema)` in `decomposer.loadTrackFile()` | Low | Two track files; fails at server start / first load |
-| **2** | Contract test: audit JSONL lines match `run-log-audit-record` core fields | Low | Read-only validation in tests |
-| **3** | Align `tool-registry-entry` schema with `toPublicToolMetadata()` | Medium | Doc/schema drift fix before enforcement |
+| ~~**1**~~ | ~~`validateResult(plan, workflowPlanSchema)` after `buildRunPlan()`~~ | — | **Done (2026-06-20)** |
+| ~~**1**~~ | ~~`validateResult(track, taskTrackSchema)` in `decomposer.loadTrackFile()`~~ | — | **Done (2026-06-20)** — `validateLoadedTrackFile()` |
+| **1 (recommended)** | Validate `tool-packs/*/tool.json` at load in `loadToolPack()` | Low | Schemas aligned; stable file boundary; no API change |
+| **2** | Contract test audit JSONL lines match `run-log-audit-record` core fields | Low | Read-only validation in tests |
+| ~~**2**~~ | ~~Align `tool-registry-entry` schema with `toPublicToolMetadata()`~~ | — | **Done (2026-06-20)** — split into four stage schemas |
 | **Defer** | `final-output-manifest` wrapper, `model-registry-entry`, `nearby-node-capability` | — | No producer code yet |
 
 Use existing `validateResult()` — no new dependencies. Do **not** start by wrapping API responses in `final-output-manifest`; that would break client contracts.

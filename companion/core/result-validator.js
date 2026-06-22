@@ -202,6 +202,14 @@ function validateOneOf(value, schema, path, errors, rootSchema) {
 }
 
 function validateType(value, schema, path, errors) {
+  if (Array.isArray(schema.type)) {
+    if (!schema.type.some((typeName) => matchesJsonType(value, typeName))) {
+      errors.push(`${path} must be ${schema.type.join(" or ")}.`);
+    }
+
+    return;
+  }
+
   if (schema.type === "array") {
     if (!Array.isArray(value)) {
       errors.push(`${path} must be an array.`);
@@ -229,6 +237,26 @@ function validateType(value, schema, path, errors) {
   if (schema.type && typeof value !== schema.type) {
     errors.push(`${path} must be a ${schema.type}.`);
   }
+}
+
+function matchesJsonType(value, typeName) {
+  if (typeName === "null") {
+    return value === null;
+  }
+
+  if (typeName === "array") {
+    return Array.isArray(value);
+  }
+
+  if (typeName === "integer") {
+    return Number.isInteger(value);
+  }
+
+  if (typeName === "object") {
+    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+  }
+
+  return typeof value === typeName;
 }
 
 module.exports = {

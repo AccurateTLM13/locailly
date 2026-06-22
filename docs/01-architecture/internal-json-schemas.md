@@ -10,14 +10,17 @@ Canonical JSON Schema files for Local Brain internal state. These document the *
 |---|---|---|---|
 | Workflow plan | [workflow-plan.schema.json](../../companion/schemas/internal/workflow-plan.schema.json) | **Runtime-enforced at build** — `validateBuiltRunPlan()` in `run-plan-builder.js` after `buildRunPlan()` | Run plan from `POST /workflows/plan` and `/workflows/run` |
 | Task track | [task-track.schema.json](../../companion/schemas/internal/task-track.schema.json) | **Runtime-enforced at load** — `validateLoadedTrackFile()` in `decomposer.js` when track files are loaded | Track definition files under `companion/pit-crew/tracks/` |
-| Tool registry entry | [tool-registry-entry.schema.json](../../companion/schemas/internal/tool-registry-entry.schema.json) | **Produced, not schema-validated** — `/tools` shape differs (`pack_trust`, etc.) | Single tool from a pack manifest or showcase registration |
+| Tool pack manifest | [tool-pack-manifest.schema.json](../../companion/schemas/internal/tool-pack-manifest.schema.json) | **Contract tests only** — on-disk `tool-packs/*/tool.json` | Pack root manifest |
+| Tool pack manifest tool | [tool-pack-manifest-tool.schema.json](../../companion/schemas/internal/tool-pack-manifest-tool.schema.json) | **Contract tests only** — manifest `tools[]` entries | Pre-registration tool declaration |
+| Internal registry entry | [internal-tool-registry-entry.schema.json](../../companion/schemas/internal/internal-tool-registry-entry.schema.json) | **Contract tests only** — serializable subset of `registry.get()` values | camelCase in-process registry object |
+| Public tool metadata | [public-tool-metadata.schema.json](../../companion/schemas/internal/public-tool-metadata.schema.json) | **Contract tests only** — `toPublicToolMetadata()` / `GET /tools` | snake_case public API item |
 | Model registry entry | [model-registry-entry.schema.json](../../companion/schemas/internal/model-registry-entry.schema.json) | **Spec only** — `model-profiles.js` uses a different shape | Model scorecard / skill sheet row for routing |
 | NearbyNode capability | [nearby-node-capability.schema.json](../../companion/schemas/internal/nearby-node-capability.schema.json) | **Spec only** — NearbyNode not implemented | Capability advertisement from a nearby device |
 | Validation result | [validation-result.schema.json](../../companion/schemas/internal/validation-result.schema.json) | **Partial shape only** — `verify_output` returns `{ valid, errors }`; not validated against this file; `validate_priority_fixes` uses a different shape | Per-step or final structural validation outcome |
 | Run log / audit record | [run-log-audit-record.schema.json](../../companion/schemas/internal/run-log-audit-record.schema.json) | **Normalized, not schema-validated** — `audit-log.js` writes JSONL | Summary-only audit JSONL event |
 | Final output manifest | [final-output-manifest.schema.json](../../companion/schemas/internal/final-output-manifest.schema.json) | **Spec only** — runtime emits flat handoff + `markdown`, not manifest wrapper | Target export contract; not current API shape |
 
-**Audit:** [../04-validation/json-first-schema-audit.md](../04-validation/json-first-schema-audit.md)
+**Audit:** [../04-validation/json-first-schema-audit.md](../04-validation/json-first-schema-audit.md) · **Tool metadata contracts:** [../04-validation/tool-metadata-contract-audit.md](../04-validation/tool-metadata-contract-audit.md)
 
 ## Usage Rules
 

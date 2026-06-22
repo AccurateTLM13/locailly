@@ -6,7 +6,7 @@ The **capability registry** is how Local Brain discovers what can run: tools, pa
 
 **Implemented today** as the **tool registry** (`companion/tools/registry.js`) plus `GET /tools`.
 
-Schema: [internal-json-schemas.md](./internal-json-schemas.md) → `tool-registry-entry.schema.json`
+Schema: [internal-json-schemas.md](./internal-json-schemas.md) (manifest, internal registry, public metadata)
 
 ## What It Owns
 
