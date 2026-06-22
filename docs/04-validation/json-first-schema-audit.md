@@ -109,7 +109,7 @@ Locaily uses **multiple validation-related contracts**, not one generic schema. 
 
 | Schema | Runtime status | Shape | Primary producers |
 |---|---|---|---|
-| `workflow-verification-result.schema.json` | Contract tests only | `{ valid, errors }` | `lighthouse.verify_handoff`, `deal-sniper` validate-analysis, `text.validate_schema`; embedded as `meta.verification` |
+| `workflow-verification-result.schema.json` | **Runtime-enforced at step gate** — `validateWorkflowVerificationOutput()` in `validateStepOutput()` before reading `valid` | `{ valid, errors }` | Designated verification steps only (`track.verification_step` / registry) |
 | `engine-schema-validation-result.schema.json` | Internal primitive (not API-enforced) | `{ ok, errors }` | `validateResult()` in `result-validator.js` |
 | `priority-fix-review-result.schema.json` | Contract tests only | `{ thinking?, priorityFixes, needsReview }` | `lighthouse.validate_priority_fixes` — **not** a verification gate despite step name |
 | `orchestration-step-gate-result.schema.json` | Contract tests only | `{ ok, code?, message?, errors }` | `validateStepOutput()` in `run-plan-validator.js` |
@@ -117,7 +117,7 @@ Locaily uses **multiple validation-related contracts**, not one generic schema. 
 
 **Naming trap:** `validate_priority_fixes` performs content review / audit-truth enrichment. It does **not** return `{ valid, errors }`.
 
-**Recommended next enforcement boundary:** Contract-test `{ valid, errors }` producers, then optionally validate in `validateStepOutput()` for `verify_output` / `validate_analysis` steps. Do **not** conflate with `validateResult()` `{ ok, errors }`.
+**Recommended next enforcement boundary:** Contract-test `toPublicToolMetadata()` output, or intermediate step artifacts on `/workflows/run`. Workflow verification schema enforcement at the step gate is **done (2026-06-20)**.
 
 Contract tests: `scripts/validation-result-contract-test.js`
 
@@ -166,7 +166,7 @@ Contract tests: `scripts/validation-result-contract-test.js`
 | Validate priorities | `validate_priority_fixes` | `{ thinking, priorityFixes, needsReview }` | Input only | **Priority fix review** — not workflow verification |
 | Match | `match_fixes` | `{ fixes }` | Input only | Tool pack schema |
 | Compose | `write_handoff` | Handoff object (+ `markdown` added by orchestrator) | `lighthouse-handoff` input validation in tool | Flat result, not `final-output-manifest` |
-| Verify | `verify_output` | `{ valid, errors }` | Boolean gate in `run-plan-validator` | Aligns with `workflow-verification-result` |
+| Verify | `verify_output` | `{ valid, errors }` | Schema gate + boolean gate in `run-plan-validator` | **Runtime-enforced** via `workflow-verification-result` at step gate |
 | Final assembly | `assembleLighthouseTrackResult` | Flat result + `markdown` + `meta.verification` | `lighthouse-handoff.schema.json` on handoff body | **Not** `final-output-manifest` |
 
 **Markdown export:** `formatHandoffMarkdown()` in `companion/pit-crew/markdown.js` — called from orchestrator after `write_handoff`, consistent with export-layer docs.
@@ -184,8 +184,8 @@ Contract tests: `scripts/validation-result-contract-test.js`
 | ~~**1 (recommended)**~~ | Validate `tool-packs/*/tool.json` at load in `loadToolPack()` | — | **Done (2026-06-20)** |
 | ~~**1 (recommended)**~~ | Internal registry metadata snapshot at registration | — | **Done (2026-06-20)** — `validateInternalToolRegistryEntry()` in `registerTool()` |
 | ~~**1 (recommended)**~~ | Validate audit JSONL lines at durable write | — | **Done (2026-06-20)** — `appendAuditRecord()` + `validateAuditRecord()` |
-| **1 (recommended)** | Contract-test workflow verification outputs (`{ valid, errors }`) | Low | See [validation-result-contract-audit.md](./validation-result-contract-audit.md) |
-| **2** | Validate `toPublicToolMetadata()` output | Low | Protects `/tools` contract before optional runtime |
+| ~~**1 (recommended)**~~ | Contract-test workflow verification outputs (`{ valid, errors }`) | — | **Done (2026-06-20)** — runtime in `validateStepOutput()` |
+| **1 (recommended)** | Validate `toPublicToolMetadata()` output | Low | Protects `/tools` contract before optional runtime |
 | **2** | Contract test intermediate step artifacts on `/workflows/run` | Low | Read-only validation in tests |
 | ~~**2**~~ | ~~Align `tool-registry-entry` schema with `toPublicToolMetadata()`~~ | — | **Done (2026-06-20)** — split into four stage schemas |
 | **Defer** | `final-output-manifest` wrapper, `model-registry-entry`, `nearby-node-capability` | — | No producer code yet |

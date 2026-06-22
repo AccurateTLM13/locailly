@@ -1,6 +1,10 @@
 const assert = require("node:assert/strict");
 const { validateResult } = require("../companion/core/result-validator");
-const { validateStepOutput } = require("../companion/orchestration/run-plan-validator");
+const {
+  isVerificationGateStep,
+  validateStepOutput
+} = require("../companion/orchestration/run-plan-validator");
+const { loadTrack } = require("../companion/pit-crew/decomposer");
 const { dealSniperTool } = require("../companion/tools/deal-sniper");
 const lighthouseParser = require("../tool-packs/lighthouse-parser-pack/index");
 const standardText = require("../tool-packs/standard-text-pack/index");
@@ -107,12 +111,57 @@ function checkEngineSchemaValidationShape() {
 }
 
 function checkOrchestrationStepGateShape() {
-  const verificationGate = validateStepOutput(
+  const lighthouseTrack = loadTrack("website_audit.lighthouse_handoff");
+  const dealsniperTrack = loadTrack("marketplace.dealsniper");
+  const verifyTrackStep = lighthouseTrack.steps.find((step) => step.id === "verify_output");
+  const validateAnalysisTrackStep = dealsniperTrack.steps.find((step) => step.id === "validate_analysis");
+  const priorityFixTrackStep = lighthouseTrack.steps.find((step) => step.id === "validate_priority_fixes");
+
+  const verificationPass = validateStepOutput(
+    { step_id: "verify_output" },
+    { valid: true, errors: [] },
+    verifyTrackStep,
+    lighthouseTrack
+  );
+  assertSchemaValid("validateStepOutput.verification-pass", verificationPass, orchestrationStepGateSchema);
+  assert(verificationPass.ok, "Expected valid verification output to pass step gate.");
+
+  const verificationFail = validateStepOutput(
     { step_id: "verify_output" },
     { valid: false, errors: ["handoff.clientSummary is required."] },
-    { executor: { type: "tool" } }
+    verifyTrackStep,
+    lighthouseTrack
   );
-  assertSchemaValid("validateStepOutput.verification-fail", verificationGate, orchestrationStepGateSchema);
+  assertSchemaValid("validateStepOutput.verification-fail", verificationFail, orchestrationStepGateSchema);
+  assert.equal(verificationFail.code, "STEP_VERIFICATION_FAILED", "Expected legitimate verification failure code.");
+  assert.notEqual(verificationFail.code, "WORKFLOW_VERIFICATION_RESULT_INVALID");
+
+  const malformedMissingValid = validateStepOutput(
+    { step_id: "verify_output" },
+    { errors: [] },
+    verifyTrackStep,
+    lighthouseTrack
+  );
+  assert.equal(malformedMissingValid.code, "WORKFLOW_VERIFICATION_RESULT_INVALID");
+  assert(malformedMissingValid.validation && malformedMissingValid.validation.ok === false);
+
+  const malformedErrorsShape = validateStepOutput(
+    { step_id: "validate_analysis" },
+    { valid: true, errors: "not-an-array" },
+    validateAnalysisTrackStep,
+    dealsniperTrack
+  );
+  assert.equal(malformedErrorsShape.code, "WORKFLOW_VERIFICATION_RESULT_INVALID");
+  assert.equal(malformedErrorsShape.toolId, "deal-sniper");
+
+  const priorityFixReview = validateStepOutput(
+    { step_id: "validate_priority_fixes" },
+    { thinking: "review", priorityFixes: [], needsReview: [] },
+    priorityFixTrackStep,
+    lighthouseTrack
+  );
+  assert(priorityFixReview.ok, "validate_priority_fixes must not be checked as workflow verification.");
+  assert(!isVerificationGateStep({ step_id: "validate_priority_fixes" }, lighthouseTrack));
 
   const schemaGate = validateStepOutput(
     { step_id: "prioritize_fixes" },
@@ -122,7 +171,8 @@ function checkOrchestrationStepGateShape() {
         type: "model",
         schema: "companion/pit-crew/schemas/prioritize-fixes.schema.json"
       }
-    }
+    },
+    lighthouseTrack
   );
   assertSchemaValid("validateStepOutput.model-pass", schemaGate, orchestrationStepGateSchema);
 }

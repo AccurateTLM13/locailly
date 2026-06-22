@@ -45,7 +45,7 @@ The legacy [validation-result.schema.json](../../companion/schemas/internal/vali
 
 | Consumer | Behavior |
 |---|---|
-| `run-plan-validator.js` | Imperative boolean gate on `verify_output` and `validate_analysis` |
+| `run-plan-validator.js` | Schema gate via `validateWorkflowVerificationOutput()` then boolean gate on designated verification steps |
 | `pit-crew/orchestrator.js` | Copies artifact into `result.meta.verification` |
 | `validateWorkflowResult()` | Fails workflow when `meta.verification.valid === false` |
 | Clients / smoke tests | Read `result.meta.verification.valid` |
@@ -60,6 +60,8 @@ The legacy [validation-result.schema.json](../../companion/schemas/internal/vali
 ```
 
 Tool pack output schemas already match this shape (`lighthouse.verify_handoff.output.schema.json`, `text.validate_schema.output.schema.json`).
+
+**Runtime enforcement (2026-06-20):** `validateStepOutput()` validates against `workflow-verification-result.schema.json` when `planStep.step_id` matches `track.verification_step` or registry `validation_expectations.verification_step`. Malformed output → `WORKFLOW_VERIFICATION_RESULT_INVALID`; `{ valid: false, errors }` after schema pass → `STEP_VERIFICATION_FAILED`.
 
 ---
 

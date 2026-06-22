@@ -1,6 +1,13 @@
 # Fallback and Validation
 
-How track runs validate output and recover from failures **today**. Verification steps return `{ valid, errors }` per [workflow-verification-result.schema.json](../../companion/schemas/internal/workflow-verification-result.schema.json) (contract-tested, not runtime-enforced). The `validate_priority_fixes` step returns a **content review** shape — not a verification gate. See [../04-validation/validation-result-contract-audit.md](../04-validation/validation-result-contract-audit.md).
+How track runs validate output and recover from failures **today**. Designated verification steps (`track.verification_step` or registry `validation_expectations.verification_step`) return `{ valid, errors }` validated at runtime against [workflow-verification-result.schema.json](../../companion/schemas/internal/workflow-verification-result.schema.json) in `validateStepOutput()` **before** the gate reads `valid`.
+
+| Failure class | Code | Meaning |
+|---|---|---|
+| Malformed verification output | `WORKFLOW_VERIFICATION_RESULT_INVALID` | Producer returned wrong shape — contract/runtime error |
+| Legitimate verification failure | `STEP_VERIFICATION_FAILED` | `{ valid: false, errors: [...] }` after schema passed |
+
+The `validate_priority_fixes` step returns a **content review** shape — not a verification gate. See [../04-validation/validation-result-contract-audit.md](../04-validation/validation-result-contract-audit.md).
 
 ## Per-Step Validation
 
@@ -8,7 +15,7 @@ How track runs validate output and recover from failures **today**. Verification
 |---|---|---|
 | Tool input validation | Tool handler `validateInput` | Called before tool step runs |
 | Model JSON schema | Model router + step `executor.schema` | Structured output enforced for model steps |
-| Handoff verification | `verify_output` step | Deterministic checker on final handoff object |
+| Handoff verification | `verify_output` step (when designated by `verification_step`) | Schema-validated in `validateStepOutput()`, then deterministic pass/fail gate |
 | Final output schema | Orchestrator + `output_schema` | Track-level schema check on result |
 
 Lighthouse proof track runs an explicit **verify_output** step before returning.
