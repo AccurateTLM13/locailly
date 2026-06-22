@@ -2,14 +2,15 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { dealSniperTool } = require("./deal-sniper");
 const { lighthouseHandoffTool } = require("./lighthouse-handoff");
+const { validateResult } = require("../core/result-validator");
 
-const TRUST_LEVELS = new Set([
-  "official",
-  "verified",
-  "community",
-  "experimental",
-  "local_private"
-]);
+const toolPackManifestToolSchema = require("../schemas/internal/tool-pack-manifest-tool.schema.json");
+const toolPackManifestSchema = {
+  ...require("../schemas/internal/tool-pack-manifest.schema.json"),
+  $defs: {
+    manifestTool: toolPackManifestToolSchema
+  }
+};
 
 // Built-in compatibility tools
 const BUILT_IN_TOOLS = [
@@ -73,41 +74,44 @@ function createToolRegistry(options = {}) {
   };
 }
 
-function loadToolPack(packDir, manifestPath, toolsMap, enabledSet) {
+function parseToolPackManifest(manifestPath) {
   let manifest;
+
   try {
-    const raw = fs.readFileSync(manifestPath, "utf8");
-    manifest = JSON.parse(raw);
+    manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   } catch (err) {
-    console.warn(`[Registry Loader] Warning: Failed to parse manifest at '${manifestPath}': ${err.message}`);
-    return;
+    const error = new Error(`Failed to parse tool pack manifest '${manifestPath}': ${err.message}`);
+    error.code = "TOOL_PACK_MANIFEST_PARSE_INVALID";
+    error.manifestPath = manifestPath;
+    error.nextStep = "Fix JSON syntax in the tool pack manifest file.";
+    throw error;
   }
 
-  // Validate manifest structure
-  if (!manifest || typeof manifest !== "object") {
-    console.warn(`[Registry Loader] Warning: Manifest at '${manifestPath}' must be a JSON object.`);
-    return;
+  return manifest;
+}
+
+function validateLoadedToolPackManifest(manifest, manifestPath) {
+  const validation = validateResult(manifest, toolPackManifestSchema, "manifest");
+
+  if (validation.ok) {
+    return validation;
   }
-  if (typeof manifest.id !== "string" || !manifest.id.trim()) {
-    console.warn(`[Registry Loader] Warning: Manifest at '${manifestPath}' is missing a valid string 'id'.`);
-    return;
+
+  const packId = manifest && typeof manifest.id === "string" ? manifest.id : undefined;
+  const error = new Error(`Tool pack manifest '${manifestPath}' did not match tool-pack-manifest.schema.json.`);
+  error.code = "TOOL_PACK_MANIFEST_INVALID";
+  error.manifestPath = manifestPath;
+  if (packId) {
+    error.packId = packId;
   }
-  if (typeof manifest.name !== "string" || !manifest.name.trim()) {
-    console.warn(`[Registry Loader] Warning: Manifest at '${manifestPath}' is missing a valid string 'name'.`);
-    return;
-  }
-  if (typeof manifest.version !== "string" || !manifest.version.trim()) {
-    console.warn(`[Registry Loader] Warning: Manifest at '${manifestPath}' is missing a valid string 'version'.`);
-    return;
-  }
-  if (typeof manifest.trust !== "string" || !TRUST_LEVELS.has(manifest.trust)) {
-    console.warn(`[Registry Loader] Warning: Manifest at '${manifestPath}' has invalid or missing 'trust' level: '${manifest.trust}'.`);
-    return;
-  }
-  if (!Array.isArray(manifest.tools) || manifest.tools.length === 0) {
-    console.warn(`[Registry Loader] Warning: Manifest at '${manifestPath}' must define a non-empty 'tools' array.`);
-    return;
-  }
+  error.nextStep = "Fix the tool pack manifest or update the matching manifest schema.";
+  error.validation = validation;
+  throw error;
+}
+
+function loadToolPack(packDir, manifestPath, toolsMap, enabledSet) {
+  const manifest = parseToolPackManifest(manifestPath);
+  validateLoadedToolPackManifest(manifest, manifestPath);
 
   // Load implementation file if it exists
   let packImpl = {};
@@ -126,11 +130,6 @@ function loadToolPack(packDir, manifestPath, toolsMap, enabledSet) {
 
   // Register each tool in the manifest
   for (const toolDef of manifest.tools) {
-    if (typeof toolDef.id !== "string" || !toolDef.id.trim()) {
-      console.warn(`[Registry Loader] Warning: A tool in manifest '${manifest.id}' is missing a valid string 'id'.`);
-      continue;
-    }
-
     const toolId = toolDef.id.trim();
 
     // If enabledTools constraint is specified, check if this tool is enabled
@@ -334,5 +333,8 @@ function validateTool(tool) {
 }
 
 module.exports = {
-  createToolRegistry
+  createToolRegistry,
+  loadToolPack,
+  parseToolPackManifest,
+  validateLoadedToolPackManifest
 };

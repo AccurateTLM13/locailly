@@ -1,11 +1,22 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
-const { createToolRegistry } = require("../companion/tools/registry");
+const {
+  createToolRegistry,
+  loadToolPack,
+  parseToolPackManifest,
+  validateLoadedToolPackManifest
+} = require("../companion/tools/registry");
 const { validateResult } = require("../companion/core/result-validator");
 
-const toolPackManifestSchema = require("../companion/schemas/internal/tool-pack-manifest.schema.json");
 const toolPackManifestToolSchema = require("../companion/schemas/internal/tool-pack-manifest-tool.schema.json");
+const toolPackManifestSchema = {
+  ...require("../companion/schemas/internal/tool-pack-manifest.schema.json"),
+  $defs: {
+    manifestTool: toolPackManifestToolSchema
+  }
+};
 const internalToolRegistryEntrySchema = require("../companion/schemas/internal/internal-tool-registry-entry.schema.json");
 const publicToolMetadataSchema = require("../companion/schemas/internal/public-tool-metadata.schema.json");
 
@@ -156,8 +167,83 @@ function checkMalformedRepresentatives() {
   }, publicToolMetadataSchema);
 }
 
+function withTempManifestFile(contents, fn) {
+  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "locaily-tool-pack-"));
+  const packDir = path.join(tmpRoot, "bad-pack");
+  fs.mkdirSync(packDir, { recursive: true });
+  const manifestPath = path.join(packDir, "tool.json");
+  fs.writeFileSync(manifestPath, contents, "utf8");
+
+  try {
+    fn({ packDir, manifestPath });
+  } finally {
+    fs.rmSync(tmpRoot, { recursive: true, force: true });
+  }
+}
+
+function checkRuntimeManifestValidation() {
+  assert.throws(
+    () => validateLoadedToolPackManifest({
+      id: "bad-pack",
+      name: "Bad Pack",
+      version: "0.0.0",
+      tools: [{ id: "x", output_schema: "out.json" }]
+    }, "/tmp/bad-pack/tool.json"),
+    (error) => error.code === "TOOL_PACK_MANIFEST_INVALID"
+      && error.manifestPath === "/tmp/bad-pack/tool.json"
+      && error.packId === "bad-pack"
+      && error.validation && error.validation.ok === false
+      && Array.isArray(error.validation.errors)
+      && error.validation.errors.length > 0,
+    "Expected missing trust to throw TOOL_PACK_MANIFEST_INVALID."
+  );
+
+  assert.throws(
+    () => validateLoadedToolPackManifest({
+      id: "bad-pack",
+      name: "Bad Pack",
+      version: "0.0.0",
+      trust: "official",
+      tools: [{ id: "x" }]
+    }, "/tmp/bad-pack/tool.json"),
+    (error) => error.code === "TOOL_PACK_MANIFEST_INVALID"
+      && error.validation.errors.some((message) => message.includes("output_schema")),
+    "Expected invalid tool entry to throw TOOL_PACK_MANIFEST_INVALID."
+  );
+
+  withTempManifestFile("{ not-json", ({ manifestPath }) => {
+    assert.throws(
+      () => parseToolPackManifest(manifestPath),
+      (error) => error.code === "TOOL_PACK_MANIFEST_PARSE_INVALID"
+        && error.manifestPath === manifestPath,
+      "Expected JSON parse failure to throw TOOL_PACK_MANIFEST_PARSE_INVALID."
+    );
+  });
+
+  withTempManifestFile(JSON.stringify({
+    id: "bad-pack",
+    name: "Bad Pack",
+    version: "0.0.0",
+    tools: [{ id: "x", output_schema: "missing.json" }]
+  }), ({ packDir, manifestPath }) => {
+    const toolsMap = new Map();
+    assert.throws(
+      () => loadToolPack(packDir, manifestPath, toolsMap, new Set()),
+      (error) => error.code === "TOOL_PACK_MANIFEST_INVALID",
+      "Expected loadToolPack to reject schema-invalid manifest before registration."
+    );
+    assert.equal(toolsMap.size, 0, "Invalid manifest must not register tools.");
+  });
+
+  const registry = createToolRegistry();
+  const textClean = registry.listPublic().find((tool) => tool.id === "text.clean");
+  assert(textClean, "Expected text.clean to remain registered after manifest validation rollout.");
+  assert.equal(textClean.pack, "standard-text-pack");
+}
+
 function main() {
   checkManifestFiles();
+  checkRuntimeManifestValidation();
   checkInternalRegistryEntries();
   checkPublicToolsMetadata();
   checkMalformedRepresentatives();

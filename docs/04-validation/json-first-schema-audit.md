@@ -9,7 +9,7 @@ Six of eight internal JSON schemas remain **documentation-only**. **`workflow-pl
 
 JSON objects are produced throughout the stack. Enforcement uses **`validateResult()`** (now with `$ref` / `minItems` support for workflow plans), **imperative checks**, and **workflow-specific schemas** (`companion/schemas/`, `companion/pit-crew/schemas/`, `tool-packs/*/schemas/`).
 
-**Safest next implementation step:** enforce **`tool-packs/*/tool.json` at load** (schemas aligned — see [tool-metadata-contract-audit.md](./tool-metadata-contract-audit.md)), or contract-test audit JSONL lines.
+**Safest next implementation step:** validate **internal registry metadata** after registration (contract tests first), or contract-test **audit JSONL** lines.
 
 ---
 
@@ -60,16 +60,18 @@ JSON objects are produced throughout the stack. Enforcement uses **`validateResu
 
 ### 3. Tool metadata (split schemas)
 
-Replaced merged `tool-registry-entry.schema.json` with four stage-specific schemas. See [tool-metadata-contract-audit.md](./tool-metadata-contract-audit.md).
+Manifest schemas are **runtime-enforced at load**. Internal registry and public metadata remain contract-test-only. See [tool-metadata-contract-audit.md](./tool-metadata-contract-audit.md).
 
 | Schema | Runtime status |
 |---|---|
-| `tool-pack-manifest.schema.json` | Contract tests only |
-| `tool-pack-manifest-tool.schema.json` | Contract tests only |
+| `tool-pack-manifest.schema.json` | **Runtime-enforced at load** — `validateLoadedToolPackManifest()` |
+| `tool-pack-manifest-tool.schema.json` | **Runtime-enforced at load** — via `#/$defs/manifestTool` |
 | `internal-tool-registry-entry.schema.json` | Contract tests only |
 | `public-tool-metadata.schema.json` | Contract tests only |
 
-**Recommended enforcement boundary:** validate `tool-packs/*/tool.json` at load in `loadToolPack()` (no runtime enforcement in this pass).
+**Parse vs schema errors:** JSON syntax → `TOOL_PACK_MANIFEST_PARSE_INVALID`; schema shape → `TOOL_PACK_MANIFEST_INVALID`.
+
+**Recommended next enforcement boundary:** internal registry metadata snapshot after registration, or audit JSONL contract tests.
 
 ---
 
@@ -175,7 +177,8 @@ Replaced merged `tool-registry-entry.schema.json` with four stage-specific schem
 |---|---|---|---|
 | ~~**1**~~ | ~~`validateResult(plan, workflowPlanSchema)` after `buildRunPlan()`~~ | — | **Done (2026-06-20)** |
 | ~~**1**~~ | ~~`validateResult(track, taskTrackSchema)` in `decomposer.loadTrackFile()`~~ | — | **Done (2026-06-20)** — `validateLoadedTrackFile()` |
-| **1 (recommended)** | Validate `tool-packs/*/tool.json` at load in `loadToolPack()` | Low | Schemas aligned; stable file boundary; no API change |
+| ~~**1 (recommended)**~~ | Validate `tool-packs/*/tool.json` at load in `loadToolPack()` | — | **Done (2026-06-20)** |
+| **1 (recommended)** | Internal registry metadata snapshot after registration | Low | Contract tests exist; optional runtime next |
 | **2** | Contract test audit JSONL lines match `run-log-audit-record` core fields | Low | Read-only validation in tests |
 | ~~**2**~~ | ~~Align `tool-registry-entry` schema with `toPublicToolMetadata()`~~ | — | **Done (2026-06-20)** — split into four stage schemas |
 | **Defer** | `final-output-manifest` wrapper, `model-registry-entry`, `nearby-node-capability` | — | No producer code yet |

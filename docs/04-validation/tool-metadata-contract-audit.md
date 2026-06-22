@@ -9,8 +9,8 @@
 
 | Stage | Schema | Runtime enforced |
 |---|---|---|
-| Tool pack manifest (root) | [tool-pack-manifest.schema.json](../../companion/schemas/internal/tool-pack-manifest.schema.json) | **No** — contract tests only |
-| Tool pack manifest (tool entry) | [tool-pack-manifest-tool.schema.json](../../companion/schemas/internal/tool-pack-manifest-tool.schema.json) | **No** — contract tests only |
+| Tool pack manifest (root) | [tool-pack-manifest.schema.json](../../companion/schemas/internal/tool-pack-manifest.schema.json) | **Yes** — `validateLoadedToolPackManifest()` in `loadToolPack()` |
+| Tool pack manifest (tool entry) | [tool-pack-manifest-tool.schema.json](../../companion/schemas/internal/tool-pack-manifest-tool.schema.json) | **Yes** — via root manifest `#/$defs/manifestTool` (loaded from this file at module init) |
 | Internal registry entry | [internal-tool-registry-entry.schema.json](../../companion/schemas/internal/internal-tool-registry-entry.schema.json) | **No** — contract tests only |
 | Public `/tools` metadata | [public-tool-metadata.schema.json](../../companion/schemas/internal/public-tool-metadata.schema.json) | **No** — contract tests only |
 
@@ -58,7 +58,7 @@ Contract tests: `scripts/tool-registry-schema-test.js`
 
 **Producer:** Pack authors on disk  
 **Consumer:** `loadToolPack()` in `companion/tools/registry.js`  
-**Imperative validation today:** pack `id`, `name`, `version`, `trust` ∈ `TRUST_LEVELS`, non-empty `tools[]`; per-tool `id`, `output_schema` file load
+**Imperative validation today (after schema):** output/input schema file load, handler resolution, `validateTool()` registration checks
 
 Representative manifest tool entry:
 
@@ -100,9 +100,10 @@ Showcase tools may omit `trust` / `packVersion`; pack-loaded tools include both 
 
 | Priority | Boundary | Why |
 |---|---|---|
-| **1 (recommended next)** | **`tool-packs/*/tool.json` at load** | File on disk; fails before registration; matches existing imperative checks; no API impact |
-| **2** | **Internal metadata snapshot after registration** | Validates normalization (`packVersion`, `requiresRuntime`, schema paths) in tests then optionally in `loadToolPack` |
-| **3** | **`toPublicToolMetadata()` output** | Protects `/tools` contract; run in contract tests before optional runtime check in `listPublic()` |
+| ~~**1**~~ | **`tool-packs/*/tool.json` at load** | **Done (2026-06-20)** — `validateLoadedToolPackManifest()` in `loadToolPack()` |
+| **1 (recommended next)** | **Internal metadata snapshot after registration** | Validates normalization in contract tests; optional runtime next |
+| **2** | **`toPublicToolMetadata()` output** | Protects `/tools` contract before optional runtime in `listPublic()` |
+| **3** | Audit JSONL contract tests | Read-only validation |
 | **Defer** | Tool router | Already fails imperatively on missing tools/tasks/handlers |
 
 Do **not** validate public metadata with the internal schema or vice versa.

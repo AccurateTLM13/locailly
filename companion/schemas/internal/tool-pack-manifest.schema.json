@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://locaily.dev/schemas/internal/tool-pack-manifest.schema.json",
   "title": "Tool Pack Manifest",
-  "description": "Root shape of tool-packs/*/tool.json as validated imperatively by companion/tools/registry.js loadToolPack().",
+  "description": "Root shape of tool-packs/*/tool.json validated at load by companion/tools/registry.js loadToolPack().",
   "type": "object",
   "required": ["id", "name", "version", "trust", "tools"],
   "properties": {

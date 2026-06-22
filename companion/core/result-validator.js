@@ -116,6 +116,12 @@ function validateValue(value, schema, path, errors, rootSchema) {
     errors.push(`${path} must be one of: ${schema.enum.join(", ")}.`);
   }
 
+  if (typeof value === "string") {
+    if (typeof schema.minLength === "number" && value.length < schema.minLength) {
+      errors.push(`${path} must be at least ${schema.minLength} characters.`);
+    }
+  }
+
   if (typeof value === "number") {
     if (typeof schema.minimum === "number" && value < schema.minimum) {
       errors.push(`${path} must be at least ${schema.minimum}.`);
