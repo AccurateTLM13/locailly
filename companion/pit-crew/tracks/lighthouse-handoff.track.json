@@ -4,6 +4,7 @@
   "name": "Lighthouse Developer Handoff",
   "description": "First proof track — PageSpeed/Lighthouse report to developer handoff for coding agents.",
   "output_schema": "companion/schemas/lighthouse-handoff.schema.json",
+  "verification_step": "verify_output",
   "steps": [
     {
       "id": "extract_metrics",

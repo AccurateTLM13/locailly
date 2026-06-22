@@ -1,6 +1,7 @@
 const path = require("node:path");
 const { validateResult } = require("../core/result-validator");
 const { getTrackRegistryEntry } = require("./track-registry");
+const workflowVerificationResultSchema = require("../schemas/internal/workflow-verification-result.schema.json");
 
 function loadSchema(schemaPath) {
   if (!schemaPath) {
@@ -11,7 +12,61 @@ function loadSchema(schemaPath) {
   return require(resolved);
 }
 
-function validateStepOutput(planStep, output, trackStep) {
+function resolveVerificationStepId(track) {
+  if (!track || typeof track !== "object") {
+    return null;
+  }
+
+  if (typeof track.verification_step === "string" && track.verification_step.trim()) {
+    return track.verification_step.trim();
+  }
+
+  const registryEntry = getTrackRegistryEntry(track.track_id);
+  const designatedStep = registryEntry
+    && registryEntry.validation_expectations
+    && registryEntry.validation_expectations.verification_step;
+
+  return typeof designatedStep === "string" && designatedStep.trim()
+    ? designatedStep.trim()
+    : null;
+}
+
+function isVerificationGateStep(planStep, track) {
+  const verificationStepId = resolveVerificationStepId(track);
+
+  if (!verificationStepId || !planStep || typeof planStep.step_id !== "string") {
+    return false;
+  }
+
+  return planStep.step_id === verificationStepId;
+}
+
+function resolveVerificationToolId(trackStep) {
+  if (!trackStep || !trackStep.executor || trackStep.executor.type !== "tool") {
+    return null;
+  }
+
+  return typeof trackStep.executor.tool === "string" ? trackStep.executor.tool : null;
+}
+
+function validateWorkflowVerificationOutput(output) {
+  return validateResult(output, workflowVerificationResultSchema, "verification");
+}
+
+function buildWorkflowVerificationResultInvalid(planStep, trackStep, schemaValidation) {
+  return {
+    ok: false,
+    code: "WORKFLOW_VERIFICATION_RESULT_INVALID",
+    message: `Verification step '${planStep.step_id}' returned an invalid verification result.`,
+    errors: schemaValidation.errors,
+    stepId: planStep.step_id,
+    toolId: resolveVerificationToolId(trackStep),
+    nextStep: "Fix the verification producer output or update workflow-verification-result.schema.json.",
+    validation: schemaValidation
+  };
+}
+
+function validateStepOutput(planStep, output, trackStep, track = null) {
   if (output === undefined || output === null) {
     return {
       ok: false,
@@ -44,14 +99,11 @@ function validateStepOutput(planStep, output, trackStep) {
     };
   }
 
-  if (planStep.step_id === "verify_output" || planStep.step_id === "validate_analysis") {
-    if (typeof output.valid !== "boolean") {
-      return {
-        ok: false,
-        code: "STEP_OUTPUT_INVALID",
-        message: `Verification step '${planStep.step_id}' must return valid boolean.`,
-        errors: ["valid boolean is required"]
-      };
+  if (isVerificationGateStep(planStep, track)) {
+    const schemaValidation = validateWorkflowVerificationOutput(output);
+
+    if (!schemaValidation.ok) {
+      return buildWorkflowVerificationResultInvalid(planStep, trackStep, schemaValidation);
     }
 
     if (output.valid === false) {
@@ -59,7 +111,7 @@ function validateStepOutput(planStep, output, trackStep) {
         ok: false,
         code: "STEP_VERIFICATION_FAILED",
         message: `Verification step '${planStep.step_id}' reported invalid output.`,
-        errors: Array.isArray(output.errors) ? output.errors : ["verification failed"]
+        errors: output.errors
       };
     }
   }
@@ -100,6 +152,9 @@ function validateWorkflowResult(trackId, result) {
 }
 
 module.exports = {
+  resolveVerificationStepId,
+  isVerificationGateStep,
+  validateWorkflowVerificationOutput,
   validateStepOutput,
   validateWorkflowResult
 };

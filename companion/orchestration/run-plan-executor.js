@@ -92,12 +92,28 @@ async function executeRunPlan({
         };
       }
 
-      const stepValidation = validateStepOutput(planStep, stepResult.output, trackStep);
+      const stepValidation = validateStepOutput(planStep, stepResult.output, trackStep, track);
 
       if (!stepValidation.ok) {
         const error = new Error(stepValidation.message);
         error.code = stepValidation.code;
         error.validationErrors = stepValidation.errors;
+
+        if (stepValidation.stepId) {
+          error.stepId = stepValidation.stepId;
+        }
+
+        if (stepValidation.toolId) {
+          error.toolId = stepValidation.toolId;
+        }
+
+        if (stepValidation.nextStep) {
+          error.nextStep = stepValidation.nextStep;
+        }
+
+        if (stepValidation.validation) {
+          error.validation = stepValidation.validation;
+        }
         planStep.duration_ms = Date.now() - stepStartedAt;
         planStep.worker_used = describeWorkerUsed(stepResult, trackStep);
         markStepFailed(plan, index, error);
