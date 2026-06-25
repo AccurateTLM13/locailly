@@ -1,33 +1,32 @@
 # Current Sprint
 
-**Updated:** 2026-06-15
+**Updated:** 2026-06-16
 
 ## Goal
 
-Complete Milestone 4 track-based orchestration and prepare Milestone 5 (legacy step-input fallback removal).
+Close Milestone 4 documentation and capture Milestone 5 planning checkpoint. **No M5 implementation in this sprint.**
 
 ## Completed (recent)
 
-- Milestone 3: model-step `input_map` (PR #8)
-- Milestone 4: workflow orchestration layer (`companion/orchestration/`, workflow APIs)
-- Lighthouse Handoff run plan + executor with audit logging
-- Clean-server smoke baseline: **55/55**
+- Milestone 4 merged: PR #9 → `main` (`c89db65`)
+- Post-merge smoke on `main`: **55/55 PASS**
+- Track-based orchestration layer shipped (`companion/orchestration/`, workflow APIs)
+- Completion note + M5 checkpoint docs added
 
-## In Scope (next)
+## In Scope (planning only)
 
-- Remove `buildLegacyToolStepInput()` / `buildLegacyModelStepInput()` when safe
-- Keep Lighthouse + DealSniper tracks and workflow runs passing smoke/contract/unit tests
-- Sync progress docs after merge
+- Review PR #10 `ai-models/` changes already on `main`
+- Decide canonical Lighthouse entry path (tool vs track vs workflow) — see [milestone-5-checkpoint.md](./milestone-5-checkpoint.md)
+- Record decision before any M5 code
 
-## Out of Scope
+## Out of Scope (this sprint)
 
-- Model swapping / Model Garage routing
-- NearbyNode routing
-- DAG runner implementation
-- Semantic quality validation scoring
+- Milestone 5 implementation (legacy fallback removal, audit hardening)
+- Model Swap Manager (`model-swap-manager.md` — local-only, separate track)
+- Model swapping, NearbyNode, DAG runner
 
 ## Done When
 
-- Legacy fallbacks removed or explicitly deferred with decision-log entry
-- `current-state.md`, `build-status.md`, and `next-agent-brief.md` match code
-- Smoke suite remains **55/55** on clean server
+- [x] Milestone 4 completion note published
+- [x] Milestone 5 planning checkpoint published
+- [ ] User approves M5 start gate (PR #10 review + canonical path decision)

@@ -18,11 +18,13 @@ Blunt snapshot of what Locaily is **right now**. When docs disagree with this fi
 - **Provider routing** — Ollama + mock via `companion/providers/router.js`
 - **Audit / scoreboard hooks** — `GET /audit`, `GET /scoreboard`, per-run recording
 - **Memory Bridge v0** — `/memory/status`, `/memory/context-pack`, `/memory/writeback/propose` (disabled by default)
+- **Operator Log editorial tracks** — experimental discovery and human-selected draft proposal paths
 - **Smoke and contract tests** — `scripts/smoke-test.js`, `scripts/contract-test.js` (**55/55** smoke on clean server with memory disabled)
 
 ## What Is Partial
 
-- **Track runner** — linear pipeline only; two workflow tracks in catalog
+- **Track runner** — linear pipeline only; four workflow tracks in catalog
+- **Operator Log editorial workflow** — source-audited discovery and draft validation implemented; model quality and editorial ledger remain experimental
 - **Model scorecards** — architecture spec exists; registry/selector not fully implemented
 - **Memory Bridge** — v0 endpoints + optional Lighthouse `compose-handoff` preflight; no apply/search/embeddings
 - **Console validation** — local validation UI exists; not a finished product surface

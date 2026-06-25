@@ -4,6 +4,60 @@ Dated record of meaningful build and planning sessions.
 
 ---
 
+## 2026-06-17 — Milestone 5: Lighthouse Handoff Parity Characterization
+
+**First M5 hardening change:** behavioral parity test between validation-console core sequence and workflow-orchestrated execution.
+
+### Changed
+
+- Added `scripts/lighthouse-handoff-parity-test.js` — fixed `slim-mobile.fixture.json` input; legacy path runs `analyze-report` → `compose-handoff` → `lighthouse.verify_handoff` (same interfaces as `validation-runner.js`); workflow path runs `buildRunPlan` + `executeRunPlan` with mock provider; asserts schema, URL/score preservation, priority fixes, markdown sections, and verification validity
+
+### Evidence
+
+- `node scripts/lighthouse-handoff-parity-test.js` — PASS
+- `node scripts/orchestration-unit-test.js` — PASS
+- `node scripts/contract-test.js` — PASS
+- `node scripts/smoke-test.js` — **55/55** PASS
+
+### Intentional differences documented
+
+- Execution topology (3 tool tasks vs 7 track steps)
+- Legacy `buildDemoResult` analyze stub vs workflow classify/prioritize/validate pipeline
+- Prose and priority-fix/checklist provenance differ by design; both paths remain schema-valid
+
+### Next
+
+- Extend parity test to `POST /tracks/run`; then remove `step-input.js` legacy fallbacks when all three paths agree
+
+---
+
+## 2026-06-16 — Milestone 4 Merged + M5 Planning Checkpoint
+
+**Milestone 4: Track-based orchestration — merged and closed.**
+
+### Final status
+
+- Merged PR #9 into `main` — merge commit `c89db65`
+- Post-merge smoke on `main`: **55/55 PASS**
+- Local Brain track-based orchestration is implemented; no model swapping, NearbyNode routing, or LLM-generated planning
+
+### Architectural outcome
+
+Workflow registries, track metadata, run plan builder/executor/validator, and workflow audit logging. Lighthouse Handoff can be planned and executed as a structured workflow via `POST /workflows/plan` and `POST /workflows/run`.
+
+### Documentation
+
+- Completion note: [milestone-4-completion.md](./milestone-4-completion.md)
+- M5 planning checkpoint: [milestone-5-checkpoint.md](./milestone-5-checkpoint.md)
+
+### Next (planning only — not started)
+
+- Milestone 5: legacy fallback removal / workflow hardening
+- Review PR #10 `ai-models/` on `main` before M5 code
+- M5 audit-summary follow-up; keep Model Swap Manager spec separate
+
+---
+
 ## 2026-06-15 — Milestone 4 Complete: Track-Based Orchestration
 
 **Milestone 4: Track-based orchestration — complete.**
@@ -158,6 +212,30 @@ Current implementation is already pipeline-stage orchestration (`POST /tracks/ru
 
 ## 2026-06-13 — L2 Live Ollama + Memory Bridge
 See [../06-decisions/decision-log.md](../06-decisions/decision-log.md) and [../04-validation/l2-live-ollama-memory-bridge.md](../04-validation/l2-live-ollama-memory-bridge.md).
+
+---
+
+## 2026-06-18 — Operator Log editorial tracks
+
+### Changed
+
+- Added source-audited Second Brain editorial discovery and human-selected Operator Log drafting tracks.
+- Added manifest-backed editorial tools, schemas, validators, workflow registry entries, and explicit track/workflow model overrides.
+- Ran VibeThinker-3B Q4 against 37 allowlisted files; discovery completed after hardening, but editorial ranking and the 80-word draft did not meet quality gates.
+- Added the six-file narrow extraction fixture, exact excerpt verification, grounding checks, duplicate metrics, and per-call timing.
+- Ran 18 narrow VibeThinker calls in 34.0 seconds: JSON/path gates passed, exact excerpts reached only 25%, and the automated extractor gate failed.
+
+### Evidence
+
+- `docs/04-validation/operator-log-vibethinker.md`
+- `ai-models/benchmark-results/operator-log/vibethinker-3b-narrow-extraction-v0.1.json`
+- Local artifact: `data/validation/operator-log-evaluation_*.local.json` (not committed)
+
+### Next
+
+- Compare another installed model against the identical frozen fixture.
+- Implement deterministic signal normalization, candidate packet building, scoring, and abstention before another broad workflow run.
+- Add an editorial history ledger before repeated scheduled discovery.
 
 ---
 

@@ -2,33 +2,37 @@
 
 Hand this to Cursor, Claude, Codex, or any coding agent continuing Locaily work.
 
-**Updated:** 2026-06-15
+**Updated:** 2026-06-16
 
 ## Read First
 
 1. [../00-start-here/current-state.md](../00-start-here/current-state.md)
-2. [../02-track-system/README.md](../02-track-system/README.md)
-3. [../03-workflows/lighthouse-handoff.md](../03-workflows/lighthouse-handoff.md)
-4. [../07-progress/build-status.md](./build-status.md)
+2. [milestone-4-completion.md](./milestone-4-completion.md) — M4 closed
+3. [milestone-5-checkpoint.md](./milestone-5-checkpoint.md) — **M5 planning gate (read before coding)**
+4. [build-status.md](./build-status.md)
 
 Also: root [AGENTS.md](../../AGENTS.md) and [../08-agents/agent-context.md](../08-agents/agent-context.md)
 
-## Do Not
+## Do Not (until M5 explicitly started)
 
+- Start Milestone 5 implementation without canonical-path decision and PR #10 review
+- Implement Model Swap Manager from local `model-swap-manager.md` unless M5A is opened
 - Replace the current server or break existing endpoints
-- Break `POST /tasks/run` or `POST /tracks/run` response envelopes
+- Break `POST /tasks/run`, `POST /tracks/run`, or `POST /workflows/run` response envelopes
 - Claim DAG support, NearbyNode, or automatic track classification exists
-- Add NearbyNode implementation without an explicit milestone decision
-- Make model benchmark claims without evidence in [../04-validation/](../04-validation/)
-- Add new hardcoded step-id branches in `step-input.js` legacy fallbacks
 
 ## Current Task
 
-**Milestone 5 candidate:** Remove legacy step-input fallbacks in `companion/pit-crew/step-input.js` now that both catalog tracks declare `input_map` on every step.
+**Planning checkpoint only.** Milestone 4 is complete (PR #9, merge `c89db65`, smoke 55/55).
 
-**M5 follow-up (non-blocking):** Improve `workflow-orchestrator` audit summaries so `GET /audit` can expose step-level orchestration status without leaking raw task input/output. Current audit normalization stores events under the correct `tool` but summarizes away step detail.
+When the user opens Milestone 5:
 
-See [../02-track-system/step-input-mapping.md](../02-track-system/step-input-mapping.md) and [milestone-map.md](./milestone-map.md).
+1. Review PR #10 `ai-models/` on `main`
+2. Decide canonical Lighthouse path (tool / track / workflow)
+3. Prove parity, then remove legacy step-input fallbacks in `step-input.js`
+4. Optionally harden workflow-orchestrator audit summaries
+
+See [milestone-5-checkpoint.md](./milestone-5-checkpoint.md).
 
 ## Architecture Reminder
 

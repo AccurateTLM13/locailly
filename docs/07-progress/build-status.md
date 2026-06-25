@@ -1,6 +1,6 @@
 # Build Status
 
-**Updated:** 2026-06-15
+**Updated:** 2026-06-16
 
 ## Current Stage
 
@@ -15,7 +15,7 @@ Pipeline-stage **Local Brain** with **Pit Crew track runner** — linear steps, 
 | **2 — Second workflow track** | **Complete** |
 | **3 — Model-step input mapping** | **Complete** |
 | **4 — Track-based orchestration** | **Complete** |
-| **5 — Legacy fallback removal** | **Next** |
+| **5 — Legacy fallback removal / workflow hardening** | **Next** (planning checkpoint — not started) |
 
 ## Current Proof
 
@@ -63,10 +63,12 @@ Pipeline-stage **Local Brain** with **Pit Crew track runner** — linear steps, 
 
 ## Current Priority
 
-**Next:** Remove legacy step-input fallbacks; Model Garage evaluation harness (spec only until evidence).
+**Next:** Milestone 5 planning checkpoint captured — see [milestone-5-checkpoint.md](./milestone-5-checkpoint.md). Do not start implementation until canonical-path decision + PR #10 review.
 
 ## Evidence Pointers
 
+- M4 completion: [milestone-4-completion.md](./milestone-4-completion.md)
+- M5 checkpoint: [milestone-5-checkpoint.md](./milestone-5-checkpoint.md)
 - Pit Crew extraction: [../01-architecture/pit-crew-gap-analysis.md](../01-architecture/pit-crew-gap-analysis.md)
 - L1 validation: [../03-workflows/lighthouse-handoff-validation.md](../03-workflows/lighthouse-handoff-validation.md)
 - L2 Ollama + Memory: [../04-validation/l2-live-ollama-memory-bridge.md](../04-validation/l2-live-ollama-memory-bridge.md)

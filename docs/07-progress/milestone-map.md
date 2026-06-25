@@ -2,7 +2,7 @@
 
 Layered planning — not a six-month prophecy.
 
-**Updated:** 2026-06-15
+**Updated:** 2026-06-16
 
 ## Milestone 1A — Track System Explicit
 
@@ -54,15 +54,21 @@ Layered planning — not a six-month prophecy.
 - `GET /orchestration/tracks`, `GET /orchestration/workflows`, `POST /workflows/plan`, `POST /workflows/run`
 - Lighthouse Handoff first workflow target with audit logging
 
+**Completion note:** [milestone-4-completion.md](./milestone-4-completion.md) (PR #9, merge `c89db65`, smoke 55/55)
+
 ---
 
-## Milestone 5 — Legacy Fallback Removal (Next)
+## Milestone 5 — Legacy Fallback Removal / Workflow Hardening (Next)
 
-**Status:** Not started
+**Status:** Planning checkpoint captured — **not started**
 
-- Remove `buildLegacyToolStepInput()` / `buildLegacyModelStepInput()` from `step-input.js`
-- All current catalog tracks declare `input_map` on every step
-- **Follow-up:** Improve `workflow-orchestrator` audit summaries so `GET /audit` exposes step-level orchestration status (step ids, statuses, workers, duration) without leaking raw task input/output
+**Planning doc:** [milestone-5-checkpoint.md](./milestone-5-checkpoint.md)
+
+- Remove `buildLegacyToolStepInput()` / `buildLegacyModelStepInput()` from `step-input.js` after parity tests
+- Confirm canonical Lighthouse path (tool vs track vs workflow orchestration)
+- **Follow-up:** Improve `workflow-orchestrator` audit summaries so `GET /audit` exposes step-level orchestration status without leaking raw task input/output
+- Review PR #10 `ai-models/` on `main` before implementation
+- Keep Model Swap Manager out unless explicitly starting M5A
 
 ---
 
