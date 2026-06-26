@@ -34,6 +34,34 @@ Schemas: `companion/schemas/internal/`. Lighthouse `write_handoff` already produ
 
 ---
 
+## 2026-06-23 - Benchmark Lab Remains In-Repo
+
+### Decision
+
+Create Benchmark Lab as a top-level Locaily subsystem at `benchmark-lab/`, with canonical system documentation at `docs/02-systems/benchmark-lab.md`.
+
+### Why
+
+The first Benchmark Lab implementation must work directly against Locaily model roles, track definitions, worker contracts, schemas, and orchestration assumptions. Keeping it in the main repository avoids contract drift while qualification records and routing evidence are still taking shape.
+
+### Consequences
+
+- Benchmark engine code lives under `benchmark-lab/engine/`.
+- Locaily-specific suites, fixtures, prompts, and worker contracts live under `benchmark-lab/locaily/`.
+- Runtime and orchestration code should consume compact qualification records and approved evidence, not benchmark runner internals.
+- Raw results, caches, model binaries, runtime logs, and temporary reports stay out of Git.
+- Future extraction requires a concrete operational reason, such as independent consumers, divergent release cadence, repository size pressure, or a standalone package/CLI.
+
+### Status
+
+Accepted
+
+### Notes
+
+Initial schema: `benchmark-lab/schemas/qualification-record.schema.json`.
+
+---
+
 ## 2026-06-14 — Lighthouse Handoff Remains First Proof Workflow
 
 ### Decision
@@ -457,6 +485,46 @@ Implemented as a simple static HTML/CSS/JS console served by the existing compan
 ### Notes
 
 The console validates the Lighthouse Handoff L2 workflow only. It does not claim Chrome extension validation, multi-model routing validation, benchmark quality, or score improvement. Memory paths stay redacted; only vault-relative `filesUsed` may appear in run evidence.
+
+---
+
+## 2026-06-18 — Split Operator Log discovery from drafting
+
+### Decision
+
+Implement Operator Log publishing as two linear tracks: source-audited discovery followed by human-selected drafting. Inventory every allowlisted file, process content in bounded batches, clamp model citations to actual source markers, and keep Lemonteed HTML/sitemap output proposal-only.
+
+### Why
+
+Discovery and publication have different risk boundaries. A human selection gate prevents a ranking mistake from becoming a repository write, while hashes and vault-relative source paths make each suggestion auditable.
+
+### Status
+
+Experimental
+
+### Notes
+
+The first VibeThinker-3B Q4 evaluation completed the hardened pipeline but failed editorial quality checks: a prompt-echo headline and an 80-word draft. See `docs/04-validation/operator-log-vibethinker.md`.
+
+---
+
+## 2026-06-18 — Do not route grounded Operator Log extraction to VibeThinker 3B
+
+### Decision
+
+Keep `hf.co/mradermacher/VibeThinker-3B-GGUF:Q4_K_M` out of the grounded editorial extractor, ranker, and writer roles. Preserve it as an evaluated candidate with negative evidence rather than removing it from the Model Garage.
+
+### Why
+
+The six-file narrow extraction fixture isolated extraction from all other publishing responsibilities. JSON validity and source-path precision reached 100%, but exact excerpt verification was 25% and only one valid grounded signal emerged across 18 calls. The model failed the automated gate even in the smaller role.
+
+### Status
+
+Confirmed for the Operator Log fixtures tested on 2026-06-18; other roles remain unevaluated.
+
+### Notes
+
+Public summary: `ai-models/benchmark-results/operator-log/vibethinker-3b-narrow-extraction-v0.1.json`. Private excerpts and hashes remain in ignored local artifacts.
 
 ---
 

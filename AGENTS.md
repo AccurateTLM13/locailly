@@ -250,12 +250,13 @@ Implemented:
 - `POST /tracks/run`, `GET /tracks` track APIs
 - `companion/orchestration/*` (track registry, workflow registry, run plan builder/executor)
 - `GET /orchestration/tracks`, `GET /orchestration/workflows`, `POST /workflows/plan`, `POST /workflows/run`
-- `scripts/smoke-test.js`, `scripts/contract-test.js` (55/55 clean-server baseline)
+- `scripts/smoke-test.js`, `scripts/contract-test.js` (56/56 clean-server baseline)
 - `start-windows.bat`, `start-dev.ps1`
 
 Next focus areas (see [docs/07-progress/milestone-map.md](docs/07-progress/milestone-map.md) and [docs/05-product/roadmap.md](docs/05-product/roadmap.md)):
 
-- **M5:** Remove legacy step-input fallbacks in `step-input.js` (all catalog steps declare `input_map`)
+- **M5:** Benchmark Lab acceptance (schema-backed evidence, qualification records, read-only status)
+- Follow-on: remove legacy step-input fallbacks in `step-input.js` after Lighthouse path parity resumes
 - Model Garage evaluation harness (Phase 2 — spec only until evidence)
 - Harden Lighthouse Handoff validation end-to-end with the extension client
 - NearbyNode capability connectors (spec + prototype — not implementation yet)
