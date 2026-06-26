@@ -4,6 +4,39 @@ Dated record of meaningful build and planning sessions.
 
 ---
 
+## 2026-06-26 - Milestone 5 Accepted: Benchmark Lab
+
+### Changed
+
+- Rebasing complete: `codex/feat-benchmark-lab` now sits on current `origin/main` / JSON-first runtime integration.
+- Milestone 5 scope changed from Lighthouse fallback removal to Benchmark Lab acceptance.
+- Updated `current-sprint.md`, `milestone-5-checkpoint.md`, `next-agent-brief.md`, and `build-status.md`.
+- Qualification records now validate against `benchmark-lab/schemas/qualification-record.schema.json` before `model-qualification-loader` exposes them to runtime routing.
+- Audit schema and redaction paths now accept richer workflow worker summaries and nullable redacted memory metadata.
+- Disabled/error memory audit responses fall back to a valid compact `memory_response` summary instead of an empty object.
+
+### Evidence
+
+- `node scripts/contract-test.js` - PASS
+- `node scripts/benchmark-lab-schema-test.js` - PASS
+- `node scripts/benchmark-lab-run-test.js` - PASS
+- `node scripts/audit-record-schema-test.js` - PASS
+- `node scripts/tool-registry-schema-test.js` - PASS
+- `node scripts/validation-result-contract-test.js` - PASS
+- `node scripts/orchestration-unit-test.js` - PASS
+- `node scripts/editorial-pack-unit-test.js` - PASS
+- `node scripts/lighthouse-handoff-parity-test.js` - PASS
+- `node scripts/benchmark-status-smoke-test.js` - PASS
+- Clean-server `node scripts/smoke-test.js` - **56/56 PASS**
+
+### Next
+
+- Merge/publish the rebased Benchmark Lab branch.
+- Close patch-equivalent stale branches that are already represented on `main`.
+- Keep automatic model swapping and legacy `step-input.js` fallback removal out of M5 unless a follow-on milestone explicitly opens them.
+
+---
+
 ## 2026-06-17 — Milestone 5: Lighthouse Handoff Parity Characterization
 
 **First M5 hardening change:** behavioral parity test between validation-console core sequence and workflow-orchestrated execution.

@@ -1,81 +1,55 @@
-# Milestone 5 Planning Checkpoint
+# Milestone 5 Checkpoint
 
-**Status:** In progress — parity characterization started  
-**Updated:** 2026-06-17
+**Status:** Active - Benchmark Lab accepted as next milestone
+**Updated:** 2026-06-26
 
-Milestone 4 is complete. This document captures known follow-ups and the proposed Milestone 5 starting point before any code work begins.
+Milestone 4 is complete. Milestone 5 is now scoped around Benchmark Lab: a controlled local evaluation subsystem that produces compact evidence, model cards, and qualification records Locaily can consume without importing benchmark runner code into the runtime.
 
-## Known follow-ups (non-blocking from M4)
+## M5 Scope - Benchmark Lab
 
-### 1. Workflow-orchestrator audit summaries
+**Theme:** Evidence before routing decisions.
 
-Events are written under `tool: workflow-orchestrator`, but `GET /audit` normalization currently summarizes away step-level orchestration detail.
+Benchmark Lab should make local model evaluation repeatable, inspectable, and narrow enough to support Locaily's track-specific model-role thesis without claiming broad model quality.
 
-**Target:** Richer audit summaries (step ids, statuses, workers, duration, final workflow status) **without** leaking raw task input/output.
+### In Scope
 
-**Modules:** `companion/orchestration/run-logger.js`, `companion/core/audit-log.js`
+- Top-level `benchmark-lab/` subsystem with CLI entrypoints, schemas, fixtures, evidence folders, reports, model cards, and qualification records
+- Canonical Benchmark Lab architecture doc at `docs/02-systems/benchmark-lab.md`
+- Read-only `GET /benchmark/status` endpoint and compact `/health` summary
+- Runtime consumption of compact qualification records through `companion/core/model-qualification-loader.js`
+- Advisory qualification metadata on model steps, with explicit stricter opt-in policies
+- Schema validation for qualification records before runtime routing consumes them
+- Mock benchmark loop and schema tests suitable for CI/local contract checks
+- Clear docs that approved evidence is not general benchmark marketing
 
-### 2. Model Swap Manager spec (local-only)
+### Out of Scope
 
-`docs/01-architecture/model-swap-manager.md` remains **untracked / local-only** and is **out of scope** for Milestone 5 unless a separate **M5A** milestone is explicitly opened.
-
-Do not merge that file as part of M5 hardening work without a dedicated review.
-
-### 3. PR #10 on `main` (review before M5)
-
-`main` includes `803439b` — PR #10 AI model candidate docs under `ai-models/` (merged before PR #9).
-
-**Action before M5 implementation:** Review PR #10 scope on `main` so M5 work does not conflate model-candidate documentation with workflow hardening.
-
----
-
-## Milestone 5 proposed scope — Legacy fallback removal / workflow hardening
-
-**Theme:** Remove duplicate or drifting paths only after tests prove parity.
-
-### Starting questions (decide before coding)
-
-1. **Canonical Lighthouse entry path**
-   - Old: `POST /tasks/run` + `lighthouse-handoff` tool (orchestrated tool handler)
-   - Track: `POST /tracks/run` with `track_id`
-   - New: `POST /workflows/run` with `workflow_id: lighthouse_handoff`
-
-   Confirm which path(s) remain supported long-term and which becomes the **recommended** client entry.
-
-2. **Legacy step-input fallbacks**
-   - `buildLegacyToolStepInput()` / `buildLegacyModelStepInput()` in `companion/pit-crew/step-input.js`
-   - Both catalog tracks already declare `input_map` on every step
-   - Remove only after unit + smoke + workflow run parity is demonstrated
-
-3. **Executor drift**
-   - `run-plan-executor.js` mirrors pit-crew `orchestrator.js` step loop (including `write_handoff` markdown handling)
-   - Hardening may consolidate shared execution or document intentional duplication — decide before deleting fallbacks
-
-### Proposed work order (when M5 starts)
-
-| Step | Action |
-|---|---|
-| 1 | Document canonical workflow vs track vs tool paths in architecture docs |
-| 2 | Add parity checks: same Lighthouse input through `/workflows/run`, `/tracks/run`, and tool orchestrated path — **started:** `scripts/lighthouse-handoff-parity-test.js` covers validation-console core sequence vs `buildRunPlan`/`executeRunPlan` on `slim-mobile.fixture.json` (no Ollama/PageSpeed) |
-| 3 | Remove legacy `step-input.js` fallbacks when parity tests pass |
-| 4 | Improve workflow-orchestrator audit summaries (can be same milestone or follow-on) |
-| 5 | Re-run **55/55** smoke + orchestration unit tests on clean server |
-
-### Explicitly out of scope for Milestone 5 (unless renamed M5A)
-
-- Model Swap Manager implementation
-- Model Garage routing / swapping
+- Automatic model swapping / Model Garage auto-switching
 - NearbyNode routing
 - DAG runner / LLM-generated plans
+- Removing legacy `step-input.js` fallbacks
+- Public leaderboard or broad model ranking
+- Runtime imports from `benchmark-lab/engine/`
 
----
+## Follow-On Hardening
 
-## Gate to start implementation
+The previous M5 planning items remain valid, but they move behind Benchmark Lab acceptance:
 
-M5 code work has started with parity characterization (see step 2 above). Remaining gates before fallback removal:
+1. Record canonical Lighthouse entry path: tool, track, workflow, or a staged support matrix.
+2. Extend parity coverage across `/tasks/run`, `/tracks/run`, and `/workflows/run`.
+3. Remove legacy `step-input.js` fallbacks only after parity is demonstrated.
+4. Improve workflow-orchestrator audit summaries without leaking raw task input/output.
 
-- [ ] PR #10 `ai-models/` changes on `main` are reviewed
-- [ ] Canonical Lighthouse entry path decision is recorded (decision log or this doc updated)
-- [x] Parity test strategy agreed — fixed fixture `examples/lighthouse-handoff/slim-mobile.fixture.json`; legacy console core vs workflow executor; behavioral parity (not exact prose)
+## Acceptance Gates
 
-Before removing `step-input.js` fallbacks, extend parity coverage to `POST /tracks/run` and record canonical path decision.
+- [x] Benchmark Lab accepted as the next milestone
+- [x] Branch rebased onto current `origin/main`
+- [x] Qualification records are schema-validated at the loader boundary
+- [x] `node scripts/benchmark-lab-schema-test.js` passes
+- [x] `node scripts/benchmark-lab-run-test.js` passes
+- [x] `node scripts/contract-test.js` passes
+- [x] Clean-server smoke passes: 56/56
+
+## Notes
+
+`docs/01-architecture/model-swap-manager.md` may exist as proposed architecture context, but model swapping is not part of M5 implementation. Treat it as design input for a later M5A/M6 decision, not as a current runtime promise.

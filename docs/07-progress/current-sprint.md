@@ -1,32 +1,39 @@
 # Current Sprint
 
-**Updated:** 2026-06-16
+**Updated:** 2026-06-26
 
 ## Goal
 
-Close Milestone 4 documentation and capture Milestone 5 planning checkpoint. **No M5 implementation in this sprint.**
+Prepare Benchmark Lab as the accepted next milestone after M4, rebase it onto the JSON-first runtime baseline, and keep the runtime contract stable while qualification evidence wiring lands.
 
 ## Completed (recent)
 
-- Milestone 4 merged: PR #9 → `main` (`c89db65`)
-- Post-merge smoke on `main`: **55/55 PASS**
+- Milestone 4 merged: PR #9 to `main` (`c89db65`)
+- JSON-first runtime integration merged on `origin/main` (`96d813b`)
 - Track-based orchestration layer shipped (`companion/orchestration/`, workflow APIs)
-- Completion note + M5 checkpoint docs added
+- Completion note and M5 checkpoint docs added
+- Benchmark Lab accepted as the next milestone
 
-## In Scope (planning only)
+## In Scope
 
-- Review PR #10 `ai-models/` changes already on `main`
-- Decide canonical Lighthouse entry path (tool vs track vs workflow) — see [milestone-5-checkpoint.md](./milestone-5-checkpoint.md)
-- Record decision before any M5 code
+- Keep Benchmark Lab in-repo while it depends on Locaily track, schema, and model-role contracts
+- Validate qualification records before runtime routing consumes them
+- Keep `GET /benchmark/status` read-only and side-effect free
+- Preserve `/tasks/run`, `/tracks/run`, and `/workflows/run` response envelopes
+- Re-run smoke, contract, schema, and Benchmark Lab tests after rebase
 
-## Out of Scope (this sprint)
+## Out of Scope
 
-- Milestone 5 implementation (legacy fallback removal, audit hardening)
-- Model Swap Manager (`model-swap-manager.md` — local-only, separate track)
-- Model swapping, NearbyNode, DAG runner
+- Removing legacy `step-input.js` fallbacks
+- Automatic model swapping / Model Garage auto-switching
+- NearbyNode routing
+- DAG runner / LLM-generated plans
+- Public benchmark marketing beyond committed evidence
 
 ## Done When
 
 - [x] Milestone 4 completion note published
-- [x] Milestone 5 planning checkpoint published
-- [ ] User approves M5 start gate (PR #10 review + canonical path decision)
+- [x] Benchmark Lab accepted as next milestone
+- [x] Benchmark Lab branch rebased on `origin/main`
+- [x] Qualification-record schema validation is enforced at load
+- [x] Full verification suite passes on the rebased branch

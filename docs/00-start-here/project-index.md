@@ -42,7 +42,7 @@ Master index of Locaily documentation. Prefer [repo-map.md](./repo-map.md) for a
 | [../05-product/setup-flow.md](../05-product/setup-flow.md) | Setup | current |
 | **07-progress/** | Build dashboard | current |
 | [../07-progress/milestone-4-completion.md](../07-progress/milestone-4-completion.md) | M4 completion note | current |
-| [../07-progress/milestone-5-checkpoint.md](../07-progress/milestone-5-checkpoint.md) | M5 planning gate | current |
+| [../07-progress/milestone-5-checkpoint.md](../07-progress/milestone-5-checkpoint.md) | M5 Benchmark Lab checkpoint | current |
 | [../07-progress/build-status.md](../07-progress/build-status.md) | Working / partial / not built | current |
 | [../07-progress/next-agent-brief.md](../07-progress/next-agent-brief.md) | Agent handoff | current |
 | [../07-progress/current-sprint.md](../07-progress/current-sprint.md) | Active sprint | current |

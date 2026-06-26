@@ -2656,6 +2656,9 @@ async function recordTaskRunAndReturn({
   } catch (error) {
     console.error("Failed to write audit event.");
     console.error(error.message);
+    if (error.validation && Array.isArray(error.validation.errors)) {
+      console.error(error.validation.errors.join("; "));
+    }
   }
 
   return body;
@@ -2774,6 +2777,9 @@ async function recordMemoryAudit({
   } catch (error) {
     console.error("Failed to write memory audit event.");
     console.error(error.message);
+    if (error.validation && Array.isArray(error.validation.errors)) {
+      console.error(error.validation.errors.join("; "));
+    }
   }
 }
 

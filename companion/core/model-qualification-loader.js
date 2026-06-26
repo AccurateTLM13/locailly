@@ -1,18 +1,29 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const { validateResult } = require("./result-validator");
+
+const DEFAULT_QUALIFICATION_SCHEMA_PATH = path.resolve(
+  __dirname,
+  "..",
+  "..",
+  "benchmark-lab",
+  "schemas",
+  "qualification-record.schema.json"
+);
 
 function createModelQualificationLoader(options = {}) {
   const qualificationDir = options.qualificationDir
     || path.resolve(__dirname, "..", "..", "benchmark-lab", "qualifications", "models");
   const checksumDir = options.checksumDir
     || path.resolve(__dirname, "..", "..", "benchmark-lab", "evidence", "checksums");
+  const qualificationSchema = options.qualificationSchema || loadQualificationSchema(options.schemaPath);
 
   return {
     list() {
-      return loadQualificationRecords(qualificationDir);
+      return loadQualificationRecords(qualificationDir, qualificationSchema);
     },
     getStatus() {
-      const scan = scanQualificationRecords(qualificationDir);
+      const scan = scanQualificationRecords(qualificationDir, qualificationSchema);
       const checksumCount = countJsonFiles(checksumDir);
       const byStatus = {};
       const byRole = {};
@@ -47,7 +58,7 @@ function createModelQualificationLoader(options = {}) {
     },
     findByModel(modelId) {
       const normalizedModelId = normalizeId(modelId);
-      return loadQualificationRecords(qualificationDir)
+      return loadQualificationRecords(qualificationDir, qualificationSchema)
         .filter((record) => matchesModel(record, normalizedModelId));
     },
     findForRole({ modelId, role, trackId = null, contractId = null }) {
@@ -57,7 +68,7 @@ function createModelQualificationLoader(options = {}) {
       const normalizedContractId = normalizeId(contractId);
       const matches = [];
 
-      for (const record of loadQualificationRecords(qualificationDir)) {
+      for (const record of loadQualificationRecords(qualificationDir, qualificationSchema)) {
         if (!matchesModel(record, normalizedModelId)) {
           continue;
         }
@@ -94,11 +105,11 @@ function createModelQualificationLoader(options = {}) {
   };
 }
 
-function loadQualificationRecords(qualificationDir) {
-  return scanQualificationRecords(qualificationDir).records;
+function loadQualificationRecords(qualificationDir, qualificationSchema = loadQualificationSchema()) {
+  return scanQualificationRecords(qualificationDir, qualificationSchema).records;
 }
 
-function scanQualificationRecords(qualificationDir) {
+function scanQualificationRecords(qualificationDir, qualificationSchema = loadQualificationSchema()) {
   if (!fs.existsSync(qualificationDir)) {
     return {
       records: [],
@@ -129,13 +140,21 @@ function scanQualificationRecords(qualificationDir) {
       continue;
     }
 
-    if (parsed && parsed.schemaVersion === "benchmark.qualification.v1") {
+    const schemaValidation = qualificationSchema
+      ? validateResult(parsed, qualificationSchema, "qualification")
+      : { ok: parsed && parsed.schemaVersion === "benchmark.qualification.v1", errors: [] };
+
+    if (schemaValidation.ok) {
       records.push(parsed);
     } else {
       errors.push({
         file: filePath,
-        code: "QUALIFICATION_RECORD_SCHEMA_UNSUPPORTED",
-        message: "Qualification record schemaVersion is missing or unsupported."
+        code: parsed && parsed.schemaVersion === "benchmark.qualification.v1"
+          ? "QUALIFICATION_RECORD_SCHEMA_INVALID"
+          : "QUALIFICATION_RECORD_SCHEMA_UNSUPPORTED",
+        message: schemaValidation.errors.length > 0
+          ? schemaValidation.errors.join("; ")
+          : "Qualification record schemaVersion is missing or unsupported."
       });
     }
   }
@@ -156,6 +175,14 @@ function countJsonFiles(dir) {
     .length;
 }
 
+function loadQualificationSchema(schemaPath = DEFAULT_QUALIFICATION_SCHEMA_PATH) {
+  try {
+    return JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+  } catch (error) {
+    return null;
+  }
+}
+
 function normalizeId(value) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -168,6 +195,7 @@ function matchesModel(record, normalizedModelId) {
 
 module.exports = {
   createModelQualificationLoader,
+  loadQualificationSchema,
   loadQualificationRecords,
   scanQualificationRecords
 };

@@ -588,6 +588,10 @@ async function testModelQualificationLoader() {
     generatedAt: "2026-06-23T00:00:00.000Z"
   }, null, 2), "utf8");
   await writeFile(join(dir, "broken.json"), "{nope", "utf8");
+  await writeFile(join(dir, "schema-invalid.json"), JSON.stringify({
+    schemaVersion: "benchmark.qualification.v1",
+    recordId: "schema-invalid"
+  }, null, 2), "utf8");
   await writeFile(join(checksumDir, "mock-checksum.json"), JSON.stringify({
     schemaVersion: "benchmark.checksum.v1"
   }), "utf8");
@@ -607,7 +611,8 @@ async function testModelQualificationLoader() {
 
     assert(records.length === 1, "Expected one qualification record.");
     assert(status.records === 1, "Expected status record count.");
-    assert(status.invalidRecords === 1, "Expected one invalid qualification record.");
+    assert(status.invalidRecords === 2, "Expected two invalid qualification records.");
+    assert(status.errors.some((error) => error.code === "QUALIFICATION_RECORD_SCHEMA_INVALID"), "Expected schema-invalid qualification record to be rejected.");
     assert(status.checksums === 1, "Expected one checksum count.");
     assert(status.byStatus.candidate === 1, "Expected candidate status count.");
     assert(status.byRole.fast_worker === 1, "Expected fast worker role count.");
