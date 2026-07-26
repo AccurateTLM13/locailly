@@ -83,7 +83,7 @@ capabilities. Use the template at `scripts/pilot/hardware-profile-template.json`
 1. Start the Local Brain on Device B, binding to the LAN interface:
    ```bash
    set RELAY_TOKEN=your-shared-token
-   set LOCAL_AI_BIND=0.0.0.0
+    set LOCAL_AI_HOST=0.0.0.0
    npm start
    ```
 

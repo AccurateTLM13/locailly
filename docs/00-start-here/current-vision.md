@@ -82,7 +82,7 @@ Benchmark Lab Milestone 1 is complete and operator-ready. Qualification records 
 
 ### Relay Nodes
 
-**Relay Nodes** (formerly "NearbyNode") are the planned nearby-device and capability layer. A phone, tablet, old laptop, edge box, or browser-connected peer can expose **capabilities** (files, sensors, UI, compute, APIs) without necessarily running a full model.
+**Relay Nodes** (formerly "NearbyNode") are the nearby-device capability layer (protocol, registry, connector, router, and placement planner implemented). A phone, tablet, old laptop, edge box, or browser-connected peer can expose **capabilities** (files, sensors, UI, compute, APIs) without necessarily running a full model.
 
 Principles:
 

@@ -6,7 +6,7 @@
 
 ## What Locaily Is
 
-Locaily is a local-first AI coordination project. The **Local Brain** — a companion server in this repository — runs on your machine, exposes a structured HTTP API, and routes requests to tools, workflows, and local model providers. It coordinates **Tracks** (reusable execution contracts), **The Crew** (specialized workers and capabilities), **Model Lab / Benchmark Lab** (evaluation and qualification), and **Memory Bridge** (optional local context integration). **Relay Nodes** — a planned nearby-device capability layer — will extend this coordination to other hardware on your network.
+Locaily is a local-first AI coordination project. The **Local Brain** — a companion server in this repository — runs on your machine, exposes a structured HTTP API, and routes requests to tools, workflows, and local model providers. It coordinates **Tracks** (reusable execution contracts), **The Crew** (specialized workers and capabilities), **Model Lab / Benchmark Lab** (evaluation and qualification), and **Memory Bridge** (optional local context integration). **Relay Nodes** — a nearby-device capability layer — extend this coordination to other hardware on your network through a registry, connector, and cross-node step routing protocol.
 
 ---
 

@@ -5,8 +5,9 @@
   "priority": "low",
   "title": "Fix",
   "description": "",
-  "status": "open",
+  "status": "closed",
   "milestoneId": null,
   "reportedAt": "2026-07-25T03:12:01.816Z",
-  "resolvedAt": null
+  "resolvedAt": "2026-07-26T19:18:55.979Z",
+  "resolutionNote": "Test fixture; not a real bug"
 }

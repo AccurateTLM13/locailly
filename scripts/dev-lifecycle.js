@@ -352,8 +352,9 @@ function cmdStart(args) {
   const type = extractArg(args, "--type") || "feature";
   const priority = extractArg(args, "--priority") || "medium";
 
-  if (!slug || !title || !purpose) {
-    console.error("Usage: dev-lifecycle.js start --slug <id> --title \"Title\" --purpose \"Why\" [--type feature] [--priority medium]");
+  if (!slug) {
+    console.error("Usage: dev-lifecycle.js start --slug <id> [--title \"Title\" --purpose \"Why\"] [--type feature] [--priority medium]");
+    console.error("For new milestones, --title and --purpose are required.");
     process.exit(1);
   }
 
@@ -379,12 +380,19 @@ function cmdStart(args) {
   // Create or update milestone
   let milestone = readMilestone(slug);
   if (milestone) {
-    // Update existing milestone to active
+    // Update existing milestone to active (title/purpose optional — use record)
     milestone.status = "active";
     milestone.startedAt = now();
+    if (title) milestone.title = title;
+    if (purpose) milestone.purpose = purpose;
     if (!milestone.type) milestone.type = type;
     if (!milestone.priority) milestone.priority = priority;
   } else {
+    if (!title || !purpose) {
+      console.error(`Milestone '${slug}' not found. Provide --title and --purpose to create it.`);
+      console.error("Usage: dev-lifecycle.js start --slug <id> --title \"Title\" --purpose \"Why\" [--type feature] [--priority medium]");
+      process.exit(1);
+    }
     // Create new milestone
     milestone = {
       schema: "locaily.development.milestone.v1",

@@ -4,7 +4,7 @@
 
 ## What It Is
 
-**Relay Nodes** are the planned layer for nearby devices and capabilities: phones, tablets, secondary machines, edge boxes, or browser-connected peers that expose connectors without necessarily hosting a model.
+**Relay Nodes** extend Locaily beyond one machine. The relay protocol (registry, connector, router, placement planner, cross-node step routing with local fallback) is implemented for Local Brain instances on nearby machines. Future targets include phones, tablets, edge boxes, and browser-connected peers — see the deferred px milestones for trust boundary and pairing work.
 
 A Relay Node does not need an AI model. It exposes **capabilities**—files, sensors, UI hooks, APIs, compute—through trusted connectors. The Local Brain coordinates Relay Node capabilities.
 

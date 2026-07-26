@@ -1,6 +1,6 @@
 {
   "name": "locaily",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Local-first AI coordination stack with Benchmark Lab evaluation subsystem",
   "private": true,
   "engines": {

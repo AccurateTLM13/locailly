@@ -206,7 +206,14 @@ function main() {
         process.exit(1);
       }
     }
-    const startResult = run("node", [path.join(PROJECT_ROOT, "scripts", "dev-lifecycle.js"), "start", "--slug", slug, "--title", title || slug, "--purpose", purpose || ""]);
+    const startArgs = [path.join(PROJECT_ROOT, "scripts", "dev-lifecycle.js"), "start", "--slug", slug];
+    const startTitle = title || existing?.title;
+    const startPurpose = purpose || existing?.purpose;
+    if (startTitle) startArgs.push("--title", startTitle);
+    if (startPurpose) startArgs.push("--purpose", startPurpose);
+    if (existing?.type) startArgs.push("--type", existing.type);
+    if (existing?.priority) startArgs.push("--priority", existing.priority);
+    const startResult = run("node", startArgs);
     if (startResult.status !== 0) {
       console.error(`Failed to start milestone: ${startResult.stderr || startResult.stdout}`);
       process.exit(1);

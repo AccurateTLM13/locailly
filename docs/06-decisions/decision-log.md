@@ -35,6 +35,37 @@ Implemented and verified (2026-07-22).
 
 ---
 
+## 2026-07-26 — Console and Operator Stay Separate Routes (Deferred to px4)
+
+### Decision
+
+Keep `/console` (validation UI at `companion/console/`) and `/operator` (operator control panel at `companion/operator/`) as separate HTTP routes served by the same Local Brain. Do not merge them into a unified shell in this milestone. Record this decision and defer the unified shell to px4 (Unified Application Shell).
+
+### Why
+
+The two UIs serve different operator contexts:
+- **`/console`** focuses on running Lighthouse Handoff validations — URL input, mode selection, readiness checklist, run timeline, result review, run history.
+- **`/operator`** focuses on job lifecycle management — dashboard, enqueue panel, relay node monitoring, background job control.
+
+Merging them requires a non-trivial front-end architecture (routing, shared state, navigation shell) that is out of scope for px1 (product status reconciliation). The deferred px4 milestone is the correct vehicle for a unified shell.
+
+### Consequences
+
+- `/console` and `/operator` remain separate routes with independent HTML/CSS/JS bundles.
+- Documentation (`operator-guide.md`, `api-reference.md`) now explicitly documents both routes and their purposes.
+- No developer time spent on front-end unification in px1.
+- px4 milestones defines the unified shell scope and must resolve the split.
+
+### Status
+
+Accepted — documented for px1; unification deferred to px4.
+
+### Notes
+
+See `companion/console/` and `companion/operator/` for the two UI implementations. The decision to keep separate routes is documented in px1 to close the documentation mismatch identified during the canonial status pass.
+
+---
+
 ## 2026-07-22 — Milestone Completion Delivery Workflow (Implemented)
 
 ### Context

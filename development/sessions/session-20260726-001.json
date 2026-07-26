@@ -1,0 +1,52 @@
+{
+  "schema": "locaily.development.session.v1",
+  "id": "session-20260726-001",
+  "milestoneId": "px1-canonical-product-status",
+  "agent": {
+    "platform": "unknown",
+    "model": "unknown"
+  },
+  "status": "closed",
+  "objective": "Restore",
+  "branch": "main",
+  "startingCommit": "f1826c7b424d214866df037a606c9f422b6fc55b",
+  "plannedFiles": [],
+  "completedWork": [
+    "Completed px1 product-status reconciliation",
+    "Reconciled"
+  ],
+  "remainingWork": [],
+  "blockers": [],
+  "validationRunIds": [],
+  "checks": [
+    {
+      "timestamp": "2026-07-26T19:31:58.171Z",
+      "message": "Completed px1 product-status reconciliation",
+      "filesChanged": [
+        "(uncommitted changes)"
+      ]
+    }
+  ],
+  "startedAt": "2026-07-26T19:21:12.893Z",
+  "closedAt": "2026-07-26T19:37:12.251Z",
+  "closingCommit": "f1826c7b424d214866df037a606c9f422b6fc55b",
+  "dirtyFiles": [
+    "RELEASE.md",
+    "development/issues/issue-002.json",
+    "development/issues/issue-003.json",
+    "development/issues/issue-004.json",
+    "development/milestones/px1-canonical-product-status.json",
+    "development/project-state.json",
+    "docs/00-start-here/current-vision.md",
+    "docs/00-start-here/repo-map.md",
+    "docs/01-architecture/nearby-node.md",
+    "docs/05-integrations/multi-device-pilot.md",
+    "docs/05-integrations/operator-guide.md",
+    "docs/06-decisions/decision-log.md",
+    "package.json",
+    "scripts/dev-begin.js",
+    "scripts/dev-lifecycle.js",
+    "scripts/dev-status.js",
+    "development/sessions/session-20260726-001.json"
+  ]
+}

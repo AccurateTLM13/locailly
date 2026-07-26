@@ -1,11 +1,11 @@
 {
   "schema": "locaily.development.milestone.v1",
   "id": "px1-canonical-product-status",
-  "title": "Canonical Product Status and Truth Surfaces",
-  "status": "ready",
+  "title": "Canonical",
+  "status": "active",
   "type": "governance",
   "priority": "critical",
-  "purpose": "Restore one coherent version of reality across version numbers, docs, blockers, dashboards, and UI claims so Locaily can be trusted as an evidence-first project.",
+  "purpose": "Restore",
   "problem": "Truth surfaces contradict each other: package.json vs RELEASE.md versions, blockers vs current-state, Relay claimed unimplemented while code/UI exist, operator vs console docs, LOCAL_AI_BIND vs LOCAL_AI_HOST, generated dashboard vs open issues.",
   "scope": {
     "included": [
@@ -31,42 +31,42 @@
     {
       "id": "ac-version",
       "description": "One release version is authoritative and consistent across package.json, RELEASE.md, and README",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-no-contradict-relay",
       "description": "No active doc claims Relay Nodes are unimplemented when protocol/UI/tests exist",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-console-operator-docs",
       "description": "Operator guide and related docs correctly distinguish /console vs /operator routes and launchers",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-env-bind",
       "description": "All docs and examples use LOCAL_AI_HOST (not LOCAL_AI_BIND) matching companion/server.js",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-logo",
       "description": "Console logo asset resolves without 404",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-status-check",
       "description": "An automated check fails when known contradictory feature-state claims or missing milestone records are detected",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-decision",
       "description": "Decision recorded in docs/06-decisions for console/operator shell strategy",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-schemas",
       "description": "node scripts/test-development-schemas.js and npm run dev:status pass without ERROR-level product-status contradictions introduced by this work",
-      "status": "pending"
+      "status": "satisfied"
     }
   ],
   "validationProfile": "pre-delivery",
@@ -74,7 +74,8 @@
   "blockers": [],
   "lifecycleRef": null,
   "createdAt": "2026-07-25T03:53:40.372Z",
-  "startedAt": null,
+  "startedAt": "2026-07-26T19:21:12.892Z",
   "completedAt": null,
-  "mergedAt": null
+  "mergedAt": null,
+  "latestValidationId": "validation-20260726T193904-f068ea75"
 }

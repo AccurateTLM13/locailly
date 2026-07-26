@@ -224,19 +224,26 @@ For full endpoint details, request/response schemas, and error codes, see the [A
 
 ---
 
-## 6. Viewing the Operator Console
+## 6. Viewing the Validation Console
 
-The Local Brain includes a browser-based operator console for running validations and monitoring status.
+The Local Brain includes two browser-based UIs:
+
+| Route | Purpose | Files |
+|---|---|---|
+| `/console` | **Validation Console** — Lighthouse Handoff launcher, readiness checklist, run timeline, result viewer, setup panels | `companion/console/` |
+| `/operator` | **Operator Control Panel** — job dashboard, relay node management, enqueue panel | `companion/operator/` |
+
+### Validation Console (`/console`)
 
 Open your browser and navigate to:
 
 ```
-http://127.0.0.1:31313/operator
+http://127.0.0.1:31313/console
 ```
 
-### What you will see
+#### What you will see
 
-The console has the following sections:
+The validation console has the following sections:
 
 - **Lighthouse Handoff launcher** — enter a URL, select a mode (Standard, Local AI, or Local AI + Memory), and click **Run Validation**. You can also paste a raw PageSpeed JSON report if you do not have a PageSpeed API key.
 - **Readiness checklist** — shows whether the Local Brain, Ollama, tools, and Memory Bridge are ready.
@@ -248,7 +255,17 @@ The console has the following sections:
   - **Markdown preview** — a preview of the generated handoff document.
   - **Run history** — a list of previous validation runs with a refresh button.
 
-The console communicates with the server through the `/console/*` endpoints. For programmatic access, see the [API Reference](api-reference.md) sections on Console and Benchmark endpoints.
+The validation console communicates with the server through the `/console/*` endpoints. For programmatic access, see the [API Reference](api-reference.md) sections on Console and Benchmark endpoints.
+
+### Operator Control Panel (`/operator`)
+
+Open your browser and navigate to:
+
+```
+http://127.0.0.1:31313/operator
+```
+
+The operator panel provides job lifecycle management, relay node monitoring, and track/ workflow enqueue controls. It is served from `companion/operator/` and communicates through the Jobs and Relay API endpoints.
 
 ---
 

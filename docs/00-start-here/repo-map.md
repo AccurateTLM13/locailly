@@ -65,7 +65,7 @@ Locaily
 ├─ The Crew           specialized workers and capabilities (companion/crew/)
 ├─ Model Lab          evaluation and qualification layer
 │  └─ Benchmark Lab   evidence and qualification subsystem (benchmark-lab/)
-├─ Relay Nodes        nearby-device capability layer (planned; not implemented)
+├─ Relay Nodes        nearby-device capability layer (protocol, registry, routing, and placement implemented)
 └─ Memory Bridge      optional context/writeback layer (v0)
 ```
 

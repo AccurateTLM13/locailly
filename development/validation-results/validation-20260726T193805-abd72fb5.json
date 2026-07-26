@@ -1,0 +1,154 @@
+{
+  "schema": "locaily.development.validation_result.v1",
+  "id": "validation-20260726T193805-abd72fb5",
+  "milestoneId": "px1-canonical-product-status",
+  "profileId": "pre-delivery",
+  "status": "failed",
+  "gitState": {
+    "branch": "main",
+    "headCommit": "f1826c7b424d214866df037a606c9f422b6fc55b",
+    "fingerprint": "sha256:025c233be76cf9fe",
+    "changedFiles": [
+      {
+        "path": "ELEASE.md",
+        "state": "M"
+      },
+      {
+        "path": "docs/00-start-here/current-vision.md",
+        "state": "M"
+      },
+      {
+        "path": "docs/00-start-here/repo-map.md",
+        "state": "M"
+      },
+      {
+        "path": "docs/01-architecture/nearby-node.md",
+        "state": "M"
+      },
+      {
+        "path": "docs/05-integrations/multi-device-pilot.md",
+        "state": "M"
+      },
+      {
+        "path": "docs/05-integrations/operator-guide.md",
+        "state": "M"
+      },
+      {
+        "path": "docs/06-decisions/decision-log.md",
+        "state": "M"
+      },
+      {
+        "path": "package.json",
+        "state": "M"
+      },
+      {
+        "path": "scripts/dev-begin.js",
+        "state": "M"
+      },
+      {
+        "path": "scripts/dev-lifecycle.js",
+        "state": "M"
+      },
+      {
+        "path": "scripts/dev-status.js",
+        "state": "M"
+      }
+    ],
+    "computedAt": "2026-07-26T19:38:05.215Z"
+  },
+  "startedAt": "2026-07-26T19:38:05.217Z",
+  "completedAt": "2026-07-26T19:38:08.056Z",
+  "results": [
+    {
+      "id": "strict-status",
+      "command": "node scripts/dev-status.js --strict --json",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 0,
+      "stdout": "",
+      "stderr": "",
+      "summary": "No error/critical contradictions",
+      "required": true
+    },
+    {
+      "id": "dev-status-strict",
+      "command": "node scripts/dev-status.js --strict",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 716,
+      "stdout": "=== Locaily Development Status ===\n\nProject:        locaily\nStatus:         active\nDefault branch: main\nCurrent branch: main (default)\nHEAD:           f1826c7\n\n--- Working Tree ---\n  Modified:  16 file(s)\n    RELEASE.md\n    development/issues/issue-002.json\n    development/issues/issue-003.json\n    development/issues/issue-004.json\n    development/milestones/px1-canonical-product-status.json\n    ... and 11 more\n  Untracked: 1 file(s)\n    development/sessions/session-20260726-001.json\n\n--- Milest",
+      "stderr": "",
+      "summary": "      Fix: Create milestone record or re",
+      "required": true
+    },
+    {
+      "id": "schema-tests",
+      "command": "node scripts/test-development-schemas.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 109,
+      "stdout": "\n## Schema Structure\n  PASS  Schema brief.schema.json has required fields\n  PASS  Schema delivery.schema.json has required fields\n  PASS  Schema issue.schema.json has required fields\n  PASS  Schema milestone.schema.json has required fields\n  PASS  Schema project-state.schema.json has required fields\n  PASS  Schema session.schema.json has required fields\n  PASS  Schema validation-profile.schema.json has required fields\n  PASS  Schema validation-result.schema.json has required fields\n\n## Schema Co",
+      "stderr": "",
+      "summary": "## Results: 29 passed, 0 failed",
+      "required": true
+    },
+    {
+      "id": "lifecycle-tests",
+      "command": "node scripts/test-lifecycle.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 167,
+      "stdout": "\n## State Machine\n  PASS  STATES are frozen\n  PASS  isTerminal identifies terminal states\n  PASS  isValidTransition enforces legal transitions\n  PASS  Terminal states have no outgoing transitions\n\n## Objective Meta\n  PASS  createObjectiveMeta produces default meta\n  PASS  createObjectiveMeta accepts overrides\n\n## Objective Parsing\n  PASS  parseObjectiveId extracts prefix and slug\n  PASS  parseObjectiveId handles no prefix\n\n## Duplicate Detection\n  PASS  detectDuplicates finds slug duplicates\n  P",
+      "stderr": "",
+      "summary": "## Results: 23 passed, 0 failed",
+      "required": true
+    },
+    {
+      "id": "controller-tests",
+      "command": "node scripts/test-controller-invariants.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 308,
+      "stdout": "\nTests: 11 passed, 0 failed\n",
+      "stderr": "",
+      "summary": "Tests: 11 passed, 0 failed",
+      "required": true
+    },
+    {
+      "id": "contract-tests",
+      "command": "node scripts/contract-test.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 568,
+      "stdout": "Contract helpers passed.\n",
+      "stderr": "",
+      "summary": "Contract helpers passed.",
+      "required": true
+    },
+    {
+      "id": "full-suite",
+      "command": "npm run test:full",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 271,
+      "stdout": "",
+      "stderr": "node:internal/modules/cjs/loader:1252\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\Users\\JP\\Desktop\\locailly\\npm'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1249:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1075:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:219:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:",
+      "summary": "",
+      "required": true
+    }
+  ],
+  "manualChecks": [
+    {
+      "id": "review-gate",
+      "description": "Code review must pass (agent-review.js)",
+      "acknowledged": false
+    },
+    {
+      "id": "closeout-verified",
+      "description": "Closeout record correctly describes completed work",
+      "acknowledged": false
+    }
+  ],
+  "warnings": [],
+  "error": null
+}

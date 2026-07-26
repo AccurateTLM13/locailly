@@ -235,6 +235,58 @@ function detectContradictions(projectState, gitState, legacyState, milestones, s
     }
   }
 
+  // --- PRODUCT-STATUS DRIFT: version consistency ---
+  const pkg = readJson(path.join(PROJECT_ROOT, "package.json"), null);
+  const serverVersionLine = readText(path.join(PROJECT_ROOT, "companion", "server.js")).match(/PLATFORM_VERSION\s*=\s*"([^"]+)"/);
+  const serverVersion = serverVersionLine ? serverVersionLine[1] : null;
+  if (pkg && serverVersion && pkg.version !== serverVersion) {
+    add("warning", "PRODSTAT_VERSION_MISMATCH",
+      `package.json version "${pkg.version}" differs from server PLATFORM_VERSION "${serverVersion}"`,
+      "Match package.json version to companion/server.js PLATFORM_VERSION");
+  }
+  // RELEASE.md should reference the same version
+  const releaseContent = readText(path.join(PROJECT_ROOT, "RELEASE.md"));
+  const releaseVersionMatch = releaseContent.match(/\*\*Version:\*\*\s*([\d.]+)/);
+  if (releaseVersionMatch && serverVersion && releaseVersionMatch[1] !== serverVersion) {
+    add("warning", "PRODSTAT_RELEASE_VERSION_MISMATCH",
+      `RELEASE.md version "${releaseVersionMatch[1]}" differs from server "${serverVersion}"`,
+      "Update RELEASE.md version to match companion/server.js");
+  }
+
+  // --- PRODUCT-STATUS DRIFT: LOCAL_AI_BIND references in known doc files ---
+  const docCheckFiles = [
+    "docs/05-integrations/multi-device-pilot.md",
+    "docs/05-integrations/api-reference.md",
+    "docs/05-integrations/operator-guide.md",
+    "docs/00-start-here/current-state.md",
+    "README.md",
+    "RELEASE.md",
+  ];
+  for (const relPath of docCheckFiles) {
+    const fullPath = path.join(PROJECT_ROOT, relPath);
+    if (!fs.existsSync(fullPath)) continue;
+    const content = readText(fullPath);
+    if (/LOCAL_AI_BIND/.test(content)) {
+      add("warning", "PRODSTAT_LOCAL_AI_BIND",
+        `${relPath} uses LOCAL_AI_BIND instead of LOCAL_AI_HOST`,
+        `Replace LOCAL_AI_BIND with LOCAL_AI_HOST in ${relPath}`);
+    }
+    // "Relay Nodes — a planned" or similar phrasing implying not implemented
+    if (/[Rr]elay\s+[Nn]odes?.*\bplanned\b/.test(content) || /[Rr]elay\s+[Nn]odes?.*\bnot yet\b/.test(content)) {
+      add("info", "PRODSTAT_RELAY_PLANNED",
+        `${relPath} describes Relay Nodes as "planned" when protocol/UI/tests exist`,
+        `Update ${relPath} to reflect implemented relay node protocol`);
+    }
+  }
+
+  // --- PRODUCT-STATUS DRIFT: console logo asset ---
+  const logoPath = path.join(PROJECT_ROOT, "companion", "console", "assets", "locaily-logo.svg");
+  if (!fs.existsSync(logoPath)) {
+    add("error", "PRODSTAT_LOGO_MISSING",
+      "Console logo asset not found at companion/console/assets/locaily-logo.svg",
+      "Create or restore the logo SVG file");
+  }
+
   // --- Roadmap drift detection ---
   const roadmap = readJson(path.join(DEVELOPMENT_DIR, "roadmap.json"), null);
   if (roadmap && roadmap.areas) {
