@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px3-golden-path-run-inspector",
   "title": "Golden Path Run Inspector",
-  "status": "active",
+  "status": "completed",
   "type": "feature",
   "priority": "critical",
   "purpose": "Ship one polished experience that proves the Locaily thesis: readiness -> example run -> capability steps -> decisions -> validation/evidence -> optional human gate -> exportable artifact",

@@ -2,10 +2,10 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px4-unified-locaily-shell",
   "title": "Unified Locaily Application Shell",
-  "status": "planned",
+  "status": "active",
   "type": "feature",
   "priority": "high",
-  "purpose": "Merge the strongest parts of /console and /operator into one coherent application shell so operators do not choose between competing control planes.",
+  "purpose": "Merge the strongest parts of /console and /operator into one coherent application shell so operators do not choose between competing control planes",
   "problem": "Workflow console, operator console, dashboards, CLIs, and lifecycle systems make Locaily feel like six internal products.",
   "scope": {
     "included": [
@@ -28,22 +28,22 @@
     {
       "id": "ac-single-entry",
       "description": "One primary browser entry presents Home with Run example CTA",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-sections",
       "description": "Shell exposes Runs, Workflows, Nodes, Evidence, Reviews at minimum using existing backends",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-legacy",
       "description": "Legacy /console and /operator URLs still work via redirect or embedded mode",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-no-regression",
       "description": "Existing Lighthouse golden path and operator job actions remain functional",
-      "status": "pending"
+      "status": "satisfied"
     }
   ],
   "validationProfile": "pre-delivery",
@@ -54,6 +54,7 @@
   "lifecycleRef": null,
   "createdAt": "2026-07-25T03:53:40.372Z",
   "startedAt": null,
+  "startedAt": "2026-07-26T20:30:00.000Z",
   "completedAt": null,
   "mergedAt": null
 }

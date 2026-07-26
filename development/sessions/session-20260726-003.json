@@ -6,16 +6,20 @@
     "platform": "unknown",
     "model": "unknown"
   },
-  "status": "active",
+  "status": "closed",
   "objective": "Ship",
   "branch": "main",
   "startingCommit": "6cb2e03382779cb953697981012d650e9179e184",
   "plannedFiles": [],
-  "completedWork": [],
+  "completedWork": [
+    "Session closed"
+  ],
   "remainingWork": [],
   "blockers": [],
   "validationRunIds": [],
   "checks": [],
   "startedAt": "2026-07-26T20:36:53.386Z",
-  "closedAt": null
+  "closedAt": "2026-07-26T20:53:29.569Z",
+  "closingCommit": "fa7cb7cb66a36c2ae3d5474c97691e1e72f9046f",
+  "dirtyFiles": []
 }

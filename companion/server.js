@@ -419,11 +419,24 @@ const server = http.createServer(async (request, response) => {
     }
 
     // Operator console static files
-    if (request.method === "GET" && (url.pathname === "/operator" || url.pathname === "/operator/")) {
-      const body = await readFile(join(__dirname, "operator", "index.html"));
+    // Unified shell — serves at / and /shell
+    const isShell = url.pathname === "/" || url.pathname === "/shell" || url.pathname === "/shell/";
+    if (request.method === "GET" && isShell) {
+      const body = await readFile(join(__dirname, "shell", "index.html"));
       return sendContent(response, 200, "text/html; charset=utf-8", body);
     }
 
+    if (request.method === "GET" && url.pathname === "/shell/styles.css") {
+      const body = await readFile(join(__dirname, "shell", "styles.css"));
+      return sendContent(response, 200, "text/css; charset=utf-8", body);
+    }
+
+    if (request.method === "GET" && url.pathname === "/shell/app.js") {
+      const body = await readFile(join(__dirname, "shell", "app.js"));
+      return sendContent(response, 200, "text/javascript; charset=utf-8", body);
+    }
+
+    // Operator static files served directly (before redirect to support deep links)
     if (request.method === "GET" && url.pathname === "/operator/styles.css") {
       const body = await readFile(join(__dirname, "operator", "styles.css"));
       return sendContent(response, 200, "text/css; charset=utf-8", body);
@@ -432,6 +445,12 @@ const server = http.createServer(async (request, response) => {
     if (request.method === "GET" && url.pathname === "/operator/app.js") {
       const body = await readFile(join(__dirname, "operator", "app.js"));
       return sendContent(response, 200, "text/javascript; charset=utf-8", body);
+    }
+
+    // Operator console redirects to shell (/console still served directly for legacy compatibility)
+    if (request.method === "GET" && (url.pathname === "/operator" || url.pathname === "/operator/")) {
+      const redirBody = '<!doctype html><html><head><meta http-equiv="refresh" content="0;url=/#jobs"></head><body><a href="/#jobs">Redirecting to shell jobs…</a></body></html>';
+      return sendContent(response, 200, "text/html; charset=utf-8", redirBody);
     }
 
     if (request.method === "GET" && url.pathname === "/console/demo") {

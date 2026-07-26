@@ -1,8 +1,8 @@
 {
   "schema": "locaily.development.project_state.v1",
   "project": "locaily",
-  "currentMilestone": "px3-golden-path-run-inspector",
-  "activeSession": "session-20260726-003",
+  "currentMilestone": "px4-unified-locaily-shell",
+  "activeSession": null,
   "status": "active",
   "defaultBranch": "main",
   "activeBranch": "main",
