@@ -27,7 +27,9 @@ Override with environment variables:
 
 - **Local-only by default.** The server binds to `127.0.0.1` and is not reachable from the network.
 - **No authentication tokens** for standard API calls. The assumption is that only local processes connect.
-- **Relay endpoints** (`/relay/register`, `/relay/heartbeat`, `/relay/unregister`, `/relay/step`) optionally require a pre-shared token via the `RELAY_TOKEN` environment variable.
+- **LAN Security Gate.** When binding to a non-loopback address (e.g. `0.0.0.0`), the server refuses to start unless `RELAY_TOKEN`, `LAN_MODE=1`, `RELAY_ALLOWLIST`, and `RELAY_CAPABILITY_ALLOWLIST` are all configured. This is fail-closed by design.
+- **Relay endpoints** (`/relay/protocol`, `/relay/nodes`, `/relay/register`, `/relay/heartbeat`, `/relay/unregister`, `/relay/plan`, `/relay/step`) require a pre-shared Bearer token via the `RELAY_TOKEN` environment variable when configured. Unauthenticated calls return `401` with `RELAY_AUTH_MISSING` or `RELAY_AUTH_INVALID`.
+- **LAN mode** (`LAN_MODE=1`) explicitly acknowledges the operator intends to expose the server beyond localhost.
 - **Permission checks** are enforced server-side for memory writeback and tool execution.
 
 ### Common Response Envelope
@@ -1740,6 +1742,13 @@ Returns the relay protocol description including version, message types, and cap
 curl http://127.0.0.1:31313/relay/protocol
 ```
 
+**Note:** If `RELAY_TOKEN` is configured, all relay endpoints require an
+`Authorization: Bearer <token>` header. Unauthenticated calls return `401`.
+
+```bash
+curl http://127.0.0.1:31313/relay/protocol -H "Authorization: Bearer your-token"
+```
+
 ---
 
 ### GET /relay/nodes
@@ -1771,6 +1780,7 @@ Lists all registered relay nodes and their health statistics.
 
 ```bash
 curl http://127.0.0.1:31313/relay/nodes
+curl http://127.0.0.1:31313/relay/nodes -H "Authorization: Bearer your-token"
 ```
 
 ---
@@ -1807,6 +1817,7 @@ Registers a new relay node. If `RELAY_TOKEN` is set, the request must include va
 ```bash
 curl -X POST http://127.0.0.1:31313/relay/register \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your-token" \
   -d '{"nodeId":"node-1","baseUrl":"http://192.168.1.10:31313","label":"Office Desktop","capabilities":["model_run"]}'
 ```
 
@@ -2208,14 +2219,15 @@ Serves the operator console client-side JavaScript.
 ## Environment Variables Reference
 
 | Variable | Default | Description |
-|---|---|---|
+|---|---|---|---|
 | `LOCAL_AI_HOST` | `127.0.0.1` | Server bind address |
 | `LOCAL_AI_PORT` | `31313` | Server port |
 | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Ollama runtime endpoint |
 | `OLLAMA_MODEL` | `llama3.2` | Default model name |
 | `RELAY_TOKEN` | `null` | Pre-shared token for relay authentication |
-| `RELAY_ALLOWLIST` | `*` | Comma-separated allowed relay node hosts |
-| `RELAY_CAPABILITY_ALLOWLIST` | `*` | Comma-separated allowed relay capabilities |
+| `LAN_MODE` | `false` | Set to `1` to enable LAN mode for non-loopback binding |
+| `RELAY_ALLOWLIST` | `none` | Comma-separated allowed relay node hosts (required in LAN mode) |
+| `RELAY_CAPABILITY_ALLOWLIST` | `none` | Comma-separated allowed relay capabilities (required in LAN mode) |
 
 ---
 

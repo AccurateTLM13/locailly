@@ -221,6 +221,28 @@
     ]
   },
 
+  // ── relay ────────────────────────────────────────────────────────────
+  // Optional. Controls relay security and LAN mode behavior.
+  // When binding to a non-loopback address (e.g. 0.0.0.0), all four
+  // fields below are required and the server refuses to start without them.
+  "relay": {
+    // Required for LAN mode. Shared pre-shared token used for Bearer
+    // authentication on all relay endpoints (/relay/*).
+    "token": null,
+
+    // Required for LAN mode. Set to true to enable LAN mode when binding
+    // to a non-loopback address. Can also be set via LAN_MODE=1 env var.
+    "lanMode": false,
+
+    // Required for LAN mode. List of allowed host patterns for relay
+    // registration. Can also be set via RELAY_ALLOWLIST env var (comma-separated).
+    "allowedHosts": [],
+
+    // Required for LAN mode. List of allowed capability names that relay
+    // nodes can advertise. Can also be set via RELAY_CAPABILITY_ALLOWLIST env var.
+    "allowedCapabilities": []
+  },
+
   // ── memoryBridge ────────────────────────────────────────────────────
   // Optional. Configures the Memory Bridge for local markdown vault
   // integration. When disabled, memory endpoints return a disabled status.

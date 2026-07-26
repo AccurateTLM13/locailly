@@ -80,21 +80,27 @@ capabilities. Use the template at `scripts/pilot/hardware-profile-template.json`
 
 ### Device B (Relay Node)
 
-1. Start the Local Brain on Device B, binding to the LAN interface:
+1. Start the Local Brain on Device B, binding to the LAN interface. Non-loopback binding requires `RELAY_TOKEN`, `LAN_MODE=1`, and allowlists:
    ```bash
    set RELAY_TOKEN=your-shared-token
-    set LOCAL_AI_HOST=0.0.0.0
+   set LOCAL_AI_HOST=0.0.0.0
+   set LAN_MODE=1
+   set RELAY_ALLOWLIST=192.168.1.0/24
+   set RELAY_CAPABILITY_ALLOWLIST=default_worker,priority_helper
    npm start
    ```
 
-2. Register Device B with Device A's Local Brain:
+2. Register Device B with Device A's Local Brain (include Authorization header if relay auth is enforced):
    ```bash
-   curl -X POST http://DEVICE_A_IP:31313/relay/register -H "Content-Type: application/json" -d "{\"nodeId\": \"device-b\", \"baseUrl\": \"http://DEVICE_B_IP:31313\", \"label\": \"Device B\", \"capabilities\": [\"default_worker\", \"priority_helper\"]}"
+   curl -X POST http://DEVICE_A_IP:31313/relay/register ^
+     -H "Content-Type: application/json" ^
+     -H "Authorization: Bearer your-shared-token" ^
+     -d "{\"nodeId\": \"device-b\", \"baseUrl\": \"http://DEVICE_B_IP:31313\", \"label\": \"Device B\", \"capabilities\": [\"default_worker\", \"priority_helper\"]}"
    ```
 
 3. Verify registration:
    ```bash
-   curl http://DEVICE_A_IP:31313/relay/nodes
+   curl http://DEVICE_A_IP:31313/relay/nodes -H "Authorization: Bearer your-shared-token"
    ```
 
 ## Run Procedures
@@ -146,6 +152,30 @@ node scripts/pilot/pilot-runner.js --policy distributed --repeat 3
 node scripts/pilot/pilot-runner.js --policy distributed --workflow marketplace.dealsniper --input ./my-input.json --repeat 5
 ```
 
+### Authenticated Relay Calls
+
+When `RELAY_TOKEN` is set (required for non-loopback binding), all relay
+endpoints require an `Authorization: Bearer <token>` header:
+
+```bash
+# List registered nodes (authenticated)
+curl http://127.0.0.1:31313/relay/nodes -H "Authorization: Bearer your-token"
+
+# Register a node (authenticated)
+curl -X POST http://127.0.0.1:31313/relay/register ^
+  -H "Content-Type: application/json" ^
+  -H "Authorization: Bearer your-token" ^
+  -d "{\"nodeId\":\"device-b\",\"baseUrl\":\"http://192.168.1.101:31313\",\"capabilities\":[\"ollama\"]}"
+
+# Get placement plan (authenticated)
+curl -X POST http://127.0.0.1:31313/relay/plan ^
+  -H "Content-Type: application/json" ^
+  -H "Authorization: Bearer your-token" ^
+  -d "{\"track_id\":\"website_audit.lighthouse_handoff\",\"relay_policy\":\"distribute\"}"
+```
+
+Unauthenticated calls to relay endpoints return `401` with `RELAY_AUTH_MISSING` or `RELAY_AUTH_INVALID` error codes.
+
 ## Evidence Collection
 
 The pilot runner writes evidence to `data/pilot-evidence/` by default (override with
@@ -184,9 +214,12 @@ Columns:
 
 ## Tear-Down
 
-1. Unregister Device B from Device A:
+1. Unregister Device B from Device A (include Authorization header if relay auth is enforced):
    ```bash
-   curl -X POST http://DEVICE_A_IP:31313/relay/unregister -H "Content-Type: application/json" -d "{\"nodeId\": \"device-b\"}"
+   curl -X POST http://DEVICE_A_IP:31313/relay/unregister ^
+     -H "Content-Type: application/json" ^
+     -H "Authorization: Bearer your-shared-token" ^
+     -d "{\"nodeId\": \"device-b\"}"
    ```
 
 2. Stop the Local Brain on both devices (Ctrl+C or close the terminal).

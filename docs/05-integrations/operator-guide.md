@@ -372,6 +372,22 @@ node companion/server.js
 
 **Fix:** Upgrade Node.js from [https://nodejs.org/](https://nodejs.org/). Version 18 or newer is required.
 
+### Server refuses to start on non-loopback address
+
+**Symptom:** Server fails to start when binding to `0.0.0.0` with error `SECURITY GATE`.
+
+**Fix:** The server requires these environment variables when binding to a non-loopback address:
+
+```powershell
+set RELAY_TOKEN=your-shared-secret
+set LAN_MODE=1
+set RELAY_ALLOWLIST=192.168.1.0/24
+set RELAY_CAPABILITY_ALLOWLIST=default_worker,priority_helper
+node companion/server.js
+```
+
+For loopback addresses (`127.0.0.1`, `localhost`), the server starts without any of these.
+
 ### Config file missing
 
 **Symptom:** Server starts but uses built-in defaults instead of your configuration.

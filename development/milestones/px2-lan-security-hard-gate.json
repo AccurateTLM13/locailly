@@ -30,32 +30,32 @@
     {
       "id": "ac-refuse-lan",
       "description": "Server refuses to start on non-loopback host without RELAY_TOKEN + explicit LAN mode + required allowlists",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-loopback-ok",
       "description": "Loopback default still starts without RELAY_TOKEN (dev ergonomics preserved)",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-unauth-fail",
       "description": "Tests prove unauthenticated relay mutation/list calls fail when LAN mode or RELAY_TOKEN enforcement is active",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-startup-summary",
       "description": "Startup prints security summary covering bind, auth, trusted hosts, exposed capabilities",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-docs-auth",
       "description": "Relay pilot and API examples that hit protected endpoints include Authorization headers",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-env-name",
       "description": "Pilot docs use LOCAL_AI_HOST consistently with server.js",
-      "status": "pending"
+      "status": "satisfied"
     }
   ],
   "validationProfile": "pre-delivery",

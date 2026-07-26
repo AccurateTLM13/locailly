@@ -86,6 +86,38 @@ const {
 
 const PLATFORM_VERSION = "0.1.0";
 const SERVICE_NAME = "local-ai-platform";
+const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost", "::1", "0:0:0:0:0:0:0:1", "::ffff:127.0.0.1"]);
+
+function isLoopback(host) {
+  if (!host) return true;
+  const lower = host.toLowerCase();
+  if (LOOPBACK_HOSTS.has(lower)) return true;
+  try {
+    const addr = lower.startsWith("http") ? new URL(lower).hostname : lower;
+    return LOOPBACK_HOSTS.has(addr);
+  } catch { return false; }
+}
+
+function checkLanSecurity(cfg) {
+  const host = cfg.server && cfg.server.host;
+  if (isLoopback(host)) return null;
+  const relayToken = process.env.RELAY_TOKEN || cfg.relay?.token || null;
+  const lanMode = process.env.LAN_MODE === "1" || process.env.LAN_MODE === "true" || cfg.relay?.lanMode === true;
+  const hasHostAllowlist = !!(process.env.RELAY_ALLOWLIST || cfg.relay?.allowedHosts?.length > 0);
+  const hasCapAllowlist = !!(process.env.RELAY_CAPABILITY_ALLOWLIST || cfg.relay?.allowedCapabilities?.length > 0);
+  const failures = [];
+  if (!relayToken) failures.push("RELAY_TOKEN is required when binding to a non-loopback address");
+  if (!lanMode) failures.push("LAN_MODE=1 is required when binding to a non-loopback address");
+  if (!hasHostAllowlist) failures.push("RELAY_ALLOWLIST (or relay.allowedHosts) is required in LAN mode");
+  if (!hasCapAllowlist) failures.push("RELAY_CAPABILITY_ALLOWLIST (or relay.allowedCapabilities) is required in LAN mode");
+  if (failures.length === 0) return null;
+  return {
+    host,
+    missing: failures,
+    message: `Security gate: refusing startup on non-loopback address '${host}'. ${failures.join("; ")}.`
+  };
+}
+
 const DEFAULT_CONFIG = {
   server: {
     host: "127.0.0.1",
@@ -143,6 +175,12 @@ const DEFAULT_CONFIG = {
     filePath: join(__dirname, "..", "data", "permissions.json"),
     approved: ["model.run", "memory.read", "memory.writeback.propose", "memory.writeback.apply", "memory.candidates.review", "memory.maintainer.run"],
     denied: ["file.delete", "file.write", "network.send", "browser.write", "memory.delete"]
+  },
+  relay: {
+    token: null,
+    lanMode: false,
+    allowedHosts: [],
+    allowedCapabilities: []
   },
   memoryBridge: {
     enabled: false,
@@ -235,7 +273,7 @@ const relayAllowedHosts =
     ? new Set(relayHostAllowlistEnv.split(",").map((s) => s.trim()).filter(Boolean))
     : null;
 const relayRegistry = createRelayRegistry({ staleMs: 60 * 1000, allowedCapabilities: relayAllowedCapabilities, allowedHosts: relayAllowedHosts });
-const relayToken = process.env.RELAY_TOKEN || null;
+const relayToken = (config.relay && config.relay.token) || null;
 const relayConnector = createRelayConnector({ timeoutMs: 15000, token: relayToken });
 const relayAuth = relayToken ? createRelayAuth({ token: relayToken }) : null;
 const relayRouter = createRelayRouter({ registry: relayRegistry, connector: relayConnector, auditLog });
@@ -1187,6 +1225,12 @@ const server = http.createServer(async (request, response) => {
     }
 
     if (request.method === "GET" && url.pathname === "/relay/protocol") {
+      if (relayAuth) {
+        const authErr = relayAuth.verifyRequest(request);
+        if (authErr) {
+          return sendJson(response, 401, { ok: false, error: authErr });
+        }
+      }
       return sendJson(response, 200, {
         ok: true,
         protocol: describeProtocol()
@@ -1194,6 +1238,12 @@ const server = http.createServer(async (request, response) => {
     }
 
     if (request.method === "GET" && url.pathname === "/relay/nodes") {
+      if (relayAuth) {
+        const authErr = relayAuth.verifyRequest(request);
+        if (authErr) {
+          return sendJson(response, 401, { ok: false, error: authErr });
+        }
+      }
       return sendJson(response, 200, {
         ok: true,
         nodes: relayRegistry.list(),
@@ -1303,6 +1353,13 @@ const server = http.createServer(async (request, response) => {
     }
 
     if (request.method === "POST" && url.pathname === "/relay/plan") {
+      if (relayAuth) {
+        const authErr = relayAuth.verifyRequest(request);
+        if (authErr) {
+          return sendJson(response, 401, { ok: false, error: authErr });
+        }
+      }
+
       const bodyResult = await readJsonBody(request);
 
       if (!bodyResult.ok) {
@@ -2642,6 +2699,19 @@ server.on("error", (error) => {
   process.exitCode = 1;
 });
 
+// LAN security gate — refuse non-loopback startup without auth + LAN mode + allowlists
+const securityGate = checkLanSecurity(config);
+if (securityGate) {
+  console.error("=== SECURITY GATE ===");
+  console.error(securityGate.message);
+  for (const m of securityGate.missing) console.error(`  MISSING: ${m}`);
+  console.error("Server startup refused for safety.");
+  console.error("To run on a non-loopback interface, set:");
+  console.error("  RELAY_TOKEN=<shared-secret>  LAN_MODE=1  RELAY_ALLOWLIST=<hosts>  RELAY_CAPABILITY_ALLOWLIST=<caps>");
+  process.exitCode = 1;
+  return;
+}
+
 server.listen(config.server.port, config.server.host, async () => {
   try {
     const store = enforcementPolicy.getStore ? enforcementPolicy.getStore() : null;
@@ -2709,6 +2779,10 @@ function mergeConfig(base, override) {
       ...base.permissions,
       ...(override.permissions || {})
     },
+    relay: {
+      ...base.relay,
+      ...(override.relay || {})
+    },
     memoryBridge: {
       ...base.memoryBridge,
       ...(override.memoryBridge || {}),
@@ -2741,6 +2815,22 @@ function applyEnvironmentOverrides(targetConfig) {
 
   if (process.env.OLLAMA_MODEL) {
     targetConfig.runtime.model = process.env.OLLAMA_MODEL;
+  }
+
+  if (process.env.RELAY_TOKEN) {
+    targetConfig.relay.token = process.env.RELAY_TOKEN;
+  }
+
+  if (process.env.LAN_MODE !== undefined) {
+    targetConfig.relay.lanMode = process.env.LAN_MODE === "1" || process.env.LAN_MODE === "true";
+  }
+
+  if (process.env.RELAY_ALLOWLIST) {
+    targetConfig.relay.allowedHosts = process.env.RELAY_ALLOWLIST.split(",").map(s => s.trim()).filter(Boolean);
+  }
+
+  if (process.env.RELAY_CAPABILITY_ALLOWLIST) {
+    targetConfig.relay.allowedCapabilities = process.env.RELAY_CAPABILITY_ALLOWLIST.split(",").map(s => s.trim()).filter(Boolean);
   }
 }
 
@@ -2842,6 +2932,20 @@ async function printStartupStatus() {
 
   console.log("Local AI Platform");
   console.log(`Server URL: ${serverUrl}`);
+  console.log("--- Security ---");
+  const secBind = config.server.host;
+  const secAuth = config.relay && config.relay.token ? "enabled (RELAY_TOKEN)" : "disabled (no RELAY_TOKEN)";
+  const secLan = config.relay && config.relay.lanMode ? "enabled" : "not required";
+  const secHosts = config.relay && config.relay.allowedHosts && config.relay.allowedHosts.length > 0
+    ? config.relay.allowedHosts.join(", ") : "none configured";
+  const secCaps = config.relay && config.relay.allowedCapabilities && config.relay.allowedCapabilities.length > 0
+    ? config.relay.allowedCapabilities.join(", ") : "none configured";
+  const secLoopback = isLoopback(secBind);
+  console.log(`  Binding:    ${secBind}${secLoopback ? " (loopback — safe)" : " (non-loopback — LAN mode)"}`);
+  console.log(`  Relay auth: ${secAuth}`);
+  console.log(`  LAN mode:   ${secLan}`);
+  console.log(`  Trusted hosts: ${secHosts}`);
+  console.log(`  Exposed capabilities: ${secCaps}`);
   console.log("Canonical API: POST /tasks/run");
   console.log("Track API: POST /tracks/run");
   console.log("Workflow API: POST /workflows/plan, POST /workflows/run");
