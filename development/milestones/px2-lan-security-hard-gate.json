@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px2-lan-security-hard-gate",
   "title": "LAN Security Hard Gate for Relay Exposure",
-  "status": "active",
+  "status": "completed",
   "type": "infrastructure",
   "priority": "critical",
   "purpose": "Refuse unsafe non-loopback startup unless relay authentication, host allowlists, and intentional LAN exposure are configured. Make LAN mode fail-closed.",

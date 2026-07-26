@@ -1,9 +1,9 @@
 {
   "schema": "locaily.development.project_state.v1",
   "project": "locaily",
-  "currentMilestone": "px2-lan-security-hard-gate",
-  "activeSession": "session-20260726-002",
-  "status": "active",
+  "currentMilestone": null,
+  "activeSession": null,
+  "status": "idle",
   "defaultBranch": "main",
   "activeBranch": "main",
   "lastCompletedMilestone": null,
