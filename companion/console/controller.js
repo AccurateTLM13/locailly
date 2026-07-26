@@ -175,6 +175,23 @@ function createConsoleController({
     };
   }
 
+  async function getDemoStatus() {
+    return {
+      statusCode: 200,
+      body: {
+        ok: true,
+        demoAvailable: true,
+        demoMode: "standard",
+        fixture: "demo-pagespeed-slim.json",
+        description: "Built-in Lighthouse demo. Runs without PageSpeed key, Ollama, Relay, or Memory Bridge.",
+        url: "https://example.com",
+        scores: { performance: 65, accessibility: 82, bestPractices: 90, seo: 85 },
+        requiresOllama: false,
+        requiresPageSpeed: false
+      }
+    };
+  }
+
   return {
     serveStatic,
     getStatus,
@@ -182,7 +199,8 @@ function createConsoleController({
     savePageSpeedKey,
     saveMemoryVaultPath,
     listRuns,
-    getRun
+    getRun,
+    getDemoStatus
   };
 }
 

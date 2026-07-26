@@ -1,0 +1,21 @@
+{
+  "schema": "locaily.development.session.v1",
+  "id": "session-20260726-003",
+  "milestoneId": "px3-golden-path-run-inspector",
+  "agent": {
+    "platform": "unknown",
+    "model": "unknown"
+  },
+  "status": "active",
+  "objective": "Ship",
+  "branch": "main",
+  "startingCommit": "6cb2e03382779cb953697981012d650e9179e184",
+  "plannedFiles": [],
+  "completedWork": [],
+  "remainingWork": [],
+  "blockers": [],
+  "validationRunIds": [],
+  "checks": [],
+  "startedAt": "2026-07-26T20:36:53.386Z",
+  "closedAt": null
+}

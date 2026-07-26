@@ -1,0 +1,54 @@
+{
+  "url": "https://example.com",
+  "capturedAt": "2026-07-26T00:00:00.000Z",
+  "scores": {
+    "performance": 65,
+    "accessibility": 82,
+    "bestPractices": 90,
+    "seo": 85
+  },
+  "opportunities": [
+    {
+      "title": "Eliminate render-blocking resources",
+      "description": "Potential savings of 0.3s",
+      "category": "performance",
+      "impact": "medium"
+    },
+    {
+      "title": "Properly size images",
+      "description": "Potential savings of 0.1s",
+      "category": "performance",
+      "impact": "low"
+    }
+  ],
+  "diagnostics": [
+    {
+      "title": "First Contentful Paint",
+      "value": "1.8s",
+      "category": "performance"
+    },
+    {
+      "title": "Largest Contentful Paint",
+      "value": "2.4s",
+      "category": "performance"
+    },
+    {
+      "title": "Cumulative Layout Shift",
+      "value": "0.05",
+      "category": "performance"
+    }
+  ],
+  "raw": {
+    "lighthouseResult": {
+      "fetchTime": "2026-07-26T00:00:00.000Z",
+      "finalUrl": "https://example.com/",
+      "categories": {
+        "performance": { "score": 0.65 },
+        "accessibility": { "score": 0.82 },
+        "best-practices": { "score": 0.90 },
+        "seo": { "score": 0.85 }
+      },
+      "audits": {}
+    }
+  }
+}

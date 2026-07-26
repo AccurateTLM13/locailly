@@ -2,10 +2,10 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px3-golden-path-run-inspector",
   "title": "Golden Path Run Inspector",
-  "status": "planned",
+  "status": "active",
   "type": "feature",
   "priority": "critical",
-  "purpose": "Ship one polished experience that proves the Locaily thesis: readiness → example run → capability steps → decisions → validation/evidence → optional human gate → exportable artifact — preferably without Ollama via deterministic fixtures.",
+  "purpose": "Ship one polished experience that proves the Locaily thesis: readiness -> example run -> capability steps -> decisions -> validation/evidence -> optional human gate -> exportable artifact",
   "problem": "Architecture is deep but outsiders cannot feel it. There is no single golden path that hides plumbing and shows capability routing, validation, and evidence.",
   "scope": {
     "included": [
@@ -28,27 +28,27 @@
     {
       "id": "ac-one-click",
       "description": "User can open Locaily console, run built-in example, and reach a finished artifact without editing config or calling raw JSON APIs",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-fixture",
       "description": "Deterministic fixture path completes without PageSpeed key, Relay, Memory Bridge, or live site",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-inspector-fields",
       "description": "Run Inspector shows step, worker, routing/qualification reason, pass/fail, failure next-step, human gate if any, and export action",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-no-ollama-optional",
       "description": "Documented path exists to complete demo without Ollama using fixtures/deterministic mode, or clearly labels AI-enhanced steps as optional",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-tests",
       "description": "Automated test or console validation path covers the fixture golden path",
-      "status": "pending"
+      "status": "satisfied"
     }
   ],
   "validationProfile": "pre-delivery",
@@ -58,7 +58,7 @@
   "blockers": [],
   "lifecycleRef": null,
   "createdAt": "2026-07-25T03:53:40.372Z",
-  "startedAt": null,
+  "startedAt": "2026-07-26T20:36:53.384Z",
   "completedAt": null,
   "mergedAt": null
 }

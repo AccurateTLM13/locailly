@@ -6,16 +6,20 @@
     "platform": "unknown",
     "model": "unknown"
   },
-  "status": "active",
+  "status": "closed",
   "objective": "Refuse",
   "branch": "main",
   "startingCommit": "9a454393f62dda01305326172f78441e8a5a3d27",
   "plannedFiles": [],
-  "completedWork": [],
+  "completedWork": [
+    "Session closed"
+  ],
   "remainingWork": [],
   "blockers": [],
   "validationRunIds": [],
   "checks": [],
   "startedAt": "2026-07-26T19:40:57.423Z",
-  "closedAt": null
+  "closedAt": "2026-07-26T20:36:47.513Z",
+  "closingCommit": "6cb2e03382779cb953697981012d650e9179e184",
+  "dirtyFiles": []
 }

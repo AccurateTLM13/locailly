@@ -82,6 +82,7 @@
 
                 <div class="launcher-actions">
                   <button id="runButton" type="submit" class="btn btn--primary">Run Validation</button>
+                  <button id="demoButton" type="button" class="btn btn--demo">Run Demo</button>
                   <button id="pasteReportButton" type="button" class="btn btn--secondary">Use pasted report</button>
                 </div>
                 <p id="runnerMessage" class="form-message" role="status"></p>
@@ -114,6 +115,18 @@
                 </span>
               </div>
               <dl id="resultsSummary" class="result-fields"></dl>
+            </section>
+
+            <section class="surface run-inspector" aria-labelledby="inspectorTitle" hidden>
+              <div class="section-header">
+                <h2 id="inspectorTitle" class="section-title">Run Inspector</h2>
+                <span id="inspectorStatus" class="meta-text">Inspecting run…</span>
+              </div>
+              <div id="inspectorSteps" class="inspector-steps"></div>
+              <div id="inspectorActions" class="inspector-actions">
+                <button id="exportArtifactButton" type="button" class="btn btn--primary" hidden>Export Artifact</button>
+                <button id="humanGateLink" type="button" class="btn btn--secondary" hidden>Review Required</button>
+              </div>
             </section>
           </div>
 

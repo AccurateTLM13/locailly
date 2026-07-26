@@ -4,8 +4,12 @@ const { auditPayloadContainsPrivateMemory } = require("../memory/audit-redaction
 const { capturePageSpeed, parsePastedPageSpeedReport } = require("./pagespeed");
 const { normalizeValidationModel } = require("./model-slug");
 const { buildModelProvenance, buildProvenanceWarning } = require("./model-provenance");
+const { readFileSync } = require("node:fs");
+const { join } = require("node:path");
 
-const VALIDATION_MODES = new Set(["standard", "l2_ollama", "l2_ollama_memory"]);
+const DEMO_FIXTURE = JSON.parse(readFileSync(join(__dirname, "fixtures", "demo-pagespeed-slim.json"), "utf8"));
+
+const VALIDATION_MODES = new Set(["standard", "l2_ollama", "l2_ollama_memory", "demo"]);
 const CONSOLE_SOURCE = {
   app_id: "locaily-test-bench",
   surface: "console",
@@ -68,9 +72,12 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
 
       currentStep = "pagespeed_capture";
       await startStep(runId, currentStep);
-      const pageSpeed = runSnapshot.pastedReport
-        ? parsePastedPageSpeedReport(runSnapshot.pastedReport, url)
-        : await capturePageSpeed(url);
+      const isDemo = mode === "demo";
+      const pageSpeed = isDemo
+        ? { raw: DEMO_FIXTURE.raw, slim: { ...DEMO_FIXTURE, raw: undefined } }
+        : runSnapshot.pastedReport
+          ? parsePastedPageSpeedReport(runSnapshot.pastedReport, url)
+          : await capturePageSpeed(url);
       const pageSpeedArtifact = await runStore.writeJsonArtifact(runId, "pagespeed-raw", pageSpeed.raw);
       await runStore.updateRun(runId, (run) => {
         run.artifacts.pageSpeedRaw = pageSpeedArtifact;
@@ -82,8 +89,8 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
       await finishStep(
         runId,
         currentStep,
-        runSnapshot.pastedReport ? "skipped" : "passed",
-        runSnapshot.pastedReport ? "Used pasted PageSpeed report." : "Live PageSpeed capture complete."
+        isDemo ? "passed" : (runSnapshot.pastedReport ? "skipped" : "passed"),
+        isDemo ? "Used built-in demo fixture (no external API needed)." : (runSnapshot.pastedReport ? "Used pasted PageSpeed report." : "Live PageSpeed capture complete.")
       );
 
       currentStep = "slim_input";
@@ -122,7 +129,7 @@ function createValidationRunner({ runStore, runTask, getStatusSnapshot, listAudi
         return run;
       });
 
-      if (model && (mode === "l2_ollama" || mode === "l2_ollama_memory") && analyzeProvenance.analyzeMismatch) {
+      if (model && (mode === "l2_ollama" || mode === "l2_ollama_memory") && analyzeProvenance.analyzeMismatch && mode !== "demo") {
         const warning = buildProvenanceWarning(analyzeProvenance);
         await addWarnings(runId, warning);
         await finishStep(runId, currentStep, "failed", warning);
@@ -383,6 +390,11 @@ function validatePreflight(status, mode, modelOverride = null) {
     throw stepError("PREFLIGHT_FAILED", "Console status could not be built.", "preflight");
   }
 
+  // Demo mode skips PageSpeed and Ollama preflight checks
+  if (mode === "demo") {
+    return warnings;
+  }
+
   if (!status.pageSpeed.ready) {
     throw stepError("PAGESPEED_NOT_READY", "PageSpeed capture is not ready.", "preflight");
   }
@@ -635,7 +647,7 @@ function normalizeMode(mode) {
   const normalized = String(mode || "standard").trim();
 
   if (!VALIDATION_MODES.has(normalized)) {
-    throw invalidRequest("Workflow mode must be standard, l2_ollama, or l2_ollama_memory.");
+    throw invalidRequest("Workflow mode must be standard, l2_ollama, l2_ollama_memory, or demo.");
   }
 
   return normalized;

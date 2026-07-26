@@ -434,6 +434,16 @@ const server = http.createServer(async (request, response) => {
       return sendContent(response, 200, "text/javascript; charset=utf-8", body);
     }
 
+    if (request.method === "GET" && url.pathname === "/console/demo") {
+      const demoStatus = await consoleController.getDemoStatus();
+      return sendJson(response, demoStatus.statusCode, demoStatus.body);
+    }
+
+    if (request.method === "POST" && url.pathname === "/console/demo") {
+      const startResult = await consoleController.startValidation({ url: "https://example.com", mode: "demo" });
+      return sendJson(response, startResult.statusCode, startResult.body);
+    }
+
     if (request.method === "GET" && url.pathname === "/console/status") {
       const modelOverride = url.searchParams.get("model");
       const consoleStatus = await consoleController.getStatus(modelOverride);

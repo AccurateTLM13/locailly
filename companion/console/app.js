@@ -1,3 +1,5 @@
+const DEMO_URL = "https://example.com";
+
 const state = {
   activeRunId: null,
   pollTimer: null,
@@ -46,6 +48,11 @@ const elements = {
 elements.refreshStatusButton.addEventListener("click", loadStatus);
 elements.refreshRunsButton.addEventListener("click", loadRuns);
 elements.runForm.addEventListener("submit", startRun);
+const demoButton = document.getElementById("demoButton");
+if (demoButton) demoButton.addEventListener("click", startDemo);
+const exportButton = document.getElementById("exportArtifactButton");
+if (exportButton) exportButton.addEventListener("click", exportArtifact);
+const humanGateLink = document.getElementById("humanGateLink");
 elements.pasteReportButton.addEventListener("click", openPasteReportFlow);
 elements.runPastedReportButton.addEventListener("click", startPastedRun);
 elements.clearPastedReportButton.addEventListener("click", clearPastedReport);
@@ -93,6 +100,54 @@ async function loadRuns() {
     renderHistory(response.runs || []);
   } catch (error) {
     elements.historyList.textContent = `Could not load run history: ${error.message}`;
+  }
+}
+
+async function startDemo() {
+  clearPoll();
+  clearFormMessage(elements.runnerMessage);
+  elements.runnerMessage.textContent = "Starting built-in demo…";
+  try {
+    const response = await fetchJson("/console/demo", { method: "POST" });
+    state.activeRunId = response.runId;
+    elements.runnerMessage.textContent = "Demo run started.";
+    renderRun(response.run);
+    pollRun(response.runId);
+  } catch (error) {
+    elements.runnerMessage.textContent = `Demo could not start: ${error.message}`;
+    elements.runnerMessage.classList.add("form-message--error");
+  }
+}
+
+async function exportArtifact() {
+  const runId = state.activeRunId;
+  if (!runId) return;
+  try {
+    const response = await fetchJson(`/console/runs/${encodeURIComponent(runId)}`);
+    const run = response.run;
+    const artifact = {
+      workflow: "lighthouse_handoff_validation",
+      runId: run.runId,
+      url: run.url,
+      mode: run.mode,
+      status: run.status,
+      durationMs: run.durationMs,
+      steps: (run.steps || []).map(s => ({ label: s.label, status: s.status, message: s.message, error: s.error })),
+      result: run.result || {},
+      evidence: run.evidence || {},
+      completedAt: run.completedAt,
+      createdAt: run.createdAt
+    };
+    const blob = new Blob([JSON.stringify(artifact, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `locaily-run-${runId}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    elements.runnerMessage.textContent = "Artifact exported.";
+  } catch (error) {
+    elements.runnerMessage.textContent = `Export failed: ${error.message}`;
   }
 }
 
@@ -277,6 +332,85 @@ function renderRun(run) {
   setResultStatusPill(run);
   renderSteps(run.steps || []);
   renderResults(run);
+  renderInspector(run);
+}
+
+function renderInspector(run) {
+  const inspectorSection = document.querySelector(".run-inspector");
+  if (!inspectorSection) return;
+  const steps = run.steps || [];
+  const isComplete = run.status === "success" || run.status === "failed";
+  if (!isComplete || steps.length === 0) {
+    inspectorSection.hidden = true;
+    return;
+  }
+  inspectorSection.hidden = false;
+  const container = document.getElementById("inspectorSteps");
+  if (!container) return;
+  const exportBtn = document.getElementById("exportArtifactButton");
+  const humanGateBtn = document.getElementById("humanGateLink");
+  if (exportBtn) exportBtn.hidden = false;
+  if (humanGateBtn) humanGateBtn.hidden = run.status !== "success";
+
+  container.replaceChildren(...steps.map((step, idx) => {
+    const card = document.createElement("div");
+    card.className = `inspector-step inspector-step--${step.status || "pending"}`;
+
+    const header = document.createElement("div");
+    header.className = "inspector-step__header";
+
+    const stepNum = document.createElement("span");
+    stepNum.className = "inspector-step__num";
+    stepNum.textContent = `${idx + 1}`;
+
+    const label = document.createElement("span");
+    label.className = "inspector-step__label";
+    label.textContent = formatStepLabel(step.label || step.step_id || `Step ${idx + 1}`);
+
+    const status = document.createElement("span");
+    status.className = `inspector-step__status inspector-step__status--${step.status}`;
+    status.textContent = formatStepStatus(step.status);
+
+    header.append(stepNum, label, status);
+    card.append(header);
+
+    if (step.executor || step.role || step.model || step.tool) {
+      const meta = document.createElement("div");
+      meta.className = "inspector-step__meta";
+      const parts = [];
+      if (step.executor) parts.push(`executor: ${step.executor}`);
+      if (step.role) parts.push(`worker: ${step.role}`);
+      if (step.model) parts.push(`model: ${step.model}`);
+      if (step.tool) parts.push(`tool: ${step.tool}`);
+      meta.textContent = parts.join(" \u00B7 ");
+      card.append(meta);
+    }
+
+    if (step.message || step.error) {
+      const detail = document.createElement("div");
+      detail.className = "inspector-step__detail";
+      detail.textContent = humanizeMessage(step.error || step.message || "");
+      card.append(detail);
+    }
+
+    if (step.status === "failed" && step.error) {
+      const next = document.createElement("div");
+      next.className = "inspector-step__next";
+      next.textContent = findStepNextStep(step);
+      card.append(next);
+    }
+
+    return card;
+  }));
+}
+
+function findStepNextStep(step) {
+  const msg = (step.error || step.message || "").toLowerCase();
+  if (msg.includes("pagespeed") || msg.includes("api key")) return "Add a PageSpeed API key or use a pasted report.";
+  if (msg.includes("model") || msg.includes("ollama")) return "Ensure Ollama is running and the model is pulled.";
+  if (msg.includes("memory") || msg.includes("vault")) return "Configure the Memory vault path.";
+  if (msg.includes("schema")) return "Check the output format and expected schema.";
+  return "Review the error and fix the issue, then run again.";
 }
 
 function renderSteps(steps) {
