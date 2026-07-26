@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px1-canonical-product-status",
   "title": "Canonical",
-  "status": "active",
+  "status": "completed",
   "type": "governance",
   "priority": "critical",
   "purpose": "Restore",
@@ -77,5 +77,5 @@
   "startedAt": "2026-07-26T19:21:12.892Z",
   "completedAt": null,
   "mergedAt": null,
-  "latestValidationId": "validation-20260726T193946-d77283c5"
+  "latestValidationId": "validation-20260726T194012-6848fec5"
 }

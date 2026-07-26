@@ -1,0 +1,21 @@
+{
+  "schema": "locaily.development.session.v1",
+  "id": "session-20260726-002",
+  "milestoneId": "px2-lan-security-hard-gate",
+  "agent": {
+    "platform": "unknown",
+    "model": "unknown"
+  },
+  "status": "active",
+  "objective": "Refuse",
+  "branch": "main",
+  "startingCommit": "9a454393f62dda01305326172f78441e8a5a3d27",
+  "plannedFiles": [],
+  "completedWork": [],
+  "remainingWork": [],
+  "blockers": [],
+  "validationRunIds": [],
+  "checks": [],
+  "startedAt": "2026-07-26T19:40:57.423Z",
+  "closedAt": null
+}
