@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px5-tester-package",
   "title": "Windows-First Tester Package",
-  "status": "active",
+  "status": "completed",
   "type": "infrastructure",
   "priority": "high",
   "purpose": "Ship a reliable packaged loop for external testers: guided setup, dependency detection, fixtures, start/stop, browser launch, backup/restore, uninstall, and clean-environment acceptance",

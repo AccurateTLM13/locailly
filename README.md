@@ -1,5 +1,16 @@
 # Locaily
 
+[![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](#)
+[![License](https://img.shields.io/badge/license-MIT-blue)](#)
+[![Windows](https://img.shields.io/badge/Windows-supported-success)](#)
+[![macOS](https://img.shields.io/badge/macOS-manual-lightgrey)](#)
+[![Linux](https://img.shields.io/badge/Linux-manual-lightgrey)](#)
+
+> **Local-first AI coordination stack.** One coordinator, many capabilities.
+> Run a demo in 5 minutes — no cloud, no API keys, no Ollama required.
+
+![Demo screenshot placeholder — insert GIF or screenshot of the Home screen with the Run Example Workflow button](docs/05-product/images/demo-screenshot-placeholder.png)
+
 A local-first AI coordination stack. One coordinator, many capabilities.
 
 ## What It Is
@@ -269,6 +280,14 @@ and active work, see:
 | Roadmap | [docs/05-product/roadmap.md](docs/05-product/roadmap.md) |
 | Security design | [docs/security/README.md](docs/security/README.md) |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
+
+## Topics
+
+`local-ai` `ai-orchestration` `ollama` `workflow-automation` `lighthouse` `benchmark` `developer-tools` `local-first` `privacy`
+
+## Good First Issues
+
+Check the [issues](https://github.com/mnfrdrsh/locailly/issues) tab for `good first issue` labeled items.
 
 ## Key Integrations
 

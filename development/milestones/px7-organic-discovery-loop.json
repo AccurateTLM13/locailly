@@ -26,27 +26,27 @@
     {
       "id": "ac-github",
       "description": "README/GitHub landing includes demo command, screenshots or GIF slot, topics list, and first-issue pointer",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-intent-pages",
       "description": "At least 3 intent-focused pages exist and link to a runnable example",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-evidence-pages",
       "description": "At least 1 public evidence-derived comparison/qualification page published from real records",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-tutorials",
       "description": "At least 2 tutorials end with a visible artifact path",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-loop-template",
       "description": "Evidence content loop template checked into docs",
-      "status": "pending"
+      "status": "satisfied"
     }
   ],
   "validationProfile": "pre-delivery",
