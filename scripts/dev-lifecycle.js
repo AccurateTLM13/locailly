@@ -923,6 +923,16 @@ function cmdComplete(args) {
     addError("HAS_BLOCKERS", `Milestone has ${milestone.blockers.length} unresolved blocker(s)`);
   }
 
+  // Gate 1b: No critical open issues
+  const issuesDir = path.join(DEVELOPMENT_DIR, "issues");
+  if (fs.existsSync(issuesDir)) {
+    const issues = fs.readdirSync(issuesDir).filter(f => f.endsWith(".json")).map(f => readJson(path.join(issuesDir, f), null)).filter(Boolean);
+    const criticalOpen = issues.filter(i => (i.status === "open" || i.status === "in-progress") && i.priority === "critical");
+    for (const issue of criticalOpen) {
+      addError("CRITICAL_ISSUE", `Critical issue '${issue.id}' is open: ${issue.title}`);
+    }
+  }
+
   // Gate 2: No error or critical contradictions from dev:status
   const statusResult = runDevStatus();
   if (statusResult.contradictions) {

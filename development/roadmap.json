@@ -1,7 +1,7 @@
 {
   "schema": "locaily.development.roadmap.v1",
   "project": "locaily",
-  "updatedAt": "2026-07-22T22:00:00.000Z",
+  "updatedAt": "2026-07-25T03:54:17.218Z",
   "areas": [
     {
       "id": "local-brain",
@@ -80,21 +80,27 @@
           "title": "Relay Protocol",
           "description": "Registry, connector, router, step execution",
           "maturity": "tested",
-          "milestoneIds": ["06-trusted-relay-execution"]
+          "milestoneIds": [
+            "06-trusted-relay-execution"
+          ]
         },
         {
           "id": "multi-device-coordination",
           "title": "Multi-Device Coordination",
           "description": "Placement planning, distributed execution, fallback",
           "maturity": "simulation-validated",
-          "milestoneIds": ["09-physical-multi-device-pilot"]
+          "milestoneIds": [
+            "09-physical-multi-device-pilot"
+          ]
         },
         {
           "id": "relay-trust",
           "title": "Relay Trust and Pairing",
           "description": "Authentication, signed requests, capability allowlists",
           "maturity": "designed",
-          "milestoneIds": ["09a-relay-trust"]
+          "milestoneIds": [
+            "09a-relay-trust"
+          ]
         }
       ]
     },
@@ -116,7 +122,9 @@
           "title": "Development Memory Loop",
           "description": "DM1-DM10: events, sessions, candidates, review, maintainer, retrieval",
           "maturity": "simulation-validated",
-          "milestoneIds": ["dm10-multi-project-template"]
+          "milestoneIds": [
+            "dm10-multi-project-template"
+          ]
         }
       ]
     },
@@ -153,14 +161,18 @@
           "title": "Operator Console",
           "description": "Dashboard, jobs, relay nodes, enqueue",
           "maturity": "implemented",
-          "milestoneIds": ["08-operator-control-plane"]
+          "milestoneIds": [
+            "08-operator-control-plane"
+          ]
         },
         {
           "id": "job-management",
           "title": "Job Management",
           "description": "Durable job store, background worker, mutations",
           "maturity": "operational",
-          "milestoneIds": ["08-operator-control-plane"]
+          "milestoneIds": [
+            "08-operator-control-plane"
+          ]
         }
       ]
     },
@@ -175,7 +187,9 @@
           "title": "Canonical Track Run Records",
           "description": "Schema, builder, runtime emission, evidence store",
           "maturity": "operational",
-          "milestoneIds": ["10-track-learning-evidence-loop"]
+          "milestoneIds": [
+            "10-track-learning-evidence-loop"
+          ]
         },
         {
           "id": "human-review",
@@ -197,21 +211,30 @@
           "title": "Lifecycle Infrastructure",
           "description": "Objective lifecycle, integrity checks, work closeout",
           "maturity": "operational",
-          "milestoneIds": ["objective-lifecycle-hardening"]
+          "milestoneIds": [
+            "objective-lifecycle-hardening"
+          ]
         },
         {
           "id": "control-plane-core",
           "title": "Control Plane Core",
           "description": "Schemas, project-state, dev:status, dev:lifecycle commands",
           "maturity": "tested",
-          "milestoneIds": ["development-control-plane-v1", "dcp-v1"]
+          "milestoneIds": [
+            "development-control-plane-v1",
+            "dcp-v1"
+          ]
         },
         {
           "id": "delivery-pipeline",
           "title": "Delivery Pipeline",
           "description": "dev:prepare, deliver-milestone.js, validation integration, merge lifecycle",
           "maturity": "tested",
-          "milestoneIds": ["milestone-completion-delivery-workflow", "dcp-phase3a", "dcp-phase3b"]
+          "milestoneIds": [
+            "milestone-completion-delivery-workflow",
+            "dcp-phase3a",
+            "dcp-phase3b"
+          ]
         }
       ]
     },
@@ -226,19 +249,122 @@
           "title": "Locaily v1 Packaging",
           "description": "Documentation alignment, operator walkthrough, state migration",
           "maturity": "implemented",
-          "milestoneIds": ["10-locaily-v1-packaging"]
+          "milestoneIds": [
+            "10-locaily-v1-packaging"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product-experience",
+      "title": "Product Experience",
+      "description": "Golden path, unified shell, packaging, external proof, and discovery — make Locaily feelable without architecture literacy",
+      "maturity": "designed",
+      "initiatives": [
+        {
+          "id": "truth-surfaces",
+          "title": "Canonical Truth Surfaces",
+          "description": "One version of reality across docs, versions, and status generators",
+          "maturity": "designed",
+          "milestoneIds": [
+            "px1-canonical-product-status"
+          ]
+        },
+        {
+          "id": "lan-security",
+          "title": "LAN Security Hard Gate",
+          "description": "Fail-closed non-loopback startup and relay auth enforcement",
+          "maturity": "designed",
+          "milestoneIds": [
+            "px2-lan-security-hard-gate"
+          ]
+        },
+        {
+          "id": "golden-path",
+          "title": "Golden Path Run Inspector",
+          "description": "One polished demo path proving capability routing and evidence",
+          "maturity": "designed",
+          "milestoneIds": [
+            "px3-golden-path-run-inspector"
+          ]
+        },
+        {
+          "id": "unified-shell",
+          "title": "Unified Application Shell",
+          "description": "Merge console and operator into one progressive shell",
+          "maturity": "designed",
+          "milestoneIds": [
+            "px4-unified-locaily-shell"
+          ]
+        },
+        {
+          "id": "tester-package",
+          "title": "Tester Package",
+          "description": "Windows-first guided setup and clean-machine acceptance",
+          "maturity": "designed",
+          "milestoneIds": [
+            "px5-tester-package"
+          ]
+        },
+        {
+          "id": "external-validation",
+          "title": "External Validation Program",
+          "description": "Five testers, two-device relay pilot, second real workflow",
+          "maturity": "designed",
+          "milestoneIds": [
+            "px6-external-validation-program"
+          ]
+        },
+        {
+          "id": "organic-discovery",
+          "title": "Organic Discovery Loop",
+          "description": "Intent pages, evidence content, tutorials, GitHub landing",
+          "maturity": "designed",
+          "milestoneIds": [
+            "px7-organic-discovery-loop"
+          ]
         }
       ]
     }
   ],
   "milestoneDependencies": {
-    "09-physical-multi-device-pilot": ["06-trusted-relay-execution"],
+    "09-physical-multi-device-pilot": [
+      "06-trusted-relay-execution"
+    ],
     "09a-relay-trust": [],
-    "10-locaily-v1-packaging": ["09-physical-multi-device-pilot"],
+    "10-locaily-v1-packaging": [
+      "09-physical-multi-device-pilot"
+    ],
     "development-control-plane-v1": [],
     "dcp-v1": [],
-    "dcp-phase3a": ["dcp-v1"],
-    "dcp-phase3b": ["dcp-phase3a"],
-    "milestone-completion-delivery-workflow": ["development-control-plane-v1"]
+    "dcp-phase3a": [
+      "dcp-v1"
+    ],
+    "dcp-phase3b": [
+      "dcp-phase3a"
+    ],
+    "milestone-completion-delivery-workflow": [
+      "development-control-plane-v1"
+    ],
+    "px1-canonical-product-status": [],
+    "px2-lan-security-hard-gate": [],
+    "px3-golden-path-run-inspector": [
+      "px1-canonical-product-status"
+    ],
+    "px4-unified-locaily-shell": [
+      "px3-golden-path-run-inspector"
+    ],
+    "px5-tester-package": [
+      "px2-lan-security-hard-gate",
+      "px3-golden-path-run-inspector"
+    ],
+    "px6-external-validation-program": [
+      "px2-lan-security-hard-gate",
+      "px5-tester-package"
+    ],
+    "px7-organic-discovery-loop": [
+      "px1-canonical-product-status",
+      "px3-golden-path-run-inspector"
+    ]
   }
 }

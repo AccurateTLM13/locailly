@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://locaily.local/schemas/development-issue.schema.json",
+  "title": "Development Issue",
+  "description": "An unplanned bug, hotfix, or ad-hoc task. Lightweight — does not require a milestone.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "type", "priority", "title", "status", "reportedAt"
+  ],
+  "properties": {
+    "schema": {
+      "const": "locaily.development.issue.v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^issue-[0-9]+$"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["bug", "hotfix", "ad-hoc"]
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"]
+    },
+    "title": {
+      "type": "string", "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["open", "in-progress", "fixed", "verified", "closed"]
+    },
+    "milestoneId": {
+      "type": ["string", "null"],
+      "description": "Optional link to a milestone that resolves this issue."
+    },
+    "reportedBy": {
+      "type": "string"
+    },
+    "reportedAt": {
+      "type": "string", "format": "date-time"
+    },
+    "resolvedAt": {
+      "type": ["string", "null"], "format": "date-time"
+    }
+  }
+}

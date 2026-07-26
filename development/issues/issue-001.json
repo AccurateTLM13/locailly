@@ -1,0 +1,13 @@
+{
+  "schema": "locaily.development.issue.v1",
+  "id": "issue-001",
+  "type": "bug",
+  "priority": "high",
+  "title": "Test bug",
+  "description": "",
+  "status": "closed",
+  "milestoneId": "test-ms",
+  "reportedAt": "2026-07-25T03:12:01.705Z",
+  "resolvedAt": "2026-07-25T03:12:01.870Z",
+  "resolutionNote": "Done"
+}

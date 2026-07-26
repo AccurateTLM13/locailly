@@ -1,0 +1,26 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "px4-unified-locaily-shell",
+  "context": "Unify surfaces without boiling the ocean. Prefer a thin shell that hosts existing console and operator capabilities. Development dashboard stays separate from product UI.",
+  "files": [
+    "companion/console/",
+    "companion/operator/",
+    "companion/server.js",
+    "docs/05-integrations/operator-guide.md",
+    "docs/06-decisions/decision-log.md"
+  ],
+  "acceptance": [
+    "Single app shell with Home CTA",
+    "Core sections wired to existing APIs",
+    "Legacy routes preserved",
+    "Golden path still works"
+  ],
+  "constraints": [
+    "Do not merge development control plane into product UI",
+    "Do not break existing API contracts",
+    "Prefer incremental shell over full rewrite",
+    "No Tauri/desktop wrapper in this milestone"
+  ],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:53:40.372Z"
+}

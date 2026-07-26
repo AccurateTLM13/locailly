@@ -1,0 +1,12 @@
+{
+  "schema": "locaily.development.issue.v1",
+  "id": "issue-004",
+  "type": "bug",
+  "priority": "critical",
+  "title": "Critical bug",
+  "description": "",
+  "status": "open",
+  "milestoneId": null,
+  "reportedAt": "2026-07-25T03:12:02.159Z",
+  "resolvedAt": null
+}

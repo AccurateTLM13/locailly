@@ -1,0 +1,12 @@
+{
+  "schema": "locaily.development.issue.v1",
+  "id": "issue-002",
+  "type": "bug",
+  "priority": "low",
+  "title": "Fix",
+  "description": "",
+  "status": "open",
+  "milestoneId": null,
+  "reportedAt": "2026-07-25T03:12:01.816Z",
+  "resolvedAt": null
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "px3-golden-path-run-inspector",
+  "context": "This is the FOMO feature. Do not build more subsystems. Connect existing Lighthouse console, track run records, evidence, and human gates into one understandable run. Prefer progressive disclosure over new architecture layers.",
+  "files": [
+    "companion/console/",
+    "companion/server.js",
+    "companion/operator/",
+    "docs/00-start-here/",
+    "README.md"
+  ],
+  "acceptance": [
+    "Golden path run works from browser with built-in example",
+    "Fixture path needs no external keys/relay/site",
+    "Inspector answers the eight product questions from the plan",
+    "Tests or validation runner cover the path"
+  ],
+  "constraints": [
+    "Do not import benchmark-lab/engine into companion",
+    "Do not require Relay or Memory Bridge",
+    "Reuse existing Lighthouse workflow and fixtures",
+    "Update companion/console so change is testable in local validation UI",
+    "No new top-level architecture product names without approval"
+  ],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:53:40.372Z"
+}

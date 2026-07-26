@@ -33,6 +33,7 @@
   .meta{color:var(--text-faint); font-size:12.5px; margin-bottom:22px;}
   .meta span{color:var(--text-dim);}
 
+  /* KPI strip */
   .kpi-row{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px;}
   .kpi{background:var(--panel); border:1px solid var(--border-soft); border-radius:10px; padding:16px 18px;}
   .kpi .num{font-size:26px; font-weight:700; line-height:1;}
@@ -48,6 +49,7 @@
 
   section{margin-bottom:30px;}
 
+  /* Subsystem grid */
   .sub-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px;}
   .sub-card{background:var(--panel); border:1px solid var(--border-soft); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:10px;}
   .sub-head{display:flex; align-items:center; justify-content:space-between; gap:8px;}
@@ -62,9 +64,11 @@
   .b-simulation-validated{background:var(--amber-bg); color:var(--amber-text);}
   .b-designed{background:var(--slate-bg); color:var(--slate-text);}
 
+  /* Two column layout */
   .layout{display:grid; grid-template-columns:2.1fr 1fr; gap:24px; align-items:start;}
   .col-right{display:flex; flex-direction:column; gap:22px;}
 
+  /* Recommended next - promoted to top of sidebar */
   .recommend{background:var(--teal-bg); border:1px solid #14403a; border-radius:10px; padding:16px 18px;}
   .recommend .tag{color:var(--teal); font-size:11.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; margin-bottom:6px;}
   .recommend .title{font-weight:600; font-size:14px;}
@@ -74,6 +78,7 @@
   .no-blockers{color:var(--green); font-size:13px; display:flex; align-items:center; gap:8px;}
   .dot{width:7px; height:7px; border-radius:50%; background:currentColor; flex:0 0 auto;}
 
+  /* Validation summary */
   .val-summary-row{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--border-soft);}
   .val-summary-row:last-child{border-bottom:none;}
   .val-left{display:flex; flex-direction:column; gap:3px;}
@@ -84,6 +89,7 @@
   .val-date{font-size:11px; color:var(--text-faint);}
   .val-note{margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-soft); font-size:11.5px; color:var(--text-faint); display:flex; gap:7px;}
 
+  /* Kanban */
   .board{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
   .col-head{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
   .col-title{font-size:12px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--text-dim);}
@@ -93,7 +99,6 @@
   .m-id{font-size:12.5px; font-weight:600; font-family:ui-monospace,monospace;}
   .m-desc{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
   .col-planned .m-card{border-left-color:var(--slate);}
-  .col-active .m-card{border-left-color:var(--blue);}
   .col-blocked .m-card{border-left-color:var(--red);}
   .col-ready .m-card{border-left-color:var(--teal);}
   .col-done .m-card{border-left-color:var(--green);}
@@ -104,6 +109,7 @@
   .show-more:hover{border-color:var(--border); color:var(--text);}
   .empty-col{font-size:11.5px; color:var(--text-faint); padding:8px 0;}
 
+  /* Activity timeline */
   .day-label{font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.04em; margin:0 0 8px;}
   .timeline{max-height:340px; overflow-y:auto; padding-right:4px;}
   .t-row{display:grid; grid-template-columns:78px 1fr auto; gap:10px; align-items:center; padding:6px 0; border-bottom:1px solid var(--border-soft); font-size:12px;}
@@ -113,7 +119,6 @@
   .t-validation{background:var(--blue-bg); color:var(--blue-text);}
   .t-session{background:var(--slate-bg); color:var(--slate-text);}
   .t-session-closed{background:var(--panel-2); color:var(--text-faint);}
-  .t-pr-created{background:var(--indigo-bg); color:var(--indigo-text);}
   .t-id{color:var(--text-dim); font-family:ui-monospace,monospace; font-size:11.5px;}
   .t-time{color:var(--text-faint); font-size:11px; text-align:right;}
 
@@ -126,66 +131,73 @@
 <body>
 
   <h1>Locaily development dashboard</h1>
-  <div class="meta">Generated <span>2026-07-25 03:54:22 UTC</span> &middot; Branch <span class="mono">feat/development-memory-second-project-proof</span> &middot; HEAD <span class="mono">9e44b36</span></div>
+  <div class="meta">Generated <span>2026-07-22 23:40:29 UTC</span> · Branch <span class="mono">feat/development-memory-second-project-proof</span> · HEAD <span class="mono">4d58b89</span></div>
 
   <div class="kpi-row">
-    <div class="kpi total"><div class="num">7</div><div class="lbl">Total milestones</div></div>
+    <div class="kpi total"><div class="num">15</div><div class="lbl">Total milestones</div></div>
     <div class="kpi active"><div class="num">0</div><div class="lbl">Active</div></div>
-    <div class="kpi done"><div class="num">0</div><div class="lbl">Completed</div></div>
-    <div class="kpi valid"><div class="num">0</div><div class="lbl">Validation runs</div></div>
+    <div class="kpi done"><div class="num">11</div><div class="lbl">Completed</div></div>
+    <div class="kpi valid"><div class="num">4</div><div class="lbl">Validation runs</div></div>
     <div class="progress-track">
-      <div class="progress-top"><span>Overall progress</span><span>0 of 7 milestones complete &middot; 0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+      <div class="progress-top"><span>Overall progress</span><span>11 of 15 milestones complete · 73%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:73%"></div></div>
     </div>
   </div>
 
   <section>
     <h2>Subsystem maturity</h2>
     <div class="sub-grid">
+
       <div class="sub-card">
         <div class="sub-head"><span class="sub-name">Local Brain</span><span class="badge b-operational">operational</span></div>
-        <div class="chip-row"><span class="chip">API Stability and Contracts</span><span class="chip">The Crew Orchestration</span></div>
+        <div class="chip-row"><span class="chip">API stability & contracts</span><span class="chip">Crew orchestration</span></div>
       </div>
+
       <div class="sub-card">
         <div class="sub-head"><span class="sub-name">Track Engine</span><span class="badge b-operational">operational</span></div>
-        <div class="chip-row"><span class="chip">Track Runner</span><span class="chip">Track Planner &middot; tested</span></div>
+        <div class="chip-row"><span class="chip">Track runner</span><span class="chip">Track planner · tested</span></div>
       </div>
+
       <div class="sub-card">
         <div class="sub-head"><span class="sub-name">Benchmark Lab</span><span class="badge b-operational">operational</span></div>
-        <div class="chip-row"><span class="chip">Evaluation Engine</span><span class="chip">Model Qualification</span></div>
+        <div class="chip-row"><span class="chip">Evaluation engine</span><span class="chip">Model qualification</span></div>
       </div>
+
       <div class="sub-card">
         <div class="sub-head"><span class="sub-name">Relay Nodes</span><span class="badge b-tested">tested</span></div>
-        <div class="chip-row"><span class="chip">Relay Protocol</span><span class="chip">Multi-Device Coordination &middot; simulation-validated</span><span class="chip">Relay Trust and Pairing &middot; designed</span></div>
+        <div class="chip-row"><span class="chip">Relay protocol</span><span class="chip">Multi-device coord. · sim-validated</span><span class="chip">Trust & pairing · designed</span></div>
       </div>
+
       <div class="sub-card">
         <div class="sub-head"><span class="sub-name">Memory Bridge</span><span class="badge b-operational">operational</span></div>
-        <div class="chip-row"><span class="chip">Memory Bridge v0/v1</span><span class="chip">Development Memory Loop &middot; simulation-validated</span></div>
+        <div class="chip-row"><span class="chip">Bridge v0/v1</span><span class="chip">Dev memory loop · sim-validated</span></div>
       </div>
+
       <div class="sub-card">
-        <div class="sub-head"><span class="sub-name">Qualification and Routing</span><span class="badge b-operational">operational</span></div>
-        <div class="chip-row"><span class="chip">Qualification Consumption</span><span class="chip">Enforcement Policy</span></div>
+        <div class="sub-head"><span class="sub-name">Qualification & Routing</span><span class="badge b-operational">operational</span></div>
+        <div class="chip-row"><span class="chip">Qualification consumption</span><span class="chip">Enforcement policy</span></div>
       </div>
+
       <div class="sub-card">
         <div class="sub-head"><span class="sub-name">Operator Experience</span><span class="badge b-implemented">implemented</span></div>
-        <div class="chip-row"><span class="chip">Operator Console</span><span class="chip">Job Management &middot; operational</span></div>
+        <div class="chip-row"><span class="chip">Operator console</span><span class="chip">Job management</span></div>
       </div>
+
       <div class="sub-card">
-        <div class="sub-head"><span class="sub-name">Evidence and Quality</span><span class="badge b-operational">operational</span></div>
-        <div class="chip-row"><span class="chip">Canonical Track Run Records</span><span class="chip">Human Quality Review</span></div>
+        <div class="sub-head"><span class="sub-name">Evidence & Quality</span><span class="badge b-operational">operational</span></div>
+        <div class="chip-row"><span class="chip">Canonical track run records</span><span class="chip">Human quality review</span></div>
       </div>
+
       <div class="sub-card">
         <div class="sub-head"><span class="sub-name">Development Control Plane</span><span class="badge b-implemented">implemented</span></div>
-        <div class="chip-row"><span class="chip">Lifecycle Infrastructure &middot; operational</span><span class="chip">Control Plane Core &middot; tested</span><span class="chip">Delivery Pipeline &middot; tested</span></div>
+        <div class="chip-row"><span class="chip">Lifecycle infrastructure</span><span class="chip">Control plane core · tested</span><span class="chip">Delivery pipeline · tested</span></div>
       </div>
+
       <div class="sub-card">
-        <div class="sub-head"><span class="sub-name">Packaging and Release</span><span class="badge b-implemented">implemented</span></div>
-        <div class="chip-row"><span class="chip">Locaily v1 Packaging</span></div>
+        <div class="sub-head"><span class="sub-name">Packaging & Release</span><span class="badge b-implemented">implemented</span></div>
+        <div class="chip-row"><span class="chip">Locaily v1 packaging</span></div>
       </div>
-      <div class="sub-card">
-        <div class="sub-head"><span class="sub-name">Product Experience</span><span class="badge b-designed">designed</span></div>
-        <div class="chip-row"><span class="chip">Canonical Truth Surfaces</span><span class="chip">LAN Security Hard Gate</span><span class="chip">Golden Path Run Inspector</span><span class="chip">Unified Application Shell</span><span class="chip">Tester Package</span><span class="chip">External Validation Program</span><span class="chip">Organic Discovery Loop</span></div>
-      </div>
+
     </div>
   </section>
 
@@ -196,39 +208,43 @@
         <div class="board">
 
           <div class="col-planned">
-            <div class="col-head"><span class="col-title">Planned</span><span class="col-count">7</span></div>
+            <div class="col-head"><span class="col-title">Planned</span><span class="col-count">2</span></div>
             <div class="stack">
-              <div class="m-card"><div class="m-id">px3-golden-path-run-inspector</div><div class="m-desc">Golden Path Run Inspector</div></div>
-              <div class="m-card"><div class="m-id">px4-unified-locaily-shell</div><div class="m-desc">Unified Locaily Application Shell</div></div>
-              <div class="m-card"><div class="m-id">px5-tester-package</div><div class="m-desc">Windows-First Tester Package</div></div>
-              <div class="m-card"><div class="m-id">px6-external-validation-program</div><div class="m-desc">External Validation Program</div></div>
-              <div class="m-card"><div class="m-id">px7-organic-discovery-loop</div><div class="m-desc">Organic Discovery and Evidence Content Loop</div></div>
-              <div class="m-card"><div class="m-id">px1-canonical-product-status</div><div class="m-desc">Canonical Product Status and Truth Surfaces</div></div>
-              <div class="m-card"><div class="m-id">px2-lan-security-hard-gate</div><div class="m-desc">LAN Security Hard Gate for Relay Exposure</div></div>
+              <div class="m-card"><div class="m-id">dcp-phase3b</div><div class="m-desc">DCP Phase 3B — Session Handoff</div></div>
+              <div class="m-card"><div class="m-id">dcp-phase4</div><div class="m-desc">DCP Phase 4 — Agent Adapters</div></div>
             </div>
           </div>
 
-
           <div class="col-blocked">
-            <div class="col-head"><span class="col-title">Blocked</span><span class="col-count">0</span></div>
+            <div class="col-head"><span class="col-title">Blocked</span><span class="col-count">1</span></div>
             <div class="stack">
-              <div class="empty-col">No blocked milestones</div>
+              <div class="m-card"><div class="m-id">09-physical-multi-device-pilot</div><div class="m-desc">M09: Physical Multi-Device Pilot</div></div>
             </div>
           </div>
 
           <div class="col-ready">
-            <div class="col-head"><span class="col-title">Ready for delivery</span><span class="col-count">0</span></div>
+            <div class="col-head"><span class="col-title">Ready for delivery</span><span class="col-count">1</span></div>
             <div class="stack">
-              <div class="empty-col">No milestones ready</div>
+              <div class="m-card"><div class="m-id">dcp-phase3a</div><div class="m-desc">DCP Phase 3A — Dashboard</div></div>
             </div>
           </div>
 
           <div class="col-done">
-            <div class="col-head"><span class="col-title">Completed</span><span class="col-count">0</span></div>
+            <div class="col-head"><span class="col-title">Completed</span><span class="col-count">11</span></div>
             <div class="stack collapsed" id="doneStack">
-              <div class="empty-col">No completed milestones</div>
+              <div class="m-card"><div class="m-id">06-trusted-relay-execution</div><div class="m-desc">M6: Trusted Relay Execution</div></div>
+              <div class="m-card"><div class="m-id">08-operator-control-plane</div><div class="m-desc">M8: Operator Control Plane</div></div>
+              <div class="m-card"><div class="m-id">10-locaily-v1-packaging</div><div class="m-desc">M10: Locaily v1 Packaging</div></div>
+              <div class="m-card"><div class="m-id">10-track-learning-evidence-loop</div><div class="m-desc">M12: Track Learning Evidence Loop</div></div>
+              <div class="m-card"><div class="m-id">dcp-phase1.5-2a</div><div class="m-desc">DCP Phase 1.5 + 2A</div></div>
+              <div class="m-card"><div class="m-id">dcp-phase1</div><div class="m-desc">DCP Phase 1</div></div>
+              <div class="m-card"><div class="m-id">dcp-phase2b</div><div class="m-desc">DCP Phase 2B</div></div>
+              <div class="m-card"><div class="m-id">dcp-phase2c</div><div class="m-desc">DCP Phase 2C</div></div>
+              <div class="m-card"><div class="m-id">dm10-multi-project-template</div><div class="m-desc">DM10: Multi-Project Local Brain Template</div></div>
+              <div class="m-card"><div class="m-id">milestone-completion-delivery-workflow</div><div class="m-desc">Milestone Completion Delivery Workflow</div></div>
+              <div class="m-card"><div class="m-id">objective-lifecycle-hardening</div><div class="m-desc">Objective Lifecycle Hardening</div></div>
             </div>
-
+            <button class="show-more" id="toggleDone">Show all 11</button>
           </div>
 
         </div>
@@ -239,31 +255,60 @@
 
       <div class="recommend">
         <div class="tag">Recommended next</div>
-        <div class="title">px1-canonical-product-status</div>
-        <div class="sub">Canonical Product Status and Truth Surfaces</div>
+        <div class="title">dcp-phase3b</div>
+        <div class="sub">Development Control Plane Phase 3B — Session Handoff</div>
       </div>
 
       <section class="card">
-        <h2 style="margin-bottom:10px;">Blockers &amp; human decisions</h2>
+        <h2 style="margin-bottom:10px;">Blockers & human decisions</h2>
         <div class="no-blockers"><span class="dot"></span>No blocking issues</div>
-
       </section>
 
       <section class="card">
         <h2 style="margin-bottom:2px;">Validation scoreboard</h2>
-        <div style="color:var(--text-faint);">No validations recorded</div>
-
+        <div class="val-summary-row">
+          <div class="val-left">
+            <span class="val-id mono">dcp-phase3a</span>
+            <span class="val-profile">builtin-quick</span>
+          </div>
+          <div class="val-right">
+            <span class="val-score">4 / 4 runs passed</span>
+            <span class="val-date">5/5 checks · last run 7/22/2026</span>
+          </div>
+        </div>
+        <div class="val-note">⚠ All 4 logged runs are for <span class="mono">&nbsp;dcp-phase3a&nbsp;</span> with identical scores and profile — worth checking whether the validator is re-logging the same run rather than testing four distinct milestones.</div>
       </section>
 
       <section class="card">
         <h2>Recent activity</h2>
-        <div style="color:var(--text-faint);">No recent activity</div>
+        <div class="day-label">Today · Jul 22, 2026</div>
+        <div class="timeline">
+          <div class="t-row"><span class="t-tag t-delivery">delivery</span><span class="t-id">dcp-phase3a</span><span class="t-time">6:40 PM</span></div>
+          <div class="t-row"><span class="t-tag t-validation">validation</span><span class="t-id">dcp-phase3a</span><span class="t-time">6:38 PM</span></div>
+          <div class="t-row"><span class="t-tag t-session-closed">session-closed</span><span class="t-id">dcp-phase3a</span><span class="t-time">6:37 PM</span></div>
+          <div class="t-row"><span class="t-tag t-session">session</span><span class="t-id">dcp-phase3a</span><span class="t-time">6:37 PM</span></div>
+          <div class="t-row"><span class="t-tag t-validation">validation</span><span class="t-id">dcp-phase3a</span><span class="t-time">6:28 PM</span></div>
+          <div class="t-row"><span class="t-tag t-session-closed">session-closed</span><span class="t-id">dcp-phase3a</span><span class="t-time">6:28 PM</span></div>
+          <div class="t-row"><span class="t-tag t-session">session</span><span class="t-id">dcp-phase3a</span><span class="t-time">5:50 PM</span></div>
+          <div class="t-row"><span class="t-tag t-session">session</span><span class="t-id">dcp-phase3a</span><span class="t-time">5:30 PM</span></div>
+          <div class="t-row"><span class="t-tag t-validation">validation</span><span class="t-id">dcp-phase3a</span><span class="t-time">5:02 PM</span></div>
+          <div class="t-row"><span class="t-tag t-validation">validation</span><span class="t-id">dcp-phase3a</span><span class="t-time">5:01 PM</span></div>
+          <div class="t-row"><span class="t-tag t-session-closed">session-closed</span><span class="t-id">dcp-phase3a</span><span class="t-time">4:54 PM</span></div>
+        </div>
       </section>
 
     </div>
   </div>
 
-
+<script>
+  const stack = document.getElementById('doneStack');
+  const btn = document.getElementById('toggleDone');
+  btn.addEventListener('click', () => {
+    const expanded = stack.classList.toggle('expanded');
+    stack.classList.toggle('collapsed', !expanded);
+    btn.textContent = expanded ? 'Show less' : 'Show all 11';
+  });
+</script>
 
 </body>
 </html>

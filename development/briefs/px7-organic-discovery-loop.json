@@ -1,0 +1,26 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "px7-organic-discovery-loop",
+  "context": "Discovery content must stay honest and evidence-backed. Strongest territory: what a small local capability attempted, where it worked/failed, what orchestration changed.",
+  "files": [
+    "README.md",
+    "docs/",
+    "benchmark-lab/",
+    "RELEASE.md"
+  ],
+  "acceptance": [
+    "GitHub landing polished",
+    "3 intent pages",
+    "1 evidence page from real records",
+    "2 artifact tutorials",
+    "Content loop template"
+  ],
+  "constraints": [
+    "Do not broaden claims from narrow benchmarks",
+    "Do not copy private Second Brain content",
+    "Link claims to runnable examples or evidence paths",
+    "No new public product layer names"
+  ],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:53:40.372Z"
+}

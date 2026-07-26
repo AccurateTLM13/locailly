@@ -1,0 +1,38 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "px1-canonical-product-status",
+  "context": "Locaily is evidence-first but its own status surfaces contradict. Before product polish, agents must make version, feature maturity, route docs, and env var names coherent. Prefer generating status from development/*.json over hand-written duplicates. Do not broaden into unified UI or security work.",
+  "files": [
+    "package.json",
+    "RELEASE.md",
+    "README.md",
+    "docs/00-start-here/current-state.md",
+    "docs/05-integrations/operator-guide.md",
+    "docs/05-integrations/multi-device-pilot.md",
+    "docs/05-integrations/api-reference.md",
+    "development/roadmap.json",
+    "development/project-state.json",
+    "docs/06-decisions/decision-log.md",
+    "scripts/dev-status.js",
+    "companion/console/index.html",
+    "companion/console/assets/locaily-logo.svg"
+  ],
+  "acceptance": [
+    "Single authoritative version string everywhere public",
+    "Relay maturity claims match code",
+    "/console vs /operator documented correctly",
+    "LOCAL_AI_HOST used consistently",
+    "Logo asset works",
+    "Automated contradiction check exists and passes",
+    "Shell strategy decision recorded"
+  ],
+  "constraints": [
+    "Do not implement unified shell UI in this milestone",
+    "Do not change relay auth semantics (px2)",
+    "Do not invent new public product names",
+    "JSON is authoritative; regenerate markdown/html where generators exist",
+    "Keep localhost-only defaults"
+  ],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:53:40.372Z"
+}

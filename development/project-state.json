@@ -1,19 +1,19 @@
 {
   "schema": "locaily.development.project_state.v1",
   "project": "locaily",
-  "currentMilestone": "dcp-phase3b",
+  "currentMilestone": null,
   "activeSession": null,
-  "status": "active",
+  "status": "idle",
   "defaultBranch": "main",
-  "activeBranch": "feat/development-memory-second-project-proof",
+  "activeBranch": null,
   "lastCompletedMilestone": null,
-  "nextRecommendedAction": "Deliver milestone 'dcp-phase3b'",
+  "nextRecommendedAction": "Start ready milestone px1-canonical-product-status (or px2-lan-security-hard-gate in parallel). Run: node scripts/dev-begin.js --slug px1-canonical-product-status",
   "blockers": [],
   "warnings": [],
-  "updatedAt": "2026-07-24T01:53:23.861Z",
+  "updatedAt": "2026-07-25T03:53:40.372Z",
   "updatedBy": {
     "type": "agent",
-    "name": "test",
-    "platform": "test"
+    "name": "opencode",
+    "platform": "opencode"
   }
 }

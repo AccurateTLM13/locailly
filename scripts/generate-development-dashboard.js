@@ -69,6 +69,7 @@ function loadState() {
   const sessions = listJson(SESSIONS_DIR);
   const validations = listJson(VALIDATION_RESULTS_DIR);
   const deliveries = listJson(DELIVERY_DIR);
+  const issues = listJson(path.join(DEVELOPMENT_DIR, "issues"));
   const closeout = readJson(path.join(PROJECT_ROOT, "docs", "07-progress", "work-closeout.json"), null);
 
   const gitBranch = git(["rev-parse", "--abbrev-ref", "HEAD"]);
@@ -83,6 +84,7 @@ function loadState() {
     validations,
     deliveries,
     closeout,
+    issues,
     git: { branch: gitBranch, head: gitHead, dirty: gitStatus },
     generatedAt: now(),
   };
@@ -466,8 +468,8 @@ function generateRoadmapData(state) {
       totalSessions: state.sessions.length,
       totalValidations: state.validations.length,
       totalDeliveries: state.deliveries.length,
-      driftCount: drift.length,
-      humanDecisionCount: humanDecisions.length,
+      totalIssues: state.issues.length,
+      openIssues: state.issues.filter(i => i.status === "open" || i.status === "in-progress").length,
     },
   };
 }
