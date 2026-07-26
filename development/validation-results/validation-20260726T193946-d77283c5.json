@@ -1,0 +1,109 @@
+{
+  "schema": "locaily.development.validation_result.v1",
+  "id": "validation-20260726T193946-d77283c5",
+  "milestoneId": "px1-canonical-product-status",
+  "profileId": "pre-delivery",
+  "status": "failed",
+  "gitState": {
+    "branch": "main",
+    "headCommit": "018c3de2bae8a3df44210555f97369f743a250ec",
+    "fingerprint": "sha256:e3b0c44298fc1c14",
+    "changedFiles": [],
+    "computedAt": "2026-07-26T19:39:46.796Z"
+  },
+  "startedAt": "2026-07-26T19:39:46.798Z",
+  "completedAt": "2026-07-26T19:39:48.977Z",
+  "results": [
+    {
+      "id": "strict-status",
+      "command": "node scripts/dev-status.js --strict --json",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 0,
+      "stdout": "",
+      "stderr": "",
+      "summary": "No error/critical contradictions",
+      "required": true
+    },
+    {
+      "id": "dev-status-strict",
+      "command": "node scripts/dev-status.js --strict",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 686,
+      "stdout": "=== Locaily Development Status ===\n\nProject:        locaily\nStatus:         active\nDefault branch: main\nCurrent branch: main (default)\nHEAD:           018c3de\n\n--- Working Tree ---\n  Modified:  1 file(s)\n    development/milestones/px1-canonical-product-status.json\n\n--- Milestones ---\n  No active, paused, blocked, or ready-for-delivery milestones.\n  Planned: 5 | Ready: 1 | Completed: 0\n\n--- Sessions ---\n  No active or paused sessions.\n  Total: 1\n\n--- Legacy State (.opencode) ---\n  Run-state objec",
+      "stderr": "",
+      "summary": "  [i] [INFO] Roadmap references m",
+      "required": true
+    },
+    {
+      "id": "schema-tests",
+      "command": "node scripts/test-development-schemas.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 95,
+      "stdout": "\n## Schema Structure\n  PASS  Schema brief.schema.json has required fields\n  PASS  Schema delivery.schema.json has required fields\n  PASS  Schema issue.schema.json has required fields\n  PASS  Schema milestone.schema.json has required fields\n  PASS  Schema project-state.schema.json has required fields\n  PASS  Schema session.schema.json has required fields\n  PASS  Schema validation-profile.schema.json has required fields\n  PASS  Schema validation-result.schema.json has required fields\n\n## Schema Co",
+      "stderr": "",
+      "summary": "## Results: 29 passed, 0 failed",
+      "required": true
+    },
+    {
+      "id": "lifecycle-tests",
+      "command": "node scripts/test-lifecycle.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 149,
+      "stdout": "\n## State Machine\n  PASS  STATES are frozen\n  PASS  isTerminal identifies terminal states\n  PASS  isValidTransition enforces legal transitions\n  PASS  Terminal states have no outgoing transitions\n\n## Objective Meta\n  PASS  createObjectiveMeta produces default meta\n  PASS  createObjectiveMeta accepts overrides\n\n## Objective Parsing\n  PASS  parseObjectiveId extracts prefix and slug\n  PASS  parseObjectiveId handles no prefix\n\n## Duplicate Detection\n  PASS  detectDuplicates finds slug duplicates\n  P",
+      "stderr": "",
+      "summary": "## Results: 23 passed, 0 failed",
+      "required": true
+    },
+    {
+      "id": "controller-tests",
+      "command": "node scripts/test-controller-invariants.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 260,
+      "stdout": "\nTests: 11 passed, 0 failed\n",
+      "stderr": "",
+      "summary": "Tests: 11 passed, 0 failed",
+      "required": true
+    },
+    {
+      "id": "contract-tests",
+      "command": "node scripts/contract-test.js",
+      "status": "passed",
+      "exitCode": 0,
+      "durationMs": 275,
+      "stdout": "Contract helpers passed.\n",
+      "stderr": "",
+      "summary": "Contract helpers passed.",
+      "required": true
+    },
+    {
+      "id": "full-suite",
+      "command": "npm run test:full",
+      "status": "failed",
+      "exitCode": 1,
+      "durationMs": 87,
+      "stdout": "",
+      "stderr": "node:internal/modules/cjs/loader:1252\r\n  throw err;\r\n  ^\r\n\r\nError: Cannot find module 'C:\\Users\\JP\\Desktop\\locailly\\npm'\r\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1249:15)\r\n    at Function._load (node:internal/modules/cjs/loader:1075:27)\r\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\r\n    at wrapModuleLoad (node:internal/modules/cjs/loader:219:24)\r\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:170:5)\r\n    at node:",
+      "summary": "",
+      "required": true
+    }
+  ],
+  "manualChecks": [
+    {
+      "id": "review-gate",
+      "description": "Code review must pass (agent-review.js)",
+      "acknowledged": false
+    },
+    {
+      "id": "closeout-verified",
+      "description": "Closeout record correctly describes completed work",
+      "acknowledged": false
+    }
+  ],
+  "warnings": [],
+  "error": null
+}
