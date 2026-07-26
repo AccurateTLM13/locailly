@@ -25,6 +25,7 @@ const DEVELOPMENT_DIR = path.join(PROJECT_ROOT, "development");
 const PROJECT_STATE_PATH = path.join(DEVELOPMENT_DIR, "project-state.json");
 const MILESTONES_DIR = path.join(DEVELOPMENT_DIR, "milestones");
 const SESSIONS_DIR = path.join(DEVELOPMENT_DIR, "sessions");
+const ISSUES_DIR = path.join(DEVELOPMENT_DIR, "issues");
 const AGENTS_STATE_DIR = path.join(PROJECT_ROOT, ".opencode", "agents", "state");
 const OBJECTIVES_DIR = path.join(PROJECT_ROOT, ".opencode", "agents", "objectives");
 
@@ -131,6 +132,18 @@ function inspectSessions() {
     paused: sessions.filter(s => s.status === "paused"),
     closed: sessions.filter(s => s.status === "closed"),
     interrupted: sessions.filter(s => s.status === "interrupted"),
+  };
+}
+
+// ---- issue inspection ----
+
+function inspectIssues() {
+  if (!fs.existsSync(ISSUES_DIR)) return { total: 0, open: [], criticalOpen: [] };
+  const issues = fs.readdirSync(ISSUES_DIR).filter(f => f.endsWith(".json")).map(f => readJson(path.join(ISSUES_DIR, f), null)).filter(Boolean);
+  return {
+    total: issues.length,
+    open: issues.filter(i => i.status === "open" || i.status === "in-progress"),
+    criticalOpen: issues.filter(i => (i.status === "open" || i.status === "in-progress") && i.priority === "critical"),
   };
 }
 
@@ -355,6 +368,19 @@ function detectContradictions(projectState, gitState, legacyState, milestones, s
           "Consider pausing or closing the session");
       }
     }
+  }
+
+  // --- CRITICAL/ERROR: open critical issues ---
+  const issues = inspectIssues();
+  for (const issue of issues.criticalOpen) {
+    add("error", "CRITICAL_ISSUE_OPEN",
+      `Critical issue '${issue.id}' is open: ${issue.title}`,
+      `Resolve or close the issue: node scripts/dev-issue.js resolve ${issue.id} --note "..."`);
+  }
+  for (const issue of issues.open.filter(i => i.priority !== "critical")) {
+    add("info", "ISSUE_OPEN",
+      `Issue '${issue.id}' (${issue.priority} ${issue.type}): ${issue.title}`,
+      null);
   }
 
   return contradictions;

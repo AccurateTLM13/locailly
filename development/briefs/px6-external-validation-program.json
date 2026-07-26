@@ -1,0 +1,26 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "px6-external-validation-program",
+  "context": "This is proof, not more architecture. Prefer honest failure evidence. Second workflow should support the wedge: turn technical evidence into reviewed agent-ready work.",
+  "files": [
+    "docs/04-validation/",
+    "docs/05-integrations/multi-device-pilot.md",
+    "scripts/pilot/",
+    "companion/console/",
+    "data/validation/"
+  ],
+  "acceptance": [
+    "Tester protocol ready",
+    "Relay pilot evidence recorded",
+    "Second workflow evidence recorded",
+    "Public/internal validation writeup exists"
+  ],
+  "constraints": [
+    "Do not broaden claims beyond evidence",
+    "Do not modify completed qualification artifacts casually",
+    "LAN pilot must use px2 security gates",
+    "Wait for explicit approval before starting follow-on milestones from findings"
+  ],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:53:40.372Z"
+}

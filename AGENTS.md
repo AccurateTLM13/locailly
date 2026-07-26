@@ -40,6 +40,26 @@ start → checkpoint → session:close → prepare → validate → complete →
 
 `prepare` commits all changes. `validate` runs against the committed HEAD with a clean tree. `complete` verifies the validation fingerprint matches.
 
+## Auto-Begin Protocol
+
+When the user says **"begin"**, **"start work"**, **"begin work"**, **"/begin-task"**, or asks to start/resume a milestone:
+
+1. Run `node scripts/dev-begin.js` (or with `--slug <id>` if they specify a milestone).
+2. Read the returned milestone context — scope, acceptance criteria, included/excluded.
+3. Work only within the approved scope.
+4. Record progress periodically with `npm run dev:checkpoint -- --message "..."`.
+
+## Auto-End Protocol
+
+When the user says **"done"**, **"ship it"**, **"deliver"**, **"/end-task"**, or asks to close out the current milestone:
+
+1. Ask for a one-line summary of what was accomplished if not provided.
+2. Run `node scripts/dev-end.js --summary "..."`.
+   - Add `--deliver` if they want to push the branch.
+   - Add `--pr` if they want to create a draft pull request.
+3. Do **not** bypass gates unless the user explicitly asks you to.
+4. Report any gate failures. Do not proceed through a failed gate.
+
 ## Before Stopping Work
 
 1. Update `docs/07-progress/work-closeout.json` with what was done, what remains, validation results, and whether it is safe to start unrelated work.

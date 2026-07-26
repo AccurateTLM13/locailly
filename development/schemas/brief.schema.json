@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://locaily.local/schemas/development-brief.schema.json",
+  "title": "Development Brief",
+  "description": "Structured context for a milestone. Bridges the gap between human intent and agent execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["milestoneId", "context", "acceptance"],
+  "properties": {
+    "schema": {
+      "const": "locaily.development.brief.v1"
+    },
+    "milestoneId": {
+      "type": "string", "minLength": 1
+    },
+    "context": {
+      "type": "string", "minLength": 1,
+      "description": "What problem are we solving and why."
+    },
+    "files": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Likely files to change."
+    },
+    "acceptance": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Concrete acceptance criteria."
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Hard boundaries: don't add deps, must be backwards compatible, etc."
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": { "type": "string" },
+          "decision": { "type": "string" },
+          "alternatives": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["question", "decision"],
+        "additionalProperties": false
+      },
+      "description": "Architecture decisions made during this milestone."
+    },
+    "createdAt": {
+      "type": "string", "format": "date-time"
+    }
+  }
+}

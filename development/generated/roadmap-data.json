@@ -1,28 +1,28 @@
 {
   "schema": "locaily.development.dashboard.v1",
-  "generatedAt": "2026-07-23T23:50:03.093Z",
+  "generatedAt": "2026-07-25T03:54:22.226Z",
   "projectState": {
     "schema": "locaily.development.project_state.v1",
     "project": "locaily",
-    "currentMilestone": "dcp-phase3b",
-    "activeSession": "session-20260723-005",
-    "status": "active",
+    "currentMilestone": null,
+    "activeSession": null,
+    "status": "idle",
     "defaultBranch": "main",
-    "activeBranch": "feat/development-memory-second-project-proof",
-    "lastCompletedMilestone": "dcp-phase3a",
-    "nextRecommendedAction": "Working on milestone 'dcp-phase3b' — session 'session-20260723-005'",
+    "activeBranch": null,
+    "lastCompletedMilestone": null,
+    "nextRecommendedAction": "Start ready milestone px1-canonical-product-status (or px2-lan-security-hard-gate in parallel). Run: node scripts/dev-begin.js --slug px1-canonical-product-status",
     "blockers": [],
     "warnings": [],
-    "updatedAt": "2026-07-23T23:44:23.613Z",
+    "updatedAt": "2026-07-25T03:53:40.372Z",
     "updatedBy": {
       "type": "agent",
-      "name": "dev-lifecycle",
-      "platform": "system"
+      "name": "opencode",
+      "platform": "opencode"
     }
   },
   "git": {
     "branch": "feat/development-memory-second-project-proof",
-    "head": "e72c2ed",
+    "head": "9e44b36",
     "dirty": true
   },
   "subsystemMaturity": [
@@ -200,387 +200,236 @@
           "maturity": "implemented"
         }
       ]
+    },
+    {
+      "id": "product-experience",
+      "title": "Product Experience",
+      "maturity": "designed",
+      "initiatives": [
+        {
+          "id": "truth-surfaces",
+          "title": "Canonical Truth Surfaces",
+          "maturity": "designed"
+        },
+        {
+          "id": "lan-security",
+          "title": "LAN Security Hard Gate",
+          "maturity": "designed"
+        },
+        {
+          "id": "golden-path",
+          "title": "Golden Path Run Inspector",
+          "maturity": "designed"
+        },
+        {
+          "id": "unified-shell",
+          "title": "Unified Application Shell",
+          "maturity": "designed"
+        },
+        {
+          "id": "tester-package",
+          "title": "Tester Package",
+          "maturity": "designed"
+        },
+        {
+          "id": "external-validation",
+          "title": "External Validation Program",
+          "maturity": "designed"
+        },
+        {
+          "id": "organic-discovery",
+          "title": "Organic Discovery Loop",
+          "maturity": "designed"
+        }
+      ]
     }
   ],
   "milestoneBoard": {
     "idea": [],
     "planned": [
       {
-        "id": "dcp-phase4",
-        "title": "Development Control Plane Phase 4 — Agent Adapters",
-        "type": "infrastructure",
-        "priority": "medium"
-      }
-    ],
-    "ready": [],
-    "active": [
+        "id": "px3-golden-path-run-inspector",
+        "title": "Golden Path Run Inspector",
+        "type": "feature",
+        "priority": "critical"
+      },
       {
-        "id": "dcp-phase3b",
-        "title": "Development Control Plane Phase 3B — Handoff and Roadmap Integrity",
-        "type": "infrastructure",
-        "priority": "medium"
-      }
-    ],
-    "paused": [],
-    "blocked": [
+        "id": "px4-unified-locaily-shell",
+        "title": "Unified Locaily Application Shell",
+        "type": "feature",
+        "priority": "high"
+      },
       {
-        "id": "09-physical-multi-device-pilot",
-        "title": "M09: Physical Multi-Device Pilot",
+        "id": "px5-tester-package",
+        "title": "Windows-First Tester Package",
+        "type": "infrastructure",
+        "priority": "high"
+      },
+      {
+        "id": "px6-external-validation-program",
+        "title": "External Validation Program",
         "type": "validation",
         "priority": "high"
-      }
-    ],
-    "validating": [],
-    "ready-for-delivery": [],
-    "delivered": [
-      {
-        "id": "dcp-phase3a",
-        "title": "Development Control Plane Phase 3A - Dashboard",
-        "type": "infrastructure",
-        "priority": "high"
-      }
-    ],
-    "merged": [],
-    "completed": [
-      {
-        "id": "06-trusted-relay-execution",
-        "title": "M6: Trusted Relay Execution",
-        "type": "feature",
-        "priority": "high"
       },
       {
-        "id": "08-operator-control-plane",
-        "title": "M8: Operator Control Plane",
-        "type": "feature",
-        "priority": "high"
-      },
-      {
-        "id": "10-locaily-v1-packaging",
-        "title": "M10: Locaily v1 Packaging",
+        "id": "px7-organic-discovery-loop",
+        "title": "Organic Discovery and Evidence Content Loop",
         "type": "documentation",
         "priority": "medium"
-      },
+      }
+    ],
+    "ready": [
       {
-        "id": "10-track-learning-evidence-loop",
-        "title": "M12: Track Learning Evidence Loop",
-        "type": "feature",
-        "priority": "high"
-      },
-      {
-        "id": "dcp-phase1.5-2a",
-        "title": "Development Control Plane Phase 1.5 + 2A",
-        "type": "infrastructure",
-        "priority": "critical"
-      },
-      {
-        "id": "dcp-phase1",
-        "title": "Development Control Plane Phase 1",
-        "type": "infrastructure",
-        "priority": "critical"
-      },
-      {
-        "id": "dcp-phase2b",
-        "title": "Development Control Plane Phase 2B",
-        "type": "infrastructure",
-        "priority": "critical"
-      },
-      {
-        "id": "dcp-phase2c",
-        "title": "Development Control Plane Phase 2C",
-        "type": "infrastructure",
-        "priority": "critical"
-      },
-      {
-        "id": "dm10-multi-project-template",
-        "title": "DM10: Multi-Project Local Brain Template",
-        "type": "feature",
-        "priority": "medium"
-      },
-      {
-        "id": "milestone-completion-delivery-workflow",
-        "title": "Milestone Completion Delivery Workflow",
-        "type": "infrastructure",
-        "priority": "high"
-      },
-      {
-        "id": "objective-lifecycle-hardening",
-        "title": "Objective Lifecycle Hardening",
+        "id": "px1-canonical-product-status",
+        "title": "Canonical Product Status and Truth Surfaces",
         "type": "governance",
+        "priority": "critical"
+      },
+      {
+        "id": "px2-lan-security-hard-gate",
+        "title": "LAN Security Hard Gate for Relay Exposure",
+        "type": "infrastructure",
         "priority": "critical"
       }
     ],
+    "active": [],
+    "paused": [],
+    "blocked": [],
+    "validating": [],
+    "ready-for-delivery": [],
+    "delivered": [],
+    "merged": [],
+    "completed": [],
     "cancelled": []
   },
-  "validationScoreboard": [
-    {
-      "id": "validation-20260722T220118-fe259c2d",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-22T22:01:19.367Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    },
-    {
-      "id": "validation-20260722T220217-8f60710f",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-22T22:02:18.490Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    },
-    {
-      "id": "validation-20260722T232808-79bec8c6",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-22T23:28:09.532Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    },
-    {
-      "id": "validation-20260722T233758-e5c6318c",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-22T23:38:00.124Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    },
-    {
-      "id": "validation-20260723T015442-e8fcbf27",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-23T01:54:43.501Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    },
-    {
-      "id": "validation-20260723T015617-058a04fc",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-23T01:56:18.990Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    },
-    {
-      "id": "validation-20260723T015718-6bf3ea2f",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-23T01:57:19.404Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    },
-    {
-      "id": "validation-20260723T015742-dc2811f5",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "profileId": "builtin-quick",
-      "branch": "feat/development-memory-second-project-proof",
-      "completedAt": "2026-07-23T01:57:43.776Z",
-      "requiredPassed": 5,
-      "requiredFailed": 0
-    }
-  ],
-  "recentActivity": [
-    {
-      "type": "session-closed",
-      "id": "session-20260723-005",
-      "milestoneId": "dcp-phase3b",
-      "timestamp": "2026-07-23T23:49:35.559Z"
-    },
-    {
-      "type": "session",
-      "id": "session-20260723-005",
-      "milestoneId": "dcp-phase3b",
-      "status": "closed",
-      "timestamp": "2026-07-23T23:44:23.611Z"
-    },
-    {
-      "type": "pr-created",
-      "id": "dcp-phase3a",
-      "prNumber": 25,
-      "timestamp": "2026-07-23T01:57:50.862Z"
-    },
-    {
-      "type": "delivery",
-      "id": "dcp-phase3a",
-      "status": "delivered",
-      "timestamp": "2026-07-23T01:57:47.611Z"
-    },
-    {
-      "type": "validation",
-      "id": "validation-20260723T015742-dc2811f5",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "timestamp": "2026-07-23T01:57:43.776Z"
-    },
-    {
-      "type": "session-closed",
-      "id": "session-20260723-004",
-      "milestoneId": "dcp-phase3a",
-      "timestamp": "2026-07-23T01:57:40.413Z"
-    },
-    {
-      "type": "session",
-      "id": "session-20260723-004",
-      "milestoneId": "dcp-phase3a",
-      "status": "closed",
-      "timestamp": "2026-07-23T01:57:39.985Z"
-    },
-    {
-      "type": "validation",
-      "id": "validation-20260723T015718-6bf3ea2f",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "timestamp": "2026-07-23T01:57:19.404Z"
-    },
-    {
-      "type": "session-closed",
-      "id": "session-20260723-003",
-      "milestoneId": "dcp-phase3a",
-      "timestamp": "2026-07-23T01:57:15.777Z"
-    },
-    {
-      "type": "session",
-      "id": "session-20260723-003",
-      "milestoneId": "dcp-phase3a",
-      "status": "closed",
-      "timestamp": "2026-07-23T01:57:15.301Z"
-    },
-    {
-      "type": "validation",
-      "id": "validation-20260723T015617-058a04fc",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "timestamp": "2026-07-23T01:56:18.990Z"
-    },
-    {
-      "type": "session-closed",
-      "id": "session-20260723-002",
-      "milestoneId": "dcp-phase3a",
-      "timestamp": "2026-07-23T01:56:14.716Z"
-    },
-    {
-      "type": "session",
-      "id": "session-20260723-002",
-      "milestoneId": "dcp-phase3a",
-      "status": "closed",
-      "timestamp": "2026-07-23T01:56:14.188Z"
-    },
-    {
-      "type": "validation",
-      "id": "validation-20260723T015442-e8fcbf27",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "timestamp": "2026-07-23T01:54:43.501Z"
-    },
-    {
-      "type": "session-closed",
-      "id": "session-20260723-001",
-      "milestoneId": "dcp-phase3a",
-      "timestamp": "2026-07-23T01:54:38.878Z"
-    },
-    {
-      "type": "session",
-      "id": "session-20260723-001",
-      "milestoneId": "dcp-phase3a",
-      "status": "closed",
-      "timestamp": "2026-07-23T01:54:38.422Z"
-    },
-    {
-      "type": "validation",
-      "id": "validation-20260722T233758-e5c6318c",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "timestamp": "2026-07-22T23:38:00.124Z"
-    },
-    {
-      "type": "session-closed",
-      "id": "session-20260722-003",
-      "milestoneId": "dcp-phase3a",
-      "timestamp": "2026-07-22T23:37:56.564Z"
-    },
-    {
-      "type": "session",
-      "id": "session-20260722-003",
-      "milestoneId": "dcp-phase3a",
-      "status": "closed",
-      "timestamp": "2026-07-22T23:37:56.075Z"
-    },
-    {
-      "type": "validation",
-      "id": "validation-20260722T232808-79bec8c6",
-      "milestoneId": "dcp-phase3a",
-      "status": "passed",
-      "timestamp": "2026-07-22T23:28:09.532Z"
-    }
-  ],
+  "validationScoreboard": [],
+  "recentActivity": [],
   "nextMilestone": {
-    "reason": "active_milestone",
+    "reason": "next_planned",
     "milestone": {
       "schema": "locaily.development.milestone.v1",
-      "id": "dcp-phase3b",
-      "title": "Development Control Plane Phase 3B — Handoff and Roadmap Integrity",
-      "status": "active",
-      "type": "infrastructure",
-      "priority": "medium",
-      "purpose": "Refine generated handoff with resume commands and checkpoints. Surface human decisions separately. Detect roadmap drift. Deprecate manually maintained files. Add merge/post-merge lifecycle planning.",
+      "id": "px1-canonical-product-status",
+      "title": "Canonical Product Status and Truth Surfaces",
+      "status": "ready",
+      "type": "governance",
+      "priority": "critical",
+      "purpose": "Restore one coherent version of reality across version numbers, docs, blockers, dashboards, and UI claims so Locaily can be trusted as an evidence-first project.",
+      "problem": "Truth surfaces contradict each other: package.json vs RELEASE.md versions, blockers vs current-state, Relay claimed unimplemented while code/UI exist, operator vs console docs, LOCAL_AI_BIND vs LOCAL_AI_HOST, generated dashboard vs open issues.",
       "scope": {
         "included": [
-          "Handoff with exact resume commands",
-          "Latest checkpoint and session summary in handoff",
-          "Human-required decisions surfaced separately",
-          "Milestone dependency visualization",
-          "Roadmap-to-record drift detection",
-          "Merge and post-merge lifecycle planning"
+          "Single authoritative release version across package.json, RELEASE.md, README, and generated status",
+          "Reconcile README, RELEASE, current-state, roadmap, blockers, tester-feedback, and ux-principles",
+          "Generate status sections from canonical development JSON where practical",
+          "CI or offline checks for stale milestone references and contradictory feature-state claims",
+          "Fix /operator vs /console documentation mismatch",
+          "Fix LOCAL_AI_BIND vs LOCAL_AI_HOST documentation and examples",
+          "Verify console logo asset path and repair if broken",
+          "Remove obsolete claims that Relay Nodes are unimplemented",
+          "Decision record for whether /console and /operator stay separate routes or become one shell (implement decision only if trivial; otherwise document deferred to px4)"
         ],
         "excluded": [
-          "Agent adapters",
-          "Automatic merge"
+          "Building the unified application shell (px4)",
+          "LAN security hard-gate implementation (px2)",
+          "New product features or Golden Path Run Inspector UI",
+          "Rewriting Benchmark Lab or Relay protocol",
+          "Publishing marketing/SEO content pages"
         ]
       },
       "acceptanceCriteria": [
-        "Handoff includes exact resumed command and latest checkpoint",
-        "Human decisions surfaced as dedicated section",
-        "Roadmap drift detected by generator",
-        "Merge lifecycle documented and implemented"
+        {
+          "id": "ac-version",
+          "description": "One release version is authoritative and consistent across package.json, RELEASE.md, and README",
+          "status": "pending"
+        },
+        {
+          "id": "ac-no-contradict-relay",
+          "description": "No active doc claims Relay Nodes are unimplemented when protocol/UI/tests exist",
+          "status": "pending"
+        },
+        {
+          "id": "ac-console-operator-docs",
+          "description": "Operator guide and related docs correctly distinguish /console vs /operator routes and launchers",
+          "status": "pending"
+        },
+        {
+          "id": "ac-env-bind",
+          "description": "All docs and examples use LOCAL_AI_HOST (not LOCAL_AI_BIND) matching companion/server.js",
+          "status": "pending"
+        },
+        {
+          "id": "ac-logo",
+          "description": "Console logo asset resolves without 404",
+          "status": "pending"
+        },
+        {
+          "id": "ac-status-check",
+          "description": "An automated check fails when known contradictory feature-state claims or missing milestone records are detected",
+          "status": "pending"
+        },
+        {
+          "id": "ac-decision",
+          "description": "Decision recorded in docs/06-decisions for console/operator shell strategy",
+          "status": "pending"
+        },
+        {
+          "id": "ac-schemas",
+          "description": "node scripts/test-development-schemas.js and npm run dev:status pass without ERROR-level product-status contradictions introduced by this work",
+          "status": "pending"
+        }
       ],
-      "validationProfile": "builtin-quick",
-      "dependencies": [
-        "dcp-phase3a"
-      ],
+      "validationProfile": "pre-delivery",
+      "dependencies": [],
       "blockers": [],
       "lifecycleRef": null,
-      "createdAt": "2026-07-22T23:40:00.000Z",
-      "startedAt": "2026-07-23T23:44:23.609Z",
-      "completedAt": null
+      "createdAt": "2026-07-25T03:53:40.372Z",
+      "startedAt": null,
+      "completedAt": null,
+      "mergedAt": null
     }
   },
-  "staleness": [
-    {
-      "severity": "warning",
-      "code": "ACTIVE_NO_SESSION",
-      "message": "Milestone 'dcp-phase3b' is active but has no active session"
-    }
-  ],
+  "staleness": [],
   "drift": [
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "06-trusted-relay-execution",
+      "message": "Roadmap references milestone '06-trusted-relay-execution' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "09-physical-multi-device-pilot",
+      "message": "Roadmap references milestone '09-physical-multi-device-pilot' but no milestone record exists"
+    },
     {
       "type": "roadmap-not-in-records",
       "severity": "info",
       "milestoneId": "09a-relay-trust",
       "message": "Roadmap references milestone '09a-relay-trust' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "dm10-multi-project-template",
+      "message": "Roadmap references milestone 'dm10-multi-project-template' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "08-operator-control-plane",
+      "message": "Roadmap references milestone '08-operator-control-plane' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "10-track-learning-evidence-loop",
+      "message": "Roadmap references milestone '10-track-learning-evidence-loop' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "objective-lifecycle-hardening",
+      "message": "Roadmap references milestone 'objective-lifecycle-hardening' but no milestone record exists"
     },
     {
       "type": "roadmap-not-in-records",
@@ -593,141 +442,122 @@
       "severity": "info",
       "milestoneId": "dcp-v1",
       "message": "Roadmap references milestone 'dcp-v1' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "milestone-completion-delivery-workflow",
+      "message": "Roadmap references milestone 'milestone-completion-delivery-workflow' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "dcp-phase3a",
+      "message": "Roadmap references milestone 'dcp-phase3a' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "dcp-phase3b",
+      "message": "Roadmap references milestone 'dcp-phase3b' but no milestone record exists"
+    },
+    {
+      "type": "roadmap-not-in-records",
+      "severity": "info",
+      "milestoneId": "10-locaily-v1-packaging",
+      "message": "Roadmap references milestone '10-locaily-v1-packaging' but no milestone record exists"
     }
   ],
   "milestoneDependencyGraph": {
     "nodes": [
       {
-        "id": "06-trusted-relay-execution",
-        "status": "completed",
-        "title": "M6: Trusted Relay Execution",
+        "id": "px1-canonical-product-status",
+        "status": "ready",
+        "title": "Canonical Product Status and Truth Surfaces",
+        "type": "governance"
+      },
+      {
+        "id": "px2-lan-security-hard-gate",
+        "status": "ready",
+        "title": "LAN Security Hard Gate for Relay Exposure",
+        "type": "infrastructure"
+      },
+      {
+        "id": "px3-golden-path-run-inspector",
+        "status": "planned",
+        "title": "Golden Path Run Inspector",
         "type": "feature"
       },
       {
-        "id": "08-operator-control-plane",
-        "status": "completed",
-        "title": "M8: Operator Control Plane",
+        "id": "px4-unified-locaily-shell",
+        "status": "planned",
+        "title": "Unified Locaily Application Shell",
         "type": "feature"
       },
       {
-        "id": "09-physical-multi-device-pilot",
-        "status": "blocked",
-        "title": "M09: Physical Multi-Device Pilot",
+        "id": "px5-tester-package",
+        "status": "planned",
+        "title": "Windows-First Tester Package",
+        "type": "infrastructure"
+      },
+      {
+        "id": "px6-external-validation-program",
+        "status": "planned",
+        "title": "External Validation Program",
         "type": "validation"
       },
       {
-        "id": "10-locaily-v1-packaging",
-        "status": "completed",
-        "title": "M10: Locaily v1 Packaging",
-        "type": "documentation"
-      },
-      {
-        "id": "10-track-learning-evidence-loop",
-        "status": "completed",
-        "title": "M12: Track Learning Evidence Loop",
-        "type": "feature"
-      },
-      {
-        "id": "dcp-phase1.5-2a",
-        "status": "completed",
-        "title": "Development Control Plane Phase 1.5 + 2A",
-        "type": "infrastructure"
-      },
-      {
-        "id": "dcp-phase1",
-        "status": "completed",
-        "title": "Development Control Plane Phase 1",
-        "type": "infrastructure"
-      },
-      {
-        "id": "dcp-phase2b",
-        "status": "completed",
-        "title": "Development Control Plane Phase 2B",
-        "type": "infrastructure"
-      },
-      {
-        "id": "dcp-phase2c",
-        "status": "completed",
-        "title": "Development Control Plane Phase 2C",
-        "type": "infrastructure"
-      },
-      {
-        "id": "dcp-phase3a",
-        "status": "delivered",
-        "title": "Development Control Plane Phase 3A - Dashboard",
-        "type": "infrastructure"
-      },
-      {
-        "id": "dcp-phase3b",
-        "status": "active",
-        "title": "Development Control Plane Phase 3B — Handoff and Roadmap Integrity",
-        "type": "infrastructure"
-      },
-      {
-        "id": "dcp-phase4",
+        "id": "px7-organic-discovery-loop",
         "status": "planned",
-        "title": "Development Control Plane Phase 4 — Agent Adapters",
-        "type": "infrastructure"
-      },
-      {
-        "id": "dm10-multi-project-template",
-        "status": "completed",
-        "title": "DM10: Multi-Project Local Brain Template",
-        "type": "feature"
-      },
-      {
-        "id": "milestone-completion-delivery-workflow",
-        "status": "completed",
-        "title": "Milestone Completion Delivery Workflow",
-        "type": "infrastructure"
-      },
-      {
-        "id": "objective-lifecycle-hardening",
-        "status": "completed",
-        "title": "Objective Lifecycle Hardening",
-        "type": "governance"
+        "title": "Organic Discovery and Evidence Content Loop",
+        "type": "documentation"
       }
     ],
     "edges": [
       {
-        "from": "06-trusted-relay-execution",
-        "to": "09-physical-multi-device-pilot"
+        "from": "px1-canonical-product-status",
+        "to": "px3-golden-path-run-inspector"
       },
       {
-        "from": "09-physical-multi-device-pilot",
-        "to": "10-locaily-v1-packaging"
+        "from": "px3-golden-path-run-inspector",
+        "to": "px4-unified-locaily-shell"
       },
       {
-        "from": "dcp-v1",
-        "to": "dcp-phase3a"
+        "from": "px2-lan-security-hard-gate",
+        "to": "px5-tester-package"
       },
       {
-        "from": "dcp-phase3a",
-        "to": "dcp-phase3b"
+        "from": "px3-golden-path-run-inspector",
+        "to": "px5-tester-package"
       },
       {
-        "from": "development-control-plane-v1",
-        "to": "milestone-completion-delivery-workflow"
+        "from": "px2-lan-security-hard-gate",
+        "to": "px6-external-validation-program"
+      },
+      {
+        "from": "px5-tester-package",
+        "to": "px6-external-validation-program"
+      },
+      {
+        "from": "px1-canonical-product-status",
+        "to": "px7-organic-discovery-loop"
+      },
+      {
+        "from": "px3-golden-path-run-inspector",
+        "to": "px7-organic-discovery-loop"
       }
     ]
   },
-  "humanDecisions": [
-    {
-      "type": "blocked",
-      "milestoneId": "09-physical-multi-device-pilot",
-      "description": "Milestone is blocked. 1 blocker(s).",
-      "blockerType": "blocked"
-    }
-  ],
+  "humanDecisions": [],
   "stats": {
-    "totalMilestones": 15,
-    "active": 1,
-    "completed": 11,
-    "totalSessions": 8,
-    "totalValidations": 8,
-    "totalDeliveries": 1,
-    "driftCount": 3,
-    "humanDecisionCount": 1
+    "totalMilestones": 7,
+    "active": 0,
+    "completed": 0,
+    "totalSessions": 0,
+    "totalValidations": 0,
+    "totalDeliveries": 0,
+    "totalIssues": 4,
+    "openIssues": 3
   },
   "_activeSession": null,
   "_lastPausedSession": null

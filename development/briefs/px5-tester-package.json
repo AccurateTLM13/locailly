@@ -1,0 +1,28 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "px5-tester-package",
+  "context": "Package the golden path for testers. Reliability over desktop-framework beauty. Extend existing install-windows.ps1 and acceptance scripts where present.",
+  "files": [
+    "scripts/install-windows.ps1",
+    "scripts/",
+    "README.md",
+    "RELEASE.md",
+    "docs/05-integrations/",
+    "companion/console/"
+  ],
+  "acceptance": [
+    "Windows guided setup works",
+    "Browser opens to demo",
+    "Clean-env acceptance test passes",
+    "Backup/restore documented",
+    "First-run time target documented"
+  ],
+  "constraints": [
+    "Windows-first only",
+    "Do not require Relay for default tester path",
+    "Keep server localhost-default",
+    "Do not merge private Second Brain content"
+  ],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:53:40.372Z"
+}

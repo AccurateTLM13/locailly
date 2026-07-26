@@ -1,0 +1,15 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "test-brief",
+  "context": "Fix the thing",
+  "files": [
+    "scripts/test.js"
+  ],
+  "acceptance": [
+    "Works",
+    "Tests pass"
+  ],
+  "constraints": [],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:12:02.769Z"
+}

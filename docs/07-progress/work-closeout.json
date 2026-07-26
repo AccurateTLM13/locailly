@@ -1,35 +1,38 @@
 {
-  "work_id": "development-control-plane-phase3a-delivery",
-  "objective_id": "dcp-phase3a",
+  "work_id": "hybrid-begin-end-automation",
+  "objective_id": "dcp-phase3b",
   "status": "complete",
-  "closed_at": "2026-07-22T23:45:00.000Z",
-  "original_goal": "Deliver dcp-phase3a through the full lifecycle: session:close → prepare → validate → complete → push. Fix branch ownership warning classification.",
+  "closed_at": "2026-07-23T23:55:00.000Z",
+  "original_goal": "Implement hybrid begin/end task automation: wrapper scripts (dev-begin, dev-end), deterministic code review gate (agent-review), pre-delivery validation profile, and AGENTS.md auto-protocol.",
   "completed": [
-    "Fixed listJson bug in dev-status.js (returned file names instead of parsed objects)",
-    "Classified non-default branch as info when milestone owns it, warning when no milestone owns it",
-    "Re-ran lifecycle: session:close → prepare → validate → complete",
-    "Pushed commit 4d58b893 to origin/feat/development-memory-second-project-proof",
-    "Delivery record created at development/delivery/dcp-phase3a.json",
-    "Dashboard regenerated showing delivery status",
-    "dcp-phase3b scope refined per user guidance"
+    "scripts/dev-begin.js — starts or resumes milestone work with full context output",
+    "scripts/dev-end.js — orchestrated closeout pipeline: status, session close, prepare, validate, review, complete, deliver, PR",
+    "scripts/agent-review.js — deterministic gate: secrets, binaries, scope, missing tests, forbidden files, generated file drift",
+    "development/profiles/pre-delivery.json — structured validation profile for release gate",
+    "AGENTS.md updated with Auto-Begin and Auto-End protocol sections",
+    "npm scripts: dev:begin, dev:end, dev:review",
+    "22 new tests (test-development-begin-end.js) covering all three scripts and profile",
+    "All 172 tests passing across all suites"
   ],
   "remaining": [
-    "Create PR via gh CLI (requires authentication)",
-    "Phase 3B: Handoff and roadmap integrity",
-    "Phase 4: Agent adapters"
+    "Git hook installer (Phase E of plan)",
+    "OpenCode plugin for slash commands (Phase F — optional)",
+    "Begin dcp-phase3b scope implementation (handoff refinement, roadmap integrity)"
   ],
-  "next_required_action": "Authenticate gh CLI and create draft PR for dcp-phase3a. Then review dcp-phase3b scope.",
+  "next_required_action": "Install git hooks and/or start dcp-phase3b scope implementation.",
   "blockers": [],
-  "safe_to_start_unrelated_work": false,
+  "safe_to_start_unrelated_work": true,
   "working_branch": "feat/development-memory-second-project-proof",
-  "last_commit": "4d58b893",
+  "last_commit": null,
   "validation": {
     "passed": [
-      "node scripts/dev-status.js — exit 0, no warnings",
-      "node scripts/dev-status.js --strict — exit 0",
-      "node scripts/generate-development-dashboard.js — PASS",
-      "deliver-milestone.js --slug dcp-phase3a --dry-run — PASS",
-      "deliver-milestone.js --slug dcp-phase3a --execute — PUSHED"
+      "node scripts/test-development-begin-end.js — 22/22",
+      "node scripts/test-development-schemas.js — 27/27",
+      "node scripts/test-development-phase2b.js — 44/44",
+      "node scripts/test-development-phase2c.js — 31/31",
+      "node scripts/test-development-reconciliation.js — 14/14",
+      "node scripts/test-lifecycle.js — 23/23",
+      "node scripts/test-controller-invariants.js — 11/11"
     ],
     "failed": [],
     "not_run": []

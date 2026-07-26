@@ -1,0 +1,59 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "px4-unified-locaily-shell",
+  "title": "Unified Locaily Application Shell",
+  "status": "planned",
+  "type": "feature",
+  "priority": "high",
+  "purpose": "Merge the strongest parts of /console and /operator into one coherent application shell so operators do not choose between competing control planes.",
+  "problem": "Workflow console, operator console, dashboards, CLIs, and lifecycle systems make Locaily feel like six internal products.",
+  "scope": {
+    "included": [
+      "One shell with progressive sections: Home, Runs, Workflows, Capabilities, Models, Nodes, Evidence, Reviews, Memory, Settings",
+      "Home screen primary CTA: Run an example workflow (wires to Golden Path)",
+      "Integrate existing console validation and operator job/relay panels as routes or panels",
+      "Progressive disclosure for raw JSON, audit logs, qualification records",
+      "Preserve deep links or redirects from legacy /console and /operator paths",
+      "Decision implementation from px1 shell strategy"
+    ],
+    "excluded": [
+      "Rewriting Benchmark Lab UI from scratch",
+      "Development control plane dashboard merge into product shell (keep separate)",
+      "Packaging/installer work (px5)",
+      "New memory capture pipelines",
+      "Mobile-native app"
+    ]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "ac-single-entry",
+      "description": "One primary browser entry presents Home with Run example CTA",
+      "status": "pending"
+    },
+    {
+      "id": "ac-sections",
+      "description": "Shell exposes Runs, Workflows, Nodes, Evidence, Reviews at minimum using existing backends",
+      "status": "pending"
+    },
+    {
+      "id": "ac-legacy",
+      "description": "Legacy /console and /operator URLs still work via redirect or embedded mode",
+      "status": "pending"
+    },
+    {
+      "id": "ac-no-regression",
+      "description": "Existing Lighthouse golden path and operator job actions remain functional",
+      "status": "pending"
+    }
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [
+    "px3-golden-path-run-inspector"
+  ],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-07-25T03:53:40.372Z",
+  "startedAt": null,
+  "completedAt": null,
+  "mergedAt": null
+}

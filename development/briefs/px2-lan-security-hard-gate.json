@@ -1,0 +1,31 @@
+{
+  "schema": "locaily.development.brief.v1",
+  "milestoneId": "px2-lan-security-hard-gate",
+  "context": "Security must be fail-closed before any physical pilot or LAN packaging. When not on loopback, Locaily must refuse to run unless auth and allowlists are intentional. Prefer hard refuse over log warnings.",
+  "files": [
+    "companion/server.js",
+    "companion/relay/auth.js",
+    "companion/relay/",
+    "config.example.json",
+    "docs/05-integrations/multi-device-pilot.md",
+    "docs/05-integrations/api-reference.md",
+    "scripts/test-relay-auth-e2e.cjs",
+    "scripts/test-relay-e2e.cjs"
+  ],
+  "acceptance": [
+    "Non-loopback without auth/LAN config refuses startup",
+    "Loopback still works without token",
+    "LAN-mode unauthenticated relay calls fail in tests",
+    "Startup security summary present",
+    "Docs show Authorization and LOCAL_AI_HOST"
+  ],
+  "constraints": [
+    "Keep localhost-only as default",
+    "Do not expose Local Brain to public network by default",
+    "Relay nodes remain execution targets only, not control planes",
+    "No new public product names",
+    "Prefer extending existing relay auth modules over new frameworks"
+  ],
+  "decisions": [],
+  "createdAt": "2026-07-25T03:53:40.372Z"
+}

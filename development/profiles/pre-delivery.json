@@ -1,0 +1,62 @@
+{
+  "schema": "locaily.development.validation_profile.v1",
+  "id": "pre-delivery",
+  "name": "Pre-Delivery Gate",
+  "level": "release",
+  "description": "Required validation before any milestone delivery. Runs schema tests, lifecycle tests, controller tests, and contract tests. Full suite is optional.",
+  "required": [
+    {
+      "id": "dev-status-strict",
+      "command": "node scripts/dev-status.js --strict",
+      "description": "No error/critical contradictions"
+    },
+    {
+      "id": "schema-tests",
+      "command": "node scripts/test-development-schemas.js",
+      "description": "All development schemas pass"
+    },
+    {
+      "id": "lifecycle-tests",
+      "command": "node scripts/test-lifecycle.js",
+      "description": "Objective lifecycle tests pass"
+    },
+    {
+      "id": "controller-tests",
+      "command": "node scripts/test-controller-invariants.js",
+      "description": "Controller invariant tests pass"
+    },
+    {
+      "id": "contract-tests",
+      "command": "node scripts/contract-test.js",
+      "description": "Contract helper tests pass"
+    }
+  ],
+  "optional": [
+    {
+      "id": "full-suite",
+      "command": "npm run test:full",
+      "description": "Full offline test suite",
+      "timeout": 300000
+    }
+  ],
+  "manualChecks": [
+    {
+      "id": "review-gate",
+      "description": "Code review must pass (agent-review.js)"
+    },
+    {
+      "id": "closeout-verified",
+      "description": "Closeout record correctly describes completed work"
+    }
+  ],
+  "completionPolicy": {
+    "requireCleanTree": true,
+    "requireCloseout": true,
+    "requireEmptyRemainingWork": true,
+    "requireManualChecksComplete": true,
+    "allowedChangedPathsAfterValidation": [
+      "development/generated/"
+    ],
+    "validationMaxAgeMinutes": 120
+  }
+}

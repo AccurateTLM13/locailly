@@ -1,0 +1,66 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "px5-tester-package",
+  "title": "Windows-First Tester Package",
+  "status": "planned",
+  "type": "infrastructure",
+  "priority": "high",
+  "purpose": "Ship a reliable packaged loop for external testers: guided setup, dependency detection, fixtures, start/stop, browser launch, backup/restore, uninstall, and clean-environment acceptance.",
+  "problem": "First-run still requires cloning, Node, Ollama, ports, config, and architecture literacy. Clean-machine path is not validated as a product experience.",
+  "scope": {
+    "included": [
+      "Windows-first portable or scripted release path",
+      "Guided setup with Node/Ollama detection and recommended model selection",
+      "Built-in fixtures and start/stop server controls",
+      "Automatic browser launch to Golden Path",
+      "Backup and restore + configuration migration notes",
+      "Uninstall instructions",
+      "Clean-environment acceptance test (extend scripts/accept* if present)",
+      "README first-five-minutes path: Run your first local capability workflow"
+    ],
+    "excluded": [
+      "Full Tauri/Electron polish contest (optional thin wrapper only if needed)",
+      "macOS/Linux parity packaging",
+      "Public app-store distribution",
+      "Multi-workflow marketplace"
+    ]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "ac-guided",
+      "description": "Documented Windows guided setup detects Node/Ollama and starts Locaily without manual port/config editing for default path",
+      "status": "pending"
+    },
+    {
+      "id": "ac-browser",
+      "description": "Start path opens browser to Golden Path / Home automatically or with one confirmed click",
+      "status": "pending"
+    },
+    {
+      "id": "ac-clean-test",
+      "description": "Clean-environment acceptance test exists and passes on a documented profile",
+      "status": "pending"
+    },
+    {
+      "id": "ac-backup",
+      "description": "Backup/restore instructions or script cover config and local data needed to re-run demo",
+      "status": "pending"
+    },
+    {
+      "id": "ac-time-target",
+      "description": "README states and path supports target: useful first output under 10 minutes on prepared Windows machine",
+      "status": "pending"
+    }
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [
+    "px2-lan-security-hard-gate",
+    "px3-golden-path-run-inspector"
+  ],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-07-25T03:53:40.372Z",
+  "startedAt": null,
+  "completedAt": null,
+  "mergedAt": null
+}
