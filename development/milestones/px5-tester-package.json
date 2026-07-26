@@ -2,10 +2,10 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px5-tester-package",
   "title": "Windows-First Tester Package",
-  "status": "planned",
+  "status": "active",
   "type": "infrastructure",
   "priority": "high",
-  "purpose": "Ship a reliable packaged loop for external testers: guided setup, dependency detection, fixtures, start/stop, browser launch, backup/restore, uninstall, and clean-environment acceptance.",
+  "purpose": "Ship a reliable packaged loop for external testers: guided setup, dependency detection, fixtures, start/stop, browser launch, backup/restore, uninstall, and clean-environment acceptance",
   "problem": "First-run still requires cloning, Node, Ollama, ports, config, and architecture literacy. Clean-machine path is not validated as a product experience.",
   "scope": {
     "included": [
@@ -29,27 +29,27 @@
     {
       "id": "ac-guided",
       "description": "Documented Windows guided setup detects Node/Ollama and starts Locaily without manual port/config editing for default path",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-browser",
       "description": "Start path opens browser to Golden Path / Home automatically or with one confirmed click",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-clean-test",
       "description": "Clean-environment acceptance test exists and passes on a documented profile",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-backup",
       "description": "Backup/restore instructions or script cover config and local data needed to re-run demo",
-      "status": "pending"
+      "status": "satisfied"
     },
     {
       "id": "ac-time-target",
       "description": "README states and path supports target: useful first output under 10 minutes on prepared Windows machine",
-      "status": "pending"
+      "status": "satisfied"
     }
   ],
   "validationProfile": "pre-delivery",

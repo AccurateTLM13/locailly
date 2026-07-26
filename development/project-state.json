@@ -1,7 +1,7 @@
 {
   "schema": "locaily.development.project_state.v1",
   "project": "locaily",
-  "currentMilestone": "px4-unified-locaily-shell",
+  "currentMilestone": "px5-tester-package",
   "activeSession": null,
   "status": "active",
   "defaultBranch": "main",

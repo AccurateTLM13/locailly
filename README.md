@@ -177,6 +177,46 @@ can be built by composing tracks, tool packs, and validators.
 - Human authority remains explicit: high-impact writeback, publishing, and destructive actions require approval
 - Models propose, Locaily decides: no agent action executes without passing through the execution gate (policy documented; enforcement planned)
 
+## First Five Minutes
+
+**Target: useful first output in under 10 minutes on a prepared Windows machine.**
+
+### 1. Install (one-time)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
+```
+
+This checks Node.js, installs dependencies, creates the config, and checks Ollama.
+
+### 2. Start and run a demo
+
+```powershell
+.\scripts\start-locaily.ps1
+```
+
+This starts the Local Brain server and opens your browser to the Locaily Home screen.
+Click **Run Example Workflow** to see capability routing, validation, and evidence in
+action — no API keys, Ollama, or live website needed.
+
+Or start manually and open the browser yourself:
+
+```powershell
+node companion\server.js
+```
+
+Then visit [http://127.0.0.1:31313/](http://127.0.0.1:31313/) and click **Run Example Workflow**.
+
+### 3. (Optional) Enable AI features
+
+Install [Ollama](https://ollama.com/) and pull a model:
+
+```powershell
+ollama pull llama3.2
+```
+
+Restart the server and select a Local AI mode in the console.
+
 ## Getting Started
 
 Requirements:
@@ -197,11 +237,11 @@ start-windows.bat
 ```
 
 ```powershell
-.\start-dev.ps1
+.\start-locaily.ps1
 ```
 
 On startup, the server prints the local URL, active provider, model readiness,
-and registered tool count.
+and registered tool count. Open [http://127.0.0.1:31313/](http://127.0.0.1:31313/) to access the unified shell.
 
 **Full setup and configuration:** [docs/00-start-here/README.md](docs/00-start-here/README.md)
 

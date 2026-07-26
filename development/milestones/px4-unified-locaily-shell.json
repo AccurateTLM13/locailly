@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px4-unified-locaily-shell",
   "title": "Unified Locaily Application Shell",
-  "status": "active",
+  "status": "completed",
   "type": "feature",
   "priority": "high",
   "purpose": "Merge the strongest parts of /console and /operator into one coherent application shell so operators do not choose between competing control planes",
