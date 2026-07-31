@@ -1,19 +1,19 @@
 {
   "schema": "locaily.development.project_state.v1",
   "project": "locaily",
-  "currentMilestone": "px5-tester-package",
+  "currentMilestone": "ctk-01-capability-trigger-kernel",
   "activeSession": null,
   "status": "active",
   "defaultBranch": "main",
-  "activeBranch": "main",
-  "lastCompletedMilestone": null,
-  "nextRecommendedAction": "Working on milestone 'px3-golden-path-run-inspector' — session 'session-20260726-003'",
+  "activeBranch": "codex/ctk-01-completion",
+  "lastCompletedMilestone": "px6-external-validation-program",
+  "nextRecommendedAction": "Review and prepare CTK-01 on the isolated codex/ctk-01-completion branch",
   "blockers": [],
   "warnings": [],
-  "updatedAt": "2026-07-26T20:36:53.388Z",
+  "updatedAt": "2026-07-31T00:00:00.000Z",
   "updatedBy": {
     "type": "agent",
-    "name": "opencode",
-    "platform": "opencode"
+    "name": "codex",
+    "platform": "codex"
   }
 }

@@ -72,6 +72,13 @@ function extractArg(args, name) {
   return args[idx + 1];
 }
 
+function extractCsvArg(args, name) {
+  const value = extractArg(args, name);
+  return value
+    ? value.split(",").map(item => item.trim()).filter(Boolean)
+    : [];
+}
+
 function hasFlag(args, name) {
   return args.includes(name);
 }
@@ -732,6 +739,21 @@ function cmdValidate(args) {
   }
 
   const profile = (milestone.validationProfile ? loadProfile(milestone.validationProfile) : null) || loadDefaultProfile();
+  const acknowledgedManualCheckIds = new Set(extractCsvArg(args, "--acknowledge-manual"));
+  const acknowledgedBy = extractArg(args, "--acknowledged-by");
+  const knownManualCheckIds = new Set((profile.manualChecks || []).map(check => check.id));
+  const unknownAcknowledgements = [...acknowledgedManualCheckIds]
+    .filter(id => !knownManualCheckIds.has(id));
+
+  if (unknownAcknowledgements.length > 0) {
+    console.error(`Error: Unknown manual check(s): ${unknownAcknowledgements.join(", ")}`);
+    process.exit(1);
+  }
+
+  if (acknowledgedManualCheckIds.size > 0 && !acknowledgedBy) {
+    console.error("Error: --acknowledged-by is required when acknowledging manual checks.");
+    process.exit(1);
+  }
 
   const branch = getCurrentBranch();
   const head = getCurrentHead();
@@ -798,11 +820,18 @@ function cmdValidate(args) {
   const completedAt = now();
 
   // Build manual checks
-  const manualChecks = (profile.manualChecks || []).map(mc => ({
-    id: mc.id,
-    description: mc.description,
-    acknowledged: false,
-  }));
+  const manualChecks = (profile.manualChecks || []).map(mc => {
+    const acknowledged = acknowledgedManualCheckIds.has(mc.id);
+    return {
+      id: mc.id,
+      description: mc.description,
+      acknowledged,
+      ...(acknowledged ? {
+        acknowledgedBy,
+        acknowledgedAt: completedAt,
+      } : {}),
+    };
+  });
 
   // Build validation result
   const validationResult = {
@@ -1260,7 +1289,10 @@ function cmdPrepare(args) {
   const commitMsg = bodyLines.length > 0 ? `${subject}\n\n${bodyLines.join("\n")}` : subject;
 
   // Write commit message to temp file to avoid shell splitting
-  const commitMsgPath = path.join(PROJECT_ROOT, ".git", "COMMIT_MSG_TEMP");
+  const gitMessagePath = git(["rev-parse", "--git-path", "COMMIT_MSG_TEMP"]);
+  const commitMsgPath = gitMessagePath
+    ? path.resolve(PROJECT_ROOT, gitMessagePath)
+    : path.join(PROJECT_ROOT, ".git", "COMMIT_MSG_TEMP");
   fs.writeFileSync(commitMsgPath, commitMsg, "utf8");
 
   const commitResult = gitResult(["commit", "--file", commitMsgPath]);
@@ -1503,7 +1535,7 @@ Commands:
   resume
   session:close --summary "What was accomplished"
   prepare    [--acknowledge-unrelated "reason"]
-  validate   [--profile <id>]
+  validate   [--profile <id>] [--acknowledge-manual <id,id>] [--acknowledged-by <name>]
   complete
   merge      --slug <id> [--pr <number>] [--commit <sha>]
   status

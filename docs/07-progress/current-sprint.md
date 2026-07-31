@@ -1,12 +1,12 @@
 # Current Sprint
 
-**Updated:** 2026-07-22
+**Updated:** 2026-07-31 (CTK-01 completion audit)
 
 ## Status
 
-Between major build cycles. No objective is currently active.
+CTK-01 Capability Trigger Kernel is the sole active objective. Its implementation and acceptance suite are green; delivery lifecycle gates remain to be run on the isolated CTK-only branch.
 
-The repository is safe to begin new work. Lifecycle integrity passes; continuity check resolves cleanly.
+The repository is not safe to begin unrelated milestone work until CTK-01 reaches `ready-for-delivery`. CTK-02 remains planned and inactive. DBVT SEO Audit integration is excluded.
 
 ## Recently Completed
 

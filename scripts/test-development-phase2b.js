@@ -277,6 +277,14 @@ test("Validation IDs include random component", () => {
   assert(content.includes("randomBytes"), "Missing randomBytes for ID generation");
 });
 
+test("Validation records explicit manual-check acknowledgements", () => {
+  const content = fs.readFileSync(path.join(PROJECT_ROOT, "scripts", "dev-lifecycle.js"), "utf8");
+  assert(content.includes("--acknowledge-manual"), "Missing manual-check acknowledgement argument");
+  assert(content.includes("--acknowledged-by"), "Missing manual-check acknowledgement actor");
+  assert(content.includes("acknowledgedAt"), "Missing manual-check acknowledgement timestamp");
+  assert(content.includes("Unknown manual check(s)"), "Missing unknown manual-check rejection");
+});
+
 // ---- Warning acknowledgement ----
 
 console.log("\n## Warning Acknowledgement");

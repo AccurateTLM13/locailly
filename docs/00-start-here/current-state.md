@@ -2,10 +2,15 @@
 
 Blunt snapshot of what Locaily is **right now**. When docs disagree with this file, check running code first, then update this file.
 
-**Updated:** 2026-07-22 (Documentation alignment pass — roadmap, sprint, milestone map, security foundation)
+**Updated:** 2026-07-31 (CTK-01 completion audit)
+
+## Current Milestone
+
+CTK-01 Capability Trigger Kernel is active on `codex/ctk-01-completion`. Its runtime acceptance suite passes 20/20 and the full offline repository suite passes. Delivery lifecycle gates remain pending until the isolated branch is prepared, validated, and completed. CTK-02 is not active, and DBVT SEO Audit integration is not implemented.
 
 ## What Works
 
+- **Capability Trigger Kernel (CTK-01)** - trusted local events select a versioned installed capability, produce a deterministic plan, run declared local handlers, validate output, and persist append-only provenance without network or cloud fallback.
 - **Local Brain server** - `companion/server.js` on `127.0.0.1:31313`
 - **`POST /tasks/run`** - canonical single-tool entry (plus legacy `/analyze`)
 - **`POST /tracks/run`** and **`GET /tracks`** - Crew track runner
