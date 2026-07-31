@@ -162,6 +162,9 @@ test("dev:validate executes node and npm profile commands directly", () => {
   assert(content.includes('requestedCommand === "node"'), "Missing direct Node command handling");
   assert(content.includes('"npm.cmd"'), "Missing Windows npm command handling");
   assert(content.includes("checkResult.required = false"), "Optional checks must be recorded as optional");
+  assert(content.includes('result.error.code === "ETIMEDOUT"'), "Runner must distinguish timeout errors");
+  assert(content.includes('status = result.error.code === "ETIMEDOUT" ? "timeout" : "error"'),
+    "Runner must not report spawn errors as passed");
 });
 
 test("dev:validate preserves failed records", () => {

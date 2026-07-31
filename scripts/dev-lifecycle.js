@@ -905,18 +905,21 @@ function runValidationCommand(check) {
       cwd: PROJECT_ROOT,
       encoding: "utf8",
       maxBuffer: 1024 * 1024,
-      shell: false,
+      shell: process.platform === "win32" && requestedCommand === "npm",
       timeout,
     });
 
     const durationMs = Date.now() - startMs;
-    const exitCode = result.status || 0;
+    const exitCode = Number.isInteger(result.status) ? result.status : -1;
     const stdout = (result.stdout || "").slice(0, 2000);
     const stderr = (result.stderr || "").slice(0, 2000);
 
     let status = "passed";
-    if (exitCode !== 0) status = "failed";
-    if (result.error && result.error.code === "ETIMEDOUT") status = "timeout";
+    if (result.error) {
+      status = result.error.code === "ETIMEDOUT" ? "timeout" : "error";
+    } else if (exitCode !== 0) {
+      status = "failed";
+    }
 
     // Extract summary from last line of stdout
     const lines = stdout.trim().split(/\r?\n/);

@@ -47,7 +47,8 @@
     ],
     "failed": [],
     "failed_then_resolved": [
-      "validation-20260731T012126-adab70b6 - failed because the profile re-ran strict status during the transient validating state and invoked npm through Node; both control-plane defects were fixed before retry."
+      "validation-20260731T012126-adab70b6 - failed because the profile re-ran strict status during the transient validating state and invoked npm through Node; both control-plane defects were fixed before retry.",
+      "validation-20260731T012351-67f4276c - required checks passed, but the optional full-suite spawn returned an unhandled process error and was incorrectly labeled passed; the runner was corrected and this record was superseded."
     ],
     "not_run": [
       "npm.cmd run dev:prepare - pending on the isolated CTK-only branch.",
