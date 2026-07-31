@@ -814,6 +814,7 @@ function cmdValidate(args) {
   // Run optional commands (don't affect overall status)
   for (const check of (profile.optional || [])) {
     const checkResult = runValidationCommand(check);
+    checkResult.required = false;
     results.push(checkResult);
   }
 
@@ -891,11 +892,20 @@ function runValidationCommand(check) {
   const startMs = Date.now();
 
   try {
-    const result = spawnSync("node", check.command.replace(/^node\s+/, "").split(/\s+/), {
+    const parts = check.command.trim().split(/\s+/);
+    const requestedCommand = parts.shift();
+    const command = requestedCommand === "node"
+      ? process.execPath
+      : (
+          requestedCommand === "npm" && process.platform === "win32"
+            ? "npm.cmd"
+            : requestedCommand
+        );
+    const result = spawnSync(command, parts, {
       cwd: PROJECT_ROOT,
       encoding: "utf8",
       maxBuffer: 1024 * 1024,
-      shell: process.platform === "win32",
+      shell: false,
       timeout,
     });
 

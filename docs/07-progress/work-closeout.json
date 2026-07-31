@@ -15,7 +15,8 @@
     "Recorded the CTK architecture boundary decision in docs/06-decisions/decision-log.md.",
     "Generated and inspected a live sanitized run record at data/evidence/capability-kernel/runs.jsonl.",
     "Isolated the CTK-01 implementation on codex/ctk-01-completion so unrelated shell/server changes and all CTK-02 files remain outside the delivery commit.",
-    "Re-audited every CTK-01 acceptance criterion and reran the complete relevant repository suite."
+    "Re-audited every CTK-01 acceptance criterion and reran the complete relevant repository suite.",
+    "Fixed the minimum development-control defects that prevented prepare and validation from operating in a linked worktree with auditable manual-check acknowledgements and npm profile commands."
   ],
   "remaining": [],
   "deferred_outside_ctk_01": [
@@ -45,6 +46,9 @@
       "All added JSON contracts, fixtures, milestone, and session records parsed successfully."
     ],
     "failed": [],
+    "failed_then_resolved": [
+      "validation-20260731T012126-adab70b6 - failed because the profile re-ran strict status during the transient validating state and invoked npm through Node; both control-plane defects were fixed before retry."
+    ],
     "not_run": [
       "npm.cmd run dev:prepare - pending on the isolated CTK-only branch.",
       "npm.cmd run dev:validate - requires the committed HEAD produced by dev:prepare.",

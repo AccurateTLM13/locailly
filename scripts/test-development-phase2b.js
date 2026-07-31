@@ -157,6 +157,13 @@ test("dev:validate enforces command timeouts", () => {
   assert(content.includes("timeout") && content.includes("ETIMEDOUT"), "Missing timeout handling");
 });
 
+test("dev:validate executes node and npm profile commands directly", () => {
+  const content = fs.readFileSync(path.join(PROJECT_ROOT, "scripts", "dev-lifecycle.js"), "utf8");
+  assert(content.includes('requestedCommand === "node"'), "Missing direct Node command handling");
+  assert(content.includes('"npm.cmd"'), "Missing Windows npm command handling");
+  assert(content.includes("checkResult.required = false"), "Optional checks must be recorded as optional");
+});
+
 test("dev:validate preserves failed records", () => {
   const content = fs.readFileSync(path.join(PROJECT_ROOT, "scripts", "dev-lifecycle.js"), "utf8");
   // Validation results are immutable - always written regardless of status

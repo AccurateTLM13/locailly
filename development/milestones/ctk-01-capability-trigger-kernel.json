@@ -122,5 +122,9 @@
   "createdAt": "2026-07-30T21:30:00.000Z",
   "startedAt": "2026-07-30T21:28:06.464Z",
   "completedAt": null,
-  "mergedAt": null
+  "mergedAt": null,
+  "preparedCommit": "94e0bbe41e1f915d08677814b199223861dd1b0e",
+  "preparedBranch": "codex/ctk-01-completion",
+  "preparedAt": "2026-07-31T01:21:08.431Z",
+  "latestValidationId": "validation-20260731T012126-adab70b6"
 }

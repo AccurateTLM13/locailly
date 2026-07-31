@@ -16,6 +16,9 @@ Active impediments. Remove items when resolved; log resolution in [progress-log.
 | Blocker | Resolution |
 |---|---|
 | CTK-01 delivery gates require a clean committed feature branch | Resolved by isolating CTK-01 on `codex/ctk-01-completion`; unrelated shell/server and CTK-02 files remain in the original worktree |
+| `dev:prepare` assumed `.git` was a directory | Resolved by using `git rev-parse --git-path` so linked worktrees can prepare commits |
+| `dev:validate` could not record required manual-check acknowledgements | Resolved with explicit check IDs, actor, and timestamp arguments validated against the selected profile |
+| Validation profile commands forced every command through Node and re-ran strict status against an unrecognized transient state | Resolved with direct Node/npm dispatch, correct optional-check labeling, and `validating` milestone recognition |
 | Step input mapping hardcoded for Lighthouse | Resolved by M2 (DealSniper track) and declarative `input_map` — see [../02-track-system/step-input-mapping.md](../02-track-system/step-input-mapping.md) |
 | Crew embedded only in lighthouse tool | Extracted to `companion/crew/` — see gap analysis |
 | No `/tracks/run` endpoint | Implemented — proof track on mock provider |

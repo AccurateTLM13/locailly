@@ -1248,6 +1248,7 @@ Second-repo operator acceptance, then physical multi-device pilot.
 - Confirmed the runtime implementation requires no functional correction.
 - Isolated CTK-01 on `codex/ctk-01-completion` so unrelated shell/server work and all CTK-02 files remain outside the delivery commit.
 - Reconciled current status, sprint, blocker, handoff, and closeout surfaces to the CTK-01 lifecycle state.
+- Fixed linked-worktree prepare support, auditable validation manual-check acknowledgements, direct npm profile execution, optional-check labeling, and transient `validating` status recognition after the first official validation exposed those delivery-control defects.
 
 ### Evidence
 
