@@ -20,10 +20,10 @@ Also: root [AGENTS.md](../../AGENTS.md) and [../08-agents/agent-context.md](../0
 
 ## Current CTK-01 Handoff
 
-- CTK-01 is the sole active milestone.
-- The CTK acceptance suite passes 20/20 and `npm.cmd run test:full` passes.
+- CTK-01 is ready for delivery review.
+- The CTK acceptance suite passes 20/20, `npm.cmd run test:full` passes, and the `pre-delivery` profile passed as `validation-20260731T012502-3e424fff`.
 - The implementation is isolated on `codex/ctk-01-completion` so the unrelated dirty `main` worktree is not included.
-- Remaining work is limited to `dev:prepare`, `dev:validate`, and `dev:milestone:complete`.
+- No implementation blocker remains; the next action is review.
 - CTK-02 must remain planned and inactive.
 - DBVT SEO Audit integration is outside CTK-01 scope.
 

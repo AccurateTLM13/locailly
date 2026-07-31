@@ -4,9 +4,9 @@
 
 ## Current Slice
 
-**CTK-01 Capability Trigger Kernel is active.** Its bounded runtime implementation is complete on the isolated `codex/ctk-01-completion` branch. The 20-case CTK acceptance suite and the complete offline repository suite pass.
+**CTK-01 Capability Trigger Kernel is ready for delivery review.** Its bounded runtime implementation is complete on the isolated `codex/ctk-01-completion` branch. The 20-case CTK acceptance suite, the complete offline repository suite, and the `pre-delivery` validation profile pass.
 
-The remaining work is delivery-control only: prepare the clean CTK-only branch, run the `pre-delivery` validation profile against the committed HEAD, and pass the milestone completion gate. CTK-02 remains planned and inactive. DBVT SEO Audit integration is out of scope.
+No CTK-01 implementation blocker remains. CTK-02 remains planned and inactive. DBVT SEO Audit integration is out of scope.
 
 ## Most Recently Completed Slice
 
@@ -28,7 +28,7 @@ Defined in [maintenance-objective-lifecycle-closeout.md](./maintenance-objective
 
 ## Next Slice
 
-Do not select or activate a next slice until CTK-01 passes the delivery gates and is reviewed.
+Do not select or activate a next slice until CTK-01 is reviewed.
 
 ### Deferred (requires specific conditions)
 

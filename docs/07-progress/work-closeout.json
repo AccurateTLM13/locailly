@@ -23,7 +23,7 @@
     "Production Local Brain entry point.",
     "Multi-process JSONL locking or a transactional evidence backend."
   ],
-  "next_required_action": "Run dev:prepare, dev:validate, and dev:milestone:complete on codex/ctk-01-completion.",
+  "next_required_action": "Review CTK-01 on codex/ctk-01-completion.",
   "blockers": [],
   "safe_to_start_unrelated_work": false,
   "working_branch": "codex/ctk-01-completion",
@@ -33,6 +33,8 @@
       "node scripts/test-capability-trigger-kernel.js - 20/20 passed on 2026-07-31.",
       "node scripts/ctk-run.js - live fixture completed with full provenance and durable output.",
       "npm.cmd run test:full - complete offline repository suite passed on 2026-07-31.",
+      "npm.cmd run dev:validate - validation-20260731T012502-3e424fff passed with 6 required checks, 1 optional full-suite check, and 2 acknowledged manual checks.",
+      "npm.cmd run dev:milestone:complete - CTK-01 reached ready-for-delivery with no warnings.",
       "node scripts/test-lifecycle.js - 23/23 passed on 2026-07-31.",
       "node scripts/test-development-schemas.js - 29/29 passed on 2026-07-31.",
       "node scripts/test-controller-invariants.js - 11/11 passed on 2026-07-31.",
@@ -51,9 +53,6 @@
       "validation-20260731T012351-67f4276c - required checks passed, but the optional full-suite spawn returned an unhandled process error and was incorrectly labeled passed; the runner was corrected and this record was superseded."
     ],
     "not_run": [
-      "npm.cmd run dev:prepare - pending on the isolated CTK-only branch.",
-      "npm.cmd run dev:validate - requires the committed HEAD produced by dev:prepare.",
-      "npm.cmd run dev:milestone:complete - requires a matching committed validation fingerprint.",
       "Browser UI verification - out of CTK-01 scope; no UI or server route changed."
     ]
   },

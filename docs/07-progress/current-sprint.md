@@ -4,9 +4,9 @@
 
 ## Status
 
-CTK-01 Capability Trigger Kernel is the sole active objective. Its implementation and acceptance suite are green; delivery lifecycle gates remain to be run on the isolated CTK-only branch.
+CTK-01 Capability Trigger Kernel is ready for delivery review. Its implementation, acceptance suite, full offline suite, and delivery lifecycle gates are green on the isolated CTK-only branch.
 
-The repository is not safe to begin unrelated milestone work until CTK-01 reaches `ready-for-delivery`. CTK-02 remains planned and inactive. DBVT SEO Audit integration is excluded.
+Do not begin another milestone until CTK-01 is reviewed. CTK-02 remains planned and inactive. DBVT SEO Audit integration is excluded.
 
 ## Recently Completed
 

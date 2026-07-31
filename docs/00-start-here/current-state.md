@@ -6,7 +6,7 @@ Blunt snapshot of what Locaily is **right now**. When docs disagree with this fi
 
 ## Current Milestone
 
-CTK-01 Capability Trigger Kernel is active on `codex/ctk-01-completion`. Its runtime acceptance suite passes 20/20 and the full offline repository suite passes. Delivery lifecycle gates remain pending until the isolated branch is prepared, validated, and completed. CTK-02 is not active, and DBVT SEO Audit integration is not implemented.
+CTK-01 Capability Trigger Kernel is ready for delivery review on `codex/ctk-01-completion`. Its runtime acceptance suite passes 20/20, the full offline repository suite passes, and the `pre-delivery` validation profile passed as `validation-20260731T012502-3e424fff`. CTK-02 is not active, and DBVT SEO Audit integration is not implemented.
 
 ## What Works
 

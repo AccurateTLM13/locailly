@@ -1262,4 +1262,4 @@ Second-repo operator acceptance, then physical multi-device pilot.
 
 ### Next
 
-Run `dev:prepare`, `dev:validate`, and `dev:milestone:complete` on the isolated CTK-01 branch. Do not activate CTK-02.
+Review CTK-01 on `codex/ctk-01-completion`. Do not activate CTK-02.
