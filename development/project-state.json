@@ -1,19 +1,19 @@
 {
   "schema": "locaily.development.project_state.v1",
   "project": "locaily",
-  "currentMilestone": "px9-remaining-milestones-second-pass",
+  "currentMilestone": null,
   "activeSession": null,
-  "status": "active",
+  "status": "ready-for-delivery",
   "defaultBranch": "main",
-  "activeBranch": "main",
-  "lastCompletedMilestone": null,
-  "nextRecommendedAction": "Working on milestone 'px9-remaining-milestones-second-pass' — PX6 evidence execution, PX7/PX5/PX1 canonical fixes",
+  "activeBranch": "codex/ctk-01-completion",
+  "lastCompletedMilestone": "ctk-01-capability-trigger-kernel",
+  "nextRecommendedAction": "Deliver milestone 'ctk-01-capability-trigger-kernel' (deliver-milestone.js --slug ctk-01-capability-trigger-kernel --all)",
   "blockers": [],
   "warnings": [],
-  "updatedAt": "2026-07-26T20:36:53.388Z",
+  "updatedAt": "2026-08-01T16:10:00.000Z",
   "updatedBy": {
     "type": "agent",
-    "name": "opencode",
-    "platform": "opencode"
+    "name": "dev-lifecycle",
+    "platform": "system"
   }
 }
