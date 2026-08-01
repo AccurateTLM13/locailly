@@ -25,7 +25,7 @@
   ],
   "next_required_action": "Review CTK-01 on codex/ctk-01-completion.",
   "blockers": [],
-  "safe_to_start_unrelated_work": false,
+  "safe_to_start_unrelated_work": true,
   "working_branch": "codex/ctk-01-completion",
   "last_commit": null,
   "validation": {

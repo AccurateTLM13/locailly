@@ -81,7 +81,8 @@
           "description": "Deterministic local event-to-capability execution and provenance",
           "maturity": "tested",
           "milestoneIds": [
-            "ctk-01-capability-trigger-kernel"
+            "ctk-01-capability-trigger-kernel",
+            "ctk-02-node-roles-capability-capsules"
           ]
         },
         {

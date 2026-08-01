@@ -1,0 +1,59 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "ctk-02-node-roles-capability-capsules",
+  "title": "CTK-02 Node Roles and Capability Capsule Foundation",
+  "status": "planned",
+  "type": "infrastructure",
+  "priority": "high",
+  "purpose": "Prove that one Locaily installation can identify as a node, assume an implemented role, advertise and evaluate a portable capability capsule, install it by version and hash, attach node-local bindings, and route CTK-01 execution to its eligible host.",
+  "problem": "CTK-01 proves event-to-capability execution on one local boundary, but it retains the provisional assumption that Local Brain is the installation-wide control component and another machine is merely a capability target. Capability portability and placement require Locaily installations to share one node contract, with Local Brain represented as a role and local configuration kept separate from transferable capability assets.",
+  "scope": {
+    "included": [
+      "Versioned Locaily node identity contract with installation identity, roles, platform, runtimes, resources, trust, capability inventory, and availability",
+      "Implemented brain, worker, and hybrid role declarations with explicit primary_brain configuration",
+      "Declared but unimplemented storage, relay, and standby_brain roles",
+      "Versioned Capability Capsule package and manifest contract using capability.yaml, workflow.yaml, scripts, schemas, adapters, tests, install, README.md, and checksums.json",
+      "Portable, bindable, and anchored portability classifications",
+      "Separate node-local binding contract containing references and policy but no raw credentials",
+      "File or local-transport advertisement, requirement evaluation, installation, self-test, registration, and binding flow",
+      "Explicit durable rejection and provenance for unsupported OS, missing runtime, insufficient resources, missing bindings, disallowed permissions, checksum failure, untrusted source, failed self-test, and incompatible version",
+      "Synthetic portable and bindable capability fixtures exercised on multiple local node fixtures",
+      "CTK-01 routing to the eligible node that hosts the selected capability",
+      "Canonical JSON normalization before hashing, policy evaluation, planning, persistence, or execution"
+    ],
+    "excluded": [
+      "DBVT SEO Audit integration or DBVT private configuration",
+      "Lighthouse Handoff capability packaging",
+      "LAN discovery, remote execution, relay routing, or automatic brain failover",
+      "Distributed coordination or consensus",
+      "Transport encryption, production certificate enrollment, or a public capability marketplace",
+      "Raw credentials or secrets inside a capability capsule or node binding",
+      "Automatic capability-building agents or runtime self-modification",
+      "Unrelated UI work"
+    ]
+  },
+  "acceptanceCriteria": [
+    "A Locaily installation identifies itself through the versioned node contract.",
+    "The same Locaily software can be configured as Brain, Worker, or Hybrid without separate products.",
+    "One node advertises a synthetic versioned capability capsule.",
+    "A second node deterministically evaluates the advertised capability requirements.",
+    "The second node accepts, installs, self-tests, and registers the capability when all requirements pass.",
+    "Each major transfer failure condition is explicitly rejected with a durable reason and provenance record.",
+    "A node-local binding can be attached using credential references without storing or exposing raw credentials.",
+    "A capability is transferred and identified by version and verified hash rather than an unmanaged folder copy.",
+    "One portable capability installs and runs on multiple eligible node fixtures.",
+    "One bindable capability installs but remains unavailable until its required local binding is registered.",
+    "CTK-01 routes an event to the eligible node hosting the selected capability.",
+    "Advertisement, evaluation, installation, binding, routing, execution, and rejection actions have complete provenance."
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [
+    "ctk-01-capability-trigger-kernel"
+  ],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-07-30T23:07:52.768Z",
+  "startedAt": null,
+  "completedAt": null,
+  "mergedAt": null
+}
