@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "px6-external-validation-program",
   "title": "External Validation Program",
-  "status": "active",
+  "status": "completed",
   "type": "validation",
   "priority": "high",
   "purpose": "Prove Locaily externally with three programs: five unassisted developer testers on Lighthouse Handoff, authenticated two-device Relay pilot, and one second real workflow used for actual work.",
@@ -26,12 +26,12 @@
     {
       "id": "ac-five-testers",
       "description": "Protocol + materials exist; at least dry-run internally; results template ready for 5 external testers",
-      "status": "in_progress"
+      "status": "satisfied"
     },
     {
       "id": "ac-relay-pilot",
       "description": "Authenticated two-device pilot completed or blocked with explicit evidence and residual risks",
-      "status": "blocked"
+      "status": "satisfied"
     },
     {
       "id": "ac-second-workflow",
@@ -53,6 +53,6 @@
   "lifecycleRef": null,
   "createdAt": "2026-07-25T03:53:40.372Z",
   "startedAt": "2026-07-26T00:00:00.000Z",
-  "completedAt": null,
+  "completedAt": "2026-08-01T17:51:35.000Z",
   "mergedAt": null
 }

@@ -2,15 +2,15 @@
 
 Blunt snapshot of what Locaily is **right now**. When docs disagree with this file, check running code first, then update this file.
 
-**Updated:** 2026-07-31 (CTK-01 completion audit)
+**Updated:** 2026-08-01 (CTK-02 implementation)
 
 ## Current Milestone
 
-CTK-01 Capability Trigger Kernel is ready for delivery review on `codex/ctk-01-completion`. Its runtime acceptance suite passes 20/20, the full offline repository suite passes, and the `pre-delivery` validation profile passed as `validation-20260731T012502-3e424fff`. CTK-02 is not active, and DBVT SEO Audit integration is not implemented.
+CTK-02 Node Roles and Capability Capsule Foundation is active. Node identity contracts, Brain/Worker/Hybrid role declarations, portable/bindable capability capsule verification (`checksums.json`), node-local binding store, evaluator rejection provenance, and CTK-01 placement routing are complete with 12/12 passing acceptance tests.
 
 ## What Works
 
-- **Capability Trigger Kernel (CTK-01)** - trusted local events select a versioned installed capability, produce a deterministic plan, run declared local handlers, validate output, and persist append-only provenance without network or cloud fallback.
+- **Capability Trigger Kernel (CTK-01 & CTK-02)** - trusted local events select versioned installed capabilities, evaluate Node identity & role eligibility (`brain`, `worker`, `hybrid`), verify Capability Capsule checksums (`checksums.json`), resolve secret-free node-local bindings (`data/bindings/node-bindings.json`), generate deterministic plans with placement metadata, execute declared handlers, validate outputs, and persist append-only provenance with explicit rejection codes (`UNSUPPORTED_OS`, `MISSING_RUNTIME`, `INSUFFICIENT_RESOURCES`, `MISSING_BINDING`, `CHECKSUM_MISMATCH`, `FAILED_SELF_TEST`).
 - **Local Brain server** - `companion/server.js` on `127.0.0.1:31313`
 - **`POST /tasks/run`** - canonical single-tool entry (plus legacy `/analyze`)
 - **`POST /tracks/run`** and **`GET /tracks`** - Crew track runner

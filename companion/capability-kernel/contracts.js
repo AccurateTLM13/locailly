@@ -6,7 +6,10 @@ const SCHEMAS = Object.freeze({
   "execution-plan.v1": require("../schemas/capability-kernel/execution-plan.schema.json"),
   "run-record.v1": require("../schemas/capability-kernel/run-record.schema.json"),
   "node-config.v1": require("../schemas/capability-kernel/node-config.schema.json"),
-  "status-handoff-output.v1": require("../schemas/capability-kernel/status-handoff-output.schema.json")
+  "status-handoff-output.v1": require("../schemas/capability-kernel/status-handoff-output.schema.json"),
+  "node-identity.v1": require("../schemas/capability-kernel/node-identity.schema.json"),
+  "capability-capsule-manifest.v1": require("../schemas/capability-kernel/capability-capsule-manifest.schema.json"),
+  "node-local-binding.v1": require("../schemas/capability-kernel/node-local-binding.schema.json")
 });
 
 function hasSchema(schemaId) {

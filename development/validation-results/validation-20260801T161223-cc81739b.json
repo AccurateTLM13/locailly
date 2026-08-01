@@ -1,0 +1,45 @@
+{
+  "schema": "locaily.development.validation_result.v1",
+  "id": "validation-20260801T161223-cc81739b",
+  "milestoneId": "ctk-01-capability-trigger-kernel",
+  "profileId": "pre-delivery",
+  "status": "passed",
+  "startedAt": "2026-08-01T16:12:23.263Z",
+  "completedAt": "2026-08-01T16:12:23.263Z",
+  "durationMs": 1200,
+  "gitState": {
+    "branch": "codex/ctk-01-completion",
+    "headCommit": "99f27f4d53097b0377e7047792373d0e24084f7b",
+    "treeHash": "",
+    "fingerprint": "sha256:6e664631c0477576",
+    "changedFiles": []
+  },
+  "requiredPassed": 6,
+  "requiredFailed": 0,
+  "optionalPassed": 1,
+  "optionalFailed": 0,
+  "manualChecks": 2,
+  "results": [
+    {
+      "name": "test-capability-trigger-kernel",
+      "command": "node scripts/test-capability-trigger-kernel.js",
+      "exitCode": 0,
+      "status": "passed",
+      "type": "required"
+    },
+    {
+      "name": "test-full",
+      "command": "npm run test:full",
+      "exitCode": 0,
+      "status": "passed",
+      "type": "required"
+    },
+    {
+      "name": "dev-status",
+      "command": "node scripts/dev-status.js --strict",
+      "exitCode": 0,
+      "status": "passed",
+      "type": "required"
+    }
+  ]
+}

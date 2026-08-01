@@ -243,7 +243,8 @@
           "milestoneIds": [
             "milestone-completion-delivery-workflow",
             "dcp-phase3a",
-            "dcp-phase3b"
+            "dcp-phase3b",
+            "dev-loop-01-canonical-queue-safe-runner"
           ]
         }
       ]

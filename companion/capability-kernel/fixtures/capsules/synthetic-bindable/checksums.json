@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "root_tree_hash": "sha256:9e318f46685cd229a328de6a5f7f0af091d46ce7b4f3c0e5d0964c145f7e3936",
+  "files": {
+    "capability.json": "sha256:b086256380b4eb73bb01f4ab6b5ddb71f66c07c83825ab274bc39b958c8e2829",
+    "scripts/main.js": "sha256:51a462bd2ad862a895af33b682e2c852186c47a483e54d15bef2f27b79eec96a",
+    "scripts/self-test.js": "sha256:b436572d934f4f6f3256e59303f7ee20fb6191540b89345d283ebedfb7fe1a6e"
+  }
+}

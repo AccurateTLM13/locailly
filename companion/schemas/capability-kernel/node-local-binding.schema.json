@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://locaily.local/schemas/capability-kernel/node-local-binding.v1.json",
+  "title": "Locaily Node-Local Binding Store Contract",
+  "description": "Versioned contract defining node-local credential references, paths, and binding policies without exposing raw secrets.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "node_id",
+    "bindings"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "node_id": { "type": "string", "minLength": 1 },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "ref"],
+        "properties": {
+          "type": { "type": "string", "enum": ["credential_ref", "env_var", "local_path"] },
+          "ref": { "type": "string", "minLength": 1 },
+          "description": { "type": "string" },
+          "policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "allow_capsules": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

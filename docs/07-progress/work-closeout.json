@@ -1,60 +1,32 @@
 {
-  "work_id": "ctk-01-capability-trigger-kernel-20260730",
-  "objective_id": "ctk-01-capability-trigger-kernel",
+  "work_id": "wave-1-ctk02-devloop01-px6-20260801",
+  "objective_id": "wave-1-control-queue-validation",
   "status": "complete",
-  "closed_at": "2026-07-30",
-  "original_goal": "Implement CTK-01 as the minimum working event-to-capability vertical slice on one local node boundary with deterministic execution, explicit rejection paths, complete provenance, durable run records, and no cloud fallback.",
+  "closed_at": "2026-08-01",
+  "original_goal": "Execute Wave 1 combining CTK-02 Node Identity & Capability Capsules, DEV-LOOP-01 Canonical Queue & Safe Runner Integration, and PX6 External Validation Program completion.",
   "completed": [
-    "Mapped the existing Local Brain, Crew tracks, workflow plans, schemas, validators, policies, Track Run Records, Relay Nodes, and runtime execution boundaries before editing.",
-    "Implemented event, capability manifest, local node, execution plan, output, and run-record contracts under companion/schemas/capability-kernel/.",
-    "Extended the shared result validator for maxLength, pattern, date-time, maxItems, and uniqueItems contract keywords.",
-    "Implemented the filesystem-backed installed capability registry, exact trigger matching, deterministic DAG plan generation, source trust, policy and approval gates, version and handler checks, local deterministic executor, declared retries, output validation, state transitions, redaction, and append-only provenance store.",
-    "Added the status-handoff@0.1.0 capability, one local node configuration, and the project.status.changed fixture.",
-    "Added the standalone scripts/ctk-run.js entry point and scripts/test-capability-trigger-kernel.js acceptance suite.",
-    "Added architecture/reuse notes, unresolved decisions, limitations, and operator run instructions.",
-    "Recorded the CTK architecture boundary decision in docs/06-decisions/decision-log.md.",
-    "Generated and inspected a live sanitized run record at data/evidence/capability-kernel/runs.jsonl.",
-    "Isolated the CTK-01 implementation on codex/ctk-01-completion so unrelated shell/server changes and all CTK-02 files remain outside the delivery commit.",
-    "Re-audited every CTK-01 acceptance criterion and reran the complete relevant repository suite.",
-    "Fixed the minimum development-control defects that prevented prepare and validation from operating in a linked worktree with auditable manual-check acknowledgements and npm profile commands."
+    "CTK-02: Implemented Node Identity contracts, Brain/Worker/Hybrid role manager, Capability Capsule SHA-256 verifier, Node-Local Binding Store, requirement evaluator, and CTK-01 placement routing (12/12 acceptance tests passed).",
+    "DEV-LOOP-01: Implemented Development Queue Adapter (companion/capability-kernel/dev-queue-adapter.js) connecting Development Control Plane sessions with Durable Job Store (durable-job-store.js) and safe runner execution.",
+    "DEV-LOOP-01: Added CLI tool (scripts/dev-loop.js) and npm script (npm run dev:queue) with acceptance test suite (scripts/test-dev-loop.js 4/4 passed).",
+    "PX6: Published validation evidence for second real workflow and completed External Validation Program milestone."
   ],
   "remaining": [],
-  "deferred_outside_ctk_01": [
-    "Production Local Brain entry point.",
-    "Multi-process JSONL locking or a transactional evidence backend."
-  ],
-  "next_required_action": "Review CTK-01 on codex/ctk-01-completion.",
+  "deferred_outside_ctk_02": [],
+  "next_required_action": "Select next milestone wave or deliver HEAD.",
   "blockers": [],
   "safe_to_start_unrelated_work": true,
-  "working_branch": "codex/ctk-01-completion",
-  "last_commit": null,
+  "working_branch": "main",
+  "last_commit": "c2561c3",
   "validation": {
     "passed": [
-      "node scripts/test-capability-trigger-kernel.js - 20/20 passed on 2026-07-31.",
-      "node scripts/ctk-run.js - live fixture completed with full provenance and durable output.",
-      "npm.cmd run test:full - complete offline repository suite passed on 2026-07-31.",
-      "npm.cmd run dev:validate - validation-20260731T012502-3e424fff passed with 6 required checks, 1 optional full-suite check, and 2 acknowledged manual checks.",
-      "npm.cmd run dev:milestone:complete - CTK-01 reached ready-for-delivery with no warnings.",
-      "node scripts/test-lifecycle.js - 23/23 passed on 2026-07-31.",
-      "node scripts/test-development-schemas.js - 29/29 passed on 2026-07-31.",
-      "node scripts/test-controller-invariants.js - 11/11 passed on 2026-07-31.",
-      "npm.cmd run test:console-runs - 8/8 passed on 2026-07-31.",
-      "npm.cmd run test:track-records - 18/18 passed.",
-      "npm.cmd run test:relay - 53/53 passed.",
-      "npm.cmd run test:dag - graph 14/14, executor 9/9, and workflow DAG cases passed.",
-      "node scripts/contract-test.js - passed.",
-      "node --check - 11 changed JavaScript files passed.",
-      "git diff --check - passed.",
-      "All added JSON contracts, fixtures, milestone, and session records parsed successfully."
+      "node scripts/test-node-roles-capability-capsules.js - 12/12 passed.",
+      "node scripts/test-dev-loop.js - 4/4 passed.",
+      "node scripts/test-capability-trigger-kernel.js - 20/20 passed.",
+      "node scripts/test-development-schemas.js - 29/29 passed.",
+      "node scripts/dev-status.js --strict - clean with 0 errors."
     ],
     "failed": [],
-    "failed_then_resolved": [
-      "validation-20260731T012126-adab70b6 - failed because the profile re-ran strict status during the transient validating state and invoked npm through Node; both control-plane defects were fixed before retry.",
-      "validation-20260731T012351-67f4276c - required checks passed, but the optional full-suite spawn returned an unhandled process error and was incorrectly labeled passed; the runner was corrected and this record was superseded."
-    ],
-    "not_run": [
-      "Browser UI verification - out of CTK-01 scope; no UI or server route changed."
-    ]
+    "not_run": []
   },
-  "recommended_next_agent": "reviewer"
+  "recommended_next_agent": "developer"
 }

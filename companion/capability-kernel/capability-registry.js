@@ -53,12 +53,33 @@ function createCapabilityRegistry(options = {}) {
       .map(cloneEntry);
   }
 
+  function matchWithNodes(event, nodeConfigs = [], bindingStorePath = null) {
+    const matched = match(event);
+    const { evaluateCapsuleRequirements } = require("./node-evaluator");
+
+    return matched.map((entry) => {
+      const eligibleNodes = [];
+      for (const node of nodeConfigs) {
+        const evalResult = evaluateCapsuleRequirements(node, entry.manifest, bindingStorePath);
+        if (evalResult.ok) {
+          eligibleNodes.push(node.node_id);
+        }
+      }
+      return {
+        ...entry,
+        eligibleNodes,
+        targetNodeId: eligibleNodes[0] || null
+      };
+    });
+  }
+
   return {
     rootDir,
     list,
     listById,
     get,
-    match
+    match,
+    matchWithNodes
   };
 }
 

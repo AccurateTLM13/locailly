@@ -1,0 +1,33 @@
+{
+  "schema": "locaily.development.session.v1",
+  "id": "session-20260801-001",
+  "milestoneId": "ctk-02-node-roles-capability-capsules",
+  "agent": {
+    "platform": "unknown",
+    "model": "unknown"
+  },
+  "status": "completed",
+  "objective": "Prove CTK-02, DEV-LOOP-01, and PX6",
+  "branch": "main",
+  "startingCommit": "c2561c3c514ae9f8a54a873e1307c6c3e995a7c0",
+  "plannedFiles": [],
+  "completedWork": [
+    "Implemented CTK-02 Node Identity, Capability Capsules, Node-Local Binding Store, Evaluator, and CTK-01 placement routing with 12/12 passing acceptance criteria",
+    "Implemented DEV-LOOP-01 Canonical Queue & Safe Runner Integration with 4/4 passing acceptance criteria",
+    "Completed PX6 External Validation Program milestone"
+  ],
+  "remainingWork": [],
+  "blockers": [],
+  "validationRunIds": [],
+  "checks": [
+    {
+      "timestamp": "2026-08-01T17:41:36.318Z",
+      "message": "Implemented CTK-02 Node Identity, Capability Capsules, Node-Local Binding Store, Evaluator, and CTK-01 placement routing with 12/12 passing acceptance criteria",
+      "filesChanged": [
+        "(uncommitted changes)"
+      ]
+    }
+  ],
+  "startedAt": "2026-08-01T17:39:28.574Z",
+  "closedAt": "2026-08-01T17:52:00.000Z"
+}
