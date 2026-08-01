@@ -82,7 +82,8 @@
           "maturity": "tested",
           "milestoneIds": [
             "ctk-01-capability-trigger-kernel",
-            "ctk-02-node-roles-capability-capsules"
+            "ctk-02-node-roles-capability-capsules",
+            "ctk-03-node-event-bus-transport"
           ]
         },
         {
@@ -109,7 +110,8 @@
           "description": "Authentication, signed requests, capability allowlists",
           "maturity": "designed",
           "milestoneIds": [
-            "09a-relay-trust"
+            "09a-relay-trust",
+            "m09a-relay-trust-pairing"
           ]
         }
       ]
@@ -172,7 +174,8 @@
           "description": "Dashboard, jobs, relay nodes, enqueue",
           "maturity": "implemented",
           "milestoneIds": [
-            "08-operator-control-plane"
+            "08-operator-control-plane",
+            "lh-product-bridge"
           ]
         },
         {

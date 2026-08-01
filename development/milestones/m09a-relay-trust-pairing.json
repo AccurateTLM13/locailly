@@ -1,0 +1,56 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "m09a-relay-trust-pairing",
+  "title": "M09A Relay Trust and Node Pairing Ceremony",
+  "status": "completed",
+  "type": "infrastructure",
+  "priority": "high",
+  "purpose": "Implement Node identity pairing ceremony, HMAC-SHA256 request signing, node trust allowlists, and node revocation for secure inter-node execution.",
+  "problem": "Multi-node coordination requires mutual node authentication and trust boundaries before accepting execution requests or sharing capability inventories.",
+  "scope": {
+    "included": [
+      "4-step node pairing ceremony (Discovery -> Challenge -> Verification -> Token Enrollment)",
+      "HMAC-SHA256 request signature verification and timestamp replay protection",
+      "Persistent node trust store at data/nodes/node-trust-store.json with tier levels",
+      "Node revocation mechanism for revoking compromised or retired nodes",
+      "Acceptance test suite scripts/test-relay-trust-pairing.js"
+    ],
+    "excluded": [
+      "Public PKI Certificate Authority requirement",
+      "Cloud auth provider integration",
+      "Unrelated UI work"
+    ]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "ac-pairing-ceremony",
+      "description": "Nodes successfully complete the 4-step challenge-response pairing ceremony and acquire trust tokens",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-signed-requests",
+      "description": "Inter-node requests are signed with HMAC-SHA256 and verified against node secret tokens",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-untrusted-rejection",
+      "description": "Requests from untrusted, unpaired, or expired nodes are explicitly rejected with code UNTRUSTED_NODE",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-node-revocation",
+      "description": "Revoked nodes are immediately rejected from inter-node execution and bus subscriptions",
+      "status": "satisfied"
+    }
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [
+    "ctk-02-node-roles-capability-capsules"
+  ],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-08-01T18:00:00.000Z",
+  "startedAt": "2026-08-01T18:01:00.000Z",
+  "completedAt": null,
+  "mergedAt": null
+}

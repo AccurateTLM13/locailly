@@ -1,0 +1,51 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "lh-product-bridge",
+  "title": "Lighthouse Handoff Product Bridge",
+  "status": "completed",
+  "type": "infrastructure",
+  "priority": "high",
+  "purpose": "Provide Chrome extension discovery, CORS allowlist policy enforcement, PageSpeed payload transformation, Local AI report enhancement mode, and coding-agent-ready Markdown export.",
+  "problem": "Lighthouse Handoff requires a formal product bridge to interface between browser extensions, PageSpeed JSON outputs, and Local AI enhancement without exposing unauthorized CORS endpoints.",
+  "scope": {
+    "included": [
+      "Extension discovery and CORS allowlist enforcement (127.0.0.1, chrome-extension://*)",
+      "PageSpeed JSON payload converter to coding-agent-ready Markdown",
+      "Local AI enhancement mode for prioritizing critical accessibility and performance recommendations",
+      "CLI and module interface with acceptance test suite scripts/test-lighthouse-product-bridge.js"
+    ],
+    "excluded": [
+      "Public web hosting of reports",
+      "Unauthenticated remote origin access",
+      "Unrelated UI work"
+    ]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "ac-cors-policy",
+      "description": "Bridge enforces CORS allowlist policy rejecting unauthorized remote origins",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-payload-convert",
+      "description": "PageSpeed JSON payloads are transformed into structured, coding-agent-ready Markdown reports",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-local-ai-mode",
+      "description": "Local AI enhancement mode adds prioritized recommendation summaries to report output",
+      "status": "satisfied"
+    }
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [
+    "ctk-01-capability-trigger-kernel",
+    "ctk-02-node-roles-capability-capsules"
+  ],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-08-01T18:00:00.000Z",
+  "startedAt": "2026-08-01T18:05:00.000Z",
+  "completedAt": null,
+  "mergedAt": null
+}

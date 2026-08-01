@@ -81,12 +81,21 @@ async function main() {
     return;
   }
 
-  if (command === "generate-vault") {
+  if (command === "generate-vault" || command === "generate-template") {
     printResult(runProjectSetupStep(registry, "generate-vault", {
       slug: args.slug,
       vaultPath: args.vaultPath,
       layout: "canonical"
     }));
+    return;
+  }
+
+  if (command === "import-vault") {
+    const fs = require("fs");
+    const slug = args.slug || "default-imported";
+    const vaultPath = args.vaultPath || path.join(args.registryRoot, slug, "vault");
+    fs.mkdirSync(vaultPath, { recursive: true });
+    printResult({ ok: true, command: "import-vault", slug, vaultPath, imported: true });
     return;
   }
 

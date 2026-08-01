@@ -1,0 +1,56 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "ctk-03-node-event-bus-transport",
+  "title": "CTK-03 Local Node Event Bus and Transport Adapter",
+  "status": "completed",
+  "type": "infrastructure",
+  "priority": "high",
+  "purpose": "Provide a pub/sub event bus and transport adapter abstraction connecting Locaily Node instances for event routing, topic subscriptions, and inter-node event envelope delivery.",
+  "problem": "CTK-01/02 allow local nodes to evaluate capabilities and plan execution, but event routing requires a formal event bus and transport layer to publish events and dispatch them to eligible node subscribers.",
+  "scope": {
+    "included": [
+      "Event bus module with topic subscriptions, wildcards (*, #), and handler dispatching",
+      "LocalTransport and RelayTransport abstractions for transmitting event envelopes between Nodes",
+      "Delivery provenance tracking and failure handling for unreachable subscribers",
+      "CLI integration and acceptance test suite scripts/test-node-event-bus.js"
+    ],
+    "excluded": [
+      "Public cloud message broker infrastructure",
+      "Unrestricted external broadcast",
+      "Unrelated UI work"
+    ]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "ac-topic-sub",
+      "description": "Event bus supports topic subscriptions with wildcard pattern matching (*, #)",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-transport-dispatch",
+      "description": "Transport adapter delivers event envelopes across node boundaries to registered subscribers",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-delivery-provenance",
+      "description": "Event bus records delivery provenance (published_at, delivered_to, latency_ms)",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-failure-safety",
+      "description": "Subscriber execution errors or transport timeouts are caught and recorded without crashing event bus",
+      "status": "satisfied"
+    }
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [
+    "ctk-01-capability-trigger-kernel",
+    "ctk-02-node-roles-capability-capsules"
+  ],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-08-01T18:00:00.000Z",
+  "startedAt": "2026-08-01T18:01:00.000Z",
+  "completedAt": null,
+  "mergedAt": null
+}

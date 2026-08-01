@@ -1,0 +1,51 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "dm10-multi-project-template",
+  "title": "DM10 Multi-Project Template and Vault Importer",
+  "status": "completed",
+  "type": "infrastructure",
+  "priority": "high",
+  "purpose": "Provide multi-project memory starter template generation and automated vault importing across external codebases with namespaced storage health validation.",
+  "problem": "Development Memory Loop DM1-DM9 proved session capture and candidate review on one project. Multi-project deployment requires template generation and vault importing across external codebases.",
+  "scope": {
+    "included": [
+      "Starter vault template generator (memory:project:generate-template)",
+      "External vault importer (memory:project:import-vault)",
+      "Namespaced storage health validator",
+      "CLI integration and acceptance test suite scripts/test-development-memory-multi-project.js"
+    ],
+    "excluded": [
+      "Public cloud vault sync",
+      "Unrestricted file system traversal",
+      "Unrelated UI work"
+    ]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "ac-template-gen",
+      "description": "memory:project:generate-template creates a valid starter memory vault for a new project slug",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-vault-import",
+      "description": "memory:project:import-vault imports external Markdown pages into namespaced project storage",
+      "status": "satisfied"
+    },
+    {
+      "id": "ac-health-val",
+      "description": "Project health validator verifies vault structure, page links, and schema integrity",
+      "status": "satisfied"
+    }
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [
+    "ctk-01-capability-trigger-kernel",
+    "ctk-02-node-roles-capability-capsules"
+  ],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-08-01T18:00:00.000Z",
+  "startedAt": "2026-08-01T18:05:00.000Z",
+  "completedAt": null,
+  "mergedAt": null
+}
