@@ -231,6 +231,15 @@
           "milestoneIds": [
             "dev-loop-01-canonical-queue-safe-runner"
           ]
+        },
+        {
+          "id": "harness-neutral-agent-operations",
+          "title": "Harness-Neutral Agent Operations",
+          "description": "Read-only adapters normalize external coding-agent evidence into Locaily control-plane snapshots",
+          "maturity": "designed",
+          "milestoneIds": [
+            "dev-harness-01-agent-operations-contract"
+          ]
         }
       ]
     },
@@ -364,6 +373,7 @@
     "ctk-02-node-roles-capability-capsules": [
       "ctk-01-capability-trigger-kernel"
     ],
+    "dev-harness-01-agent-operations-contract": [],
     "px8-audit-second-pass": [
       "px1-canonical-product-status",
       "px3-golden-path-run-inspector",

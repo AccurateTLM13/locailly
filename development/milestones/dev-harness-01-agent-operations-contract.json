@@ -1,0 +1,69 @@
+{
+  "schema": "locaily.development.milestone.v1",
+  "id": "dev-harness-01-agent-operations-contract",
+  "title": "DEV-HARNESS-01 — Harness-Neutral Agent Operations Contract",
+  "status": "active",
+  "type": "infrastructure",
+  "priority": "high",
+  "purpose": "Define the read-only normalization boundary between external coding-agent harnesses and Locaily's development control plane.",
+  "problem": "Locaily has durable lifecycle, session, handoff, validation, memory, and operator surfaces, but no canonical snapshot contract for comparing Codex, OpenCode, and future harness evidence.",
+  "scope": {
+    "included": [
+      "Canonical harness-neutral agent operations snapshot contract",
+      "Read-only Codex and OpenCode fixture adapters",
+      "Normalization of workers, worktrees, objectives, handoffs, checks, and lifecycle state",
+      "Explicit HUD fields for context pressure, tool activity, risk, cost, and synchronization",
+      "Evidence availability, unsupported evidence, and redaction semantics",
+      "Links to Locaily milestones, development sessions, work closeouts, validation records, and reviewed memory candidates",
+      "Deterministic local fixtures, adapter tests, and a read-only operator status surface"
+    ],
+    "excluded": [
+      "Harness hooks or automatic transcript capture",
+      "Mutating harness control, command dispatch, or session management",
+      "Playbook promotion or automatic workflow generation",
+      "AgentShield scanning",
+      "NearbyNode routing or distributed execution",
+      "Cloud fallback or network-dependent evidence collection"
+    ]
+  },
+  "acceptanceCriteria": [
+    {
+      "id": "harness-contract",
+      "description": "A strict canonical snapshot schema represents harness identity, workers, worktrees, objectives, handoffs, checks, lifecycle state, HUD state, provenance, and evidence availability.",
+      "status": "pending"
+    },
+    {
+      "id": "fixture-adapters",
+      "description": "Codex and OpenCode fixture adapters produce equivalent canonical shapes while preserving harness-specific provenance.",
+      "status": "pending"
+    },
+    {
+      "id": "unsupported-evidence",
+      "description": "Unavailable or unsupported harness evidence is explicit and redacted fields never become inferred facts.",
+      "status": "pending"
+    },
+    {
+      "id": "locaily-linkage",
+      "description": "The snapshot links read-only to current Locaily milestone, session, closeout, validation, and reviewed-memory records without mutating them.",
+      "status": "pending"
+    },
+    {
+      "id": "operator-surface",
+      "description": "A local read-only status command and operator endpoint expose the normalized snapshot and its evidence limits.",
+      "status": "pending"
+    },
+    {
+      "id": "verification",
+      "description": "Focused adapter tests, schema fixtures, and relevant offline Locaily validation commands pass.",
+      "status": "pending"
+    }
+  ],
+  "validationProfile": "pre-delivery",
+  "dependencies": [],
+  "blockers": [],
+  "lifecycleRef": null,
+  "createdAt": "2026-08-01T23:00:00.000Z",
+  "startedAt": "2026-08-02T00:26:31.266Z",
+  "completedAt": null,
+  "mergedAt": null
+}
