@@ -98,6 +98,7 @@
     "test:controller": "node scripts/test-controller-invariants.js",
     "deliver-milestone": "node scripts/deliver-milestone.js",
     "dev:status": "node scripts/dev-status.js",
+    "dev:roadmap:sync": "node scripts/dev-roadmap-sync.js",
     "dev:milestone:start": "node scripts/dev-lifecycle.js start",
     "dev:checkpoint": "node scripts/dev-lifecycle.js checkpoint",
     "dev:pause": "node scripts/dev-lifecycle.js pause",
