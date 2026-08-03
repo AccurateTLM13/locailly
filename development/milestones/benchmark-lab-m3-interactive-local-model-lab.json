@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "benchmark-lab-m3-interactive-local-model-lab",
   "title": "Benchmark Lab M3 — Interactive Local Model Lab",
-  "status": "active",
+  "status": "ready-for-delivery",
   "type": "feature",
   "priority": "high",
   "purpose": "Provide a local-first model inventory and durable interactive benchmark workflow from Ollama discovery through live frontend progress and reproducible M2 result presentation.",
@@ -203,9 +203,12 @@
   "lifecycleRef": null,
   "createdAt": "2026-08-03T02:40:56.868Z",
   "startedAt": "2026-08-03T02:42:32.535Z",
-  "completedAt": null,
+  "completedAt": "2026-08-03T03:40:51.002Z",
   "mergedAt": null,
   "preparedCommit": "b0073e3b6cedcffbb61deacda3ef482be979fd69",
   "preparedBranch": "codex/benchmark-lab-m3-interactive-local-model-lab",
-  "preparedAt": "2026-08-03T03:38:54.642Z"
+  "preparedAt": "2026-08-03T03:38:54.642Z",
+  "latestValidationId": "validation-20260803T033939-6f1c2b76",
+  "completionBranch": "codex/benchmark-lab-m3-interactive-local-model-lab",
+  "completionHead": "8965f9ae108807fcdf152990f4571d54f344a55f"
 }
