@@ -339,6 +339,8 @@ test("Completion enforces requireCleanTree", () => {
     "Missing DIRTY_SINCE_VALIDATION gate with policy check");
   assert(content.includes("currentFingerprint.changedFiles.length > 0"),
     "Completion must exclude control-plane validation metadata from dirty source checks");
+  assert(content.includes('gitResult(["status", "--porcelain"])'),
+    "Porcelain parsing must preserve the leading Git status column");
 });
 
 test("Completion enforces requireCloseout", () => {

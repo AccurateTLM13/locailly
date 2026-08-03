@@ -199,7 +199,8 @@ function computeGitFingerprint() {
 
   // Get list of changed files with their git status
   // Exclude development/ directory (control plane state, expected to change during validation)
-  const statusOutput = git(["status", "--porcelain"]) || "";
+  const statusResult = gitResult(["status", "--porcelain"]);
+  const statusOutput = statusResult.status === 0 ? (statusResult.stdout || "") : "";
   const lines = statusOutput.split(/\r?\n/).filter(Boolean);
 
   const changedFiles = [];
