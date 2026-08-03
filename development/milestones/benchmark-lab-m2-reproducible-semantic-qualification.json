@@ -136,5 +136,8 @@
   "createdAt": "2026-08-02T22:33:45.978Z",
   "startedAt": "2026-08-02T22:33:45.979Z",
   "completedAt": null,
-  "mergedAt": null
+  "mergedAt": null,
+  "preparedCommit": "9104b05721db64827ae715d9d30161daa6d01931",
+  "preparedBranch": "codex/benchmark-lab-m2-reproducible-semantic-qualification",
+  "preparedAt": "2026-08-03T02:27:57.080Z"
 }

@@ -1357,7 +1357,7 @@ function cmdPrepare(args) {
   const subject = `feat(${deriveAreaFromFiles(stagedAfter)}): complete ${milestone.id}`;
   const bodyLines = [];
   if (completed.length > 0) {
-    bodyLines.push(...completed.map(c => `- ${c}`));
+    bodyLines.push(...completed.map(c => `- ${typeof c === "string" ? c : c.description}`));
     bodyLines.push("");
   }
   bodyLines.push(`Prepared from branch: ${branch}`);
@@ -1381,7 +1381,7 @@ function cmdPrepare(args) {
 
   const commitSha = git(["rev-parse", "HEAD"]);
 
-  // Gate 5: Verify clean tree after commit
+  // Gate 5a: Verify the implementation commit consumed the staged work
   const postStatus = git(["status", "--porcelain"]) || "";
   if (postStatus.trim()) {
     console.error("Error: Working tree is not clean after commit.");
@@ -1401,6 +1401,26 @@ function cmdPrepare(args) {
     writeProjectState(ps);
   }
 
+  // The prepared commit SHA cannot be recorded inside the commit it identifies.
+  // Commit lifecycle metadata separately so validation still runs from a clean HEAD.
+  git(["add", path.relative(PROJECT_ROOT, milestonePath(milestone.id))]);
+  if (ps) git(["add", path.relative(PROJECT_ROOT, PROJECT_STATE_PATH)]);
+  const metadataCommitResult = gitResult([
+    "commit",
+    "--message",
+    `chore(development): record prepared state for ${milestone.id}`
+  ]);
+  if (metadataCommitResult.status !== 0) {
+    console.error(`Error: Prepared-state commit failed: ${(metadataCommitResult.stderr || metadataCommitResult.stdout || "").trim()}`);
+    process.exit(1);
+  }
+  const preparedStateCommit = getCurrentHead();
+  const finalStatus = git(["status", "--porcelain"]) || "";
+  if (finalStatus.trim()) {
+    console.error("Error: Working tree is not clean after recording prepared state.");
+    process.exit(1);
+  }
+
   console.log(JSON.stringify({
     ok: true,
     milestoneId: milestone.id,
@@ -1408,6 +1428,7 @@ function cmdPrepare(args) {
     branch,
     filesStaged: stagedAfter.length,
     unscoped: unscoped.length,
+    preparedStateCommit,
     message: `Prepared commit ${commitSha.slice(0, 8)} on ${branch}`,
     nextAction: "Run dev:validate against committed HEAD",
   }, null, 2));
