@@ -1405,11 +1405,17 @@ function cmdPrepare(args) {
   // Commit lifecycle metadata separately so validation still runs from a clean HEAD.
   git(["add", path.relative(PROJECT_ROOT, milestonePath(milestone.id))]);
   if (ps) git(["add", path.relative(PROJECT_ROOT, PROJECT_STATE_PATH)]);
-  const metadataCommitResult = gitResult([
-    "commit",
-    "--message",
-    `chore(development): record prepared state for ${milestone.id}`
-  ]);
+  const metadataMessagePath = git(["rev-parse", "--git-path", "COMMIT_MSG_TEMP"]);
+  const metadataCommitMessagePath = metadataMessagePath
+    ? path.resolve(PROJECT_ROOT, metadataMessagePath)
+    : path.join(PROJECT_ROOT, ".git", "COMMIT_MSG_TEMP");
+  fs.writeFileSync(
+    metadataCommitMessagePath,
+    `chore(development): record prepared state for ${milestone.id}`,
+    "utf8"
+  );
+  const metadataCommitResult = gitResult(["commit", "--file", metadataCommitMessagePath]);
+  try { fs.unlinkSync(metadataCommitMessagePath); } catch {}
   if (metadataCommitResult.status !== 0) {
     console.error(`Error: Prepared-state commit failed: ${(metadataCommitResult.stderr || metadataCommitResult.stdout || "").trim()}`);
     process.exit(1);
