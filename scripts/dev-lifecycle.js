@@ -1093,7 +1093,7 @@ function cmdComplete(args) {
 
   // Gate 4b: Clean tree requirement (from profile)
   if (policy.requireCleanTree && latestValidation && latestValidation.status === "passed") {
-    const currentDirty = isDirty();
+    const currentDirty = currentFingerprint.changedFiles.length > 0;
     const validatedDirty = latestValidation.gitState && latestValidation.gitState.changedFiles &&
       latestValidation.gitState.changedFiles.length > 0;
 

@@ -337,6 +337,8 @@ test("Completion enforces requireCleanTree", () => {
   const content = fs.readFileSync(path.join(PROJECT_ROOT, "scripts", "dev-lifecycle.js"), "utf8");
   assert(content.includes("DIRTY_SINCE_VALIDATION") && content.includes("policy.requireCleanTree"),
     "Missing DIRTY_SINCE_VALIDATION gate with policy check");
+  assert(content.includes("currentFingerprint.changedFiles.length > 0"),
+    "Completion must exclude control-plane validation metadata from dirty source checks");
 });
 
 test("Completion enforces requireCloseout", () => {
