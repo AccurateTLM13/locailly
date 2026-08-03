@@ -4,7 +4,23 @@ This guide covers the local workflow for running Benchmark Lab and deciding what
 
 ## Benchmark Lab Status
 
-Benchmark Lab Milestone 1 is complete and operator-ready. M2 is active: semantic scoring, run provenance, repeated-trial aggregation, uncertainty, and minimum qualification gates are being hardened before new qualification claims are made. Qualification breadth remains incremental across models, Tracks, hardware profiles, prompts, runtimes, and regression packs.
+Benchmark Lab Milestone 1 and M2 are complete and operator-ready. M3 adds a localhost-only interactive workflow for inventory, explicit model loading, suite selection, live progress, durable run history, and M2 result presentation. Qualification breadth remains incremental across models, Tracks, hardware profiles, prompts, runtimes, and regression packs.
+
+### M3 Interactive Local Model Lab
+
+Open the unified shell at `http://127.0.0.1:31313/#benchmarks`. The lab intentionally presents only installed models that have repository manifests and suites from the summary-safe catalog. It does not accept arbitrary model names, paths, commands, or benchmark code.
+
+The operator flow is:
+
+1. Confirm Ollama is reachable and inspect the model's exact runtime slug and digest.
+2. Explicitly load the selected model. A cold load may take longer than an ordinary health request; load requests have a separate bounded timeout.
+3. Choose a catalog suite and either `quick` or `qualification` mode.
+4. Run preflight. Qualification mode fails closed unless exact model provenance is pinned and current.
+5. Start the run and monitor summary-safe case/trial events through SSE, with polling fallback.
+6. Inspect pass rate, Wilson interval, trial/strata counts, critical failures, semantic codes, provenance, and gate reasons.
+7. Treat the result as local screening evidence unless the separate review/promotion/qualification workflow is explicitly completed.
+
+Interactive runs are stored under gitignored `data/benchmark-lab/runs/`. Default API responses and browser state exclude raw prompts and model responses. A run never downloads, promotes, qualifies, swaps, or routes a model automatically.
 
 ### M2 Provenance Boundary
 

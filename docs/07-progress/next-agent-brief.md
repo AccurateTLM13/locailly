@@ -2,7 +2,7 @@
 
 Hand this to Cursor, Claude, Codex, or any coding agent continuing Locaily work.
 
-**Updated:** 2026-08-02 (Benchmark Lab M2 live acceptance complete)
+**Updated:** 2026-08-03 (Benchmark Lab M3 live acceptance complete)
 
 ## Read First
 
@@ -18,15 +18,14 @@ Hand this to Cursor, Claude, Codex, or any coding agent continuing Locaily work.
 
 Also: root [AGENTS.md](../../AGENTS.md) and [../08-agents/agent-context.md](../08-agents/agent-context.md)
 
-## Current Benchmark Lab M2 Handoff
+## Current Benchmark Lab M3 Handoff
 
-- M2 is implementation-complete on `codex/benchmark-lab-m2-reproducible-semantic-qualification`; consult `development/project-state.json` for the canonical delivery state.
-- Current slices add `semanticScorer` declarations, generic runner dispatch, stable run provenance, provenance-aware comparison gates, repeated-trial aggregation with Wilson uncertainty, a reusable `benchmark:requalify` runner, and an accessibility-deep v2 suite with three difficulty strata.
-- `npm.cmd run test:full` passes, including schema, semantic scorer, provenance, comparison, aggregation, repeated-run orchestration, and qualification-boundary coverage.
-- The live `accessibility-deep/suite-v2.json` draft completed five independent runs and 20 scored trials against exact `llama3.2:latest` digest `sha256:a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72`. The aggregation is evidence-gate eligible at 15/20 pass with zero critical failures.
-- Do not modify approved evidence or claim qualification from this draft. Promotion remains an explicit follow-on operator action.
-- After M2 reaches ready-for-delivery, the next explicitly approved objective is Benchmark Lab M3 — Interactive Local Model Lab.
-- Local Brain runtime separation remains mandatory: it may consume compact qualification artifacts but must not import `benchmark-lab/engine/` modules.
+- M2 is ready for delivery. M3 is implemented on `codex/benchmark-lab-m3-interactive-local-model-lab`; consult `development/project-state.json` for the canonical lifecycle state.
+- The unified shell discovers manifest-registered installed Ollama models and keeps installation, runtime reachability, loaded state, loadability, manifest status, and qualification state separate.
+- Operators explicitly load/unload models, choose only allowlisted catalog suites, run exact-provenance preflight, and launch quick or qualification runs. The companion spawns an isolated JSONL worker and never imports `benchmark-lab/engine/`.
+- Run summaries and events are durable and summary-safe. The API supports list/detail, SSE replay, polling fallback, cancellation, duplicate protection, and truthful server-restart recovery. Raw prompts and model responses are not exposed.
+- Real browser acceptance completed run `bench-20260803031401-57923dc6` against `llama3.2:latest` at digest `sha256:a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72`: 3/4 passed, Wilson 95% interval 0.300642-0.954413, three strata, zero critical failures. Refresh recovery was verified. This quick run is below qualification thresholds and was not promoted.
+- Preserve the local-only, explicit-control boundary. Do not add automatic downloads, model switching, promotion, qualification, or routing from interactive results.
 
 ## Important: Benchmark Lab Status
 

@@ -15,7 +15,7 @@ const SUMMARY_SCHEMA_PATH = path.join(LAB_ROOT, "schemas", "benchmark-run-summar
 const PROVENANCE_SCHEMA_PATH = path.join(LAB_ROOT, "schemas", "benchmark-provenance.schema.json");
 const MODEL_MANIFEST_SCHEMA_PATH = path.join(LAB_ROOT, "schemas", "model-manifest.schema.json");
 
-async function runSuite({ suitePath, modelManifest = null, runId = createRunId(), now = () => new Date() }) {
+async function runSuite({ suitePath, modelManifest = null, runtimeBaseUrl = null, runId = createRunId(), now = () => new Date(), onCaseComplete = null }) {
   const suiteFile = path.resolve(suitePath);
   const suiteDir = path.dirname(suiteFile);
   const startedAt = now().toISOString();
@@ -30,6 +30,9 @@ async function runSuite({ suitePath, modelManifest = null, runId = createRunId()
       ...suite.runtime,
       modelManifest
     };
+  }
+  if (runtimeBaseUrl && suite.runtime && suite.runtime.provider === "ollama") {
+    suite.runtime = { ...suite.runtime, baseUrl: runtimeBaseUrl };
   }
 
   assertValid(validateSchema(suite, suiteSchema, "suite"), "Suite config is invalid.");
@@ -49,10 +52,21 @@ async function runSuite({ suitePath, modelManifest = null, runId = createRunId()
   const rawCaseResults = [];
   const summaryCaseResults = [];
 
-  for (const benchmarkCase of cases) {
+  for (let caseIndex = 0; caseIndex < cases.length; caseIndex += 1) {
+    const benchmarkCase = cases[caseIndex];
     const rawCaseResult = await executeCase({ suite, benchmarkCase, runtime, semanticScorer });
     rawCaseResults.push(rawCaseResult);
     summaryCaseResults.push(toSummaryCase(rawCaseResult));
+    if (typeof onCaseComplete === "function") {
+      await onCaseComplete({
+        caseIndex: caseIndex + 1,
+        caseCount: cases.length,
+        caseId: rawCaseResult.caseId,
+        difficulty: rawCaseResult.difficulty,
+        verdict: rawCaseResult.verdict,
+        durationMs: rawCaseResult.durationMs
+      });
+    }
   }
 
   const completedAt = now().toISOString();

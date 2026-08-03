@@ -1848,3 +1848,67 @@ Confirmed for M2
 - `llama3.2-local` is pinned to `llama3.2:latest` with digest `sha256:a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72` for the representative run.
 - The live aggregation remains draft-only. Evidence-gate eligibility is not promotion or qualification.
 - Existing approved evidence artifacts were not modified.
+
+---
+
+## 2026-08-03 - Benchmark Lab M3 interactive execution boundary
+
+### Decision
+
+The Local Brain companion owns model inventory, allowlisted suite discovery, durable summary-safe run state, and browser APIs, but benchmark execution occurs in a separate Node worker. Only the worker imports `benchmark-lab/engine/`; it receives one validated request over stdin and emits versioned JSONL progress/result events over stdout.
+
+### Why
+
+Interactive execution must not collapse the existing Benchmark Lab trust boundary into the long-running Local Brain process. Process isolation makes cancellation, timeout, malformed-event handling, worker crashes, and server restart recovery explicit while keeping engine internals out of the companion.
+
+### Status
+
+Confirmed for M3
+
+### Notes
+
+- The worker accepts only loopback runtime URLs, registered model manifests, and catalog suites.
+- One active run is permitted; duplicate submits return the existing run.
+- Raw prompts and model responses are never copied into default events, durable API records, or browser state.
+
+---
+
+## 2026-08-03 - Benchmark Lab M3 model state and operator-control boundary
+
+### Decision
+
+Model inventory reports runtime reachability, installation, active loaded state, loadability, manifest registration, exact slug/digest, and qualification independently. Loading and unloading are explicit per-model operations. Interactive completion never triggers download, promotion, qualification, swapping, enforcement, or routing changes.
+
+### Why
+
+An installed model is not necessarily loaded, a loaded model is not necessarily qualified, and a qualification record may be stale or refer to different weights. Keeping these dimensions separate prevents the UI from implying readiness or trust that the underlying evidence does not support.
+
+### Status
+
+Confirmed for M3
+
+### Notes
+
+- Qualification-mode preflight fails closed on absent, stale, or mismatched exact provenance.
+- Cold model loading has a separate bounded timeout because real Ollama acceptance exceeded the ordinary request timeout.
+- Completed runs remain local screening evidence until the existing human-gated evidence lifecycle is used.
+
+---
+
+## 2026-08-03 - Development lifecycle integration tests must preserve repository state
+
+### Decision
+
+Lifecycle integration tests snapshot and restore mutable `development/` control-plane state, including milestones, sessions, reviews, issues, briefs, project state, roadmap, and validation index, even when a test fails.
+
+### Why
+
+The begin/end test previously cleaned shared development directories and could erase the active repository lifecycle state. Test isolation is part of control-plane correctness; a passing test must not mutate the real milestone ledger.
+
+### Status
+
+Confirmed
+
+### Notes
+
+- Deterministic milestone review now combines the tracked diff with untracked files so new source is included in secret, scope, and coverage checks.

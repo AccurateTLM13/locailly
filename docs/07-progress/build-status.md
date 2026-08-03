@@ -1,10 +1,10 @@
 # Build Status
 
-**Updated:** 2026-08-02 (Benchmark Lab M2 live acceptance complete)
+**Updated:** 2026-08-03 (Benchmark Lab M3 live acceptance complete)
 
 ## Current Stage
 
-Pipeline-stage **Local Brain** with **Crew track runner**, JSON-first internal contracts, workflow orchestration, Memory Bridge v0, and Benchmark Lab Milestone 1 complete and operator-ready. Benchmark Lab M2 is active for reproducible semantic qualification. M9 physical multi-device pilot infrastructure is prepared (not yet executed on hardware).
+Pipeline-stage **Local Brain** with **Crew track runner**, JSON-first internal contracts, workflow orchestration, Memory Bridge v0, Benchmark Lab M2 reproducible qualification, and the M3 interactive local model workflow implemented. M9 physical multi-device pilot infrastructure is prepared (not yet executed on hardware).
 
 North Star direction is now documented as a local capability network: route track contracts to the smallest qualified capability, validate results, and preserve structured evidence for future routing and track improvement.
 
@@ -19,7 +19,8 @@ North Star direction is now documented as a local capability network: route trac
 | **3 - Model-step input mapping** | Complete |
 | **4 - Track-based orchestration** | Complete |
 | **5 - Benchmark Lab** | Complete — Milestone 1 operator-ready |
-| **Benchmark Lab M2 - Reproducible Semantic Qualification** | Implementation and live acceptance complete — canonical delivery gates determine final readiness |
+| **Benchmark Lab M2 - Reproducible Semantic Qualification** | Ready for delivery — implementation, live acceptance, validation, and completion gates passed |
+| **Benchmark Lab M3 - Interactive Local Model Lab** | Implementation and live acceptance complete — canonical lifecycle state determines final readiness |
 | **6 - Relay Nodes (M4)** | Complete |
 | **7 - Multi-Device Workflow Coordination (M5)** | Complete |
 | **8 - Pilot Infrastructure (M9)** | Infrastructure prepared — not yet executed on hardware |
@@ -33,12 +34,13 @@ North Star direction is now documented as a local capability network: route trac
 
 **DealSniper** - track id `marketplace.dealsniper`
 
-**Benchmark Lab** - operator-ready local evaluation subsystem under `benchmark-lab/`, with CLI run/compare/aggregate/promote/review/matrix/probe/diagnose/report/qualification/model-card/checksum-verify commands, mock + Ollama + ToolEvalRuntime adapters, schema validation, execution modes, capability probing, evidence promotion workflow, checksum verification, qualification-record generation, and read-only runtime status. M2 adds semantic scoring, stable provenance, Wilson uncertainty, and minimum qualification gates.
+**Benchmark Lab** - operator-ready local evaluation subsystem under `benchmark-lab/`, with CLI and interactive localhost workflows. M2 adds semantic scoring, stable provenance, Wilson uncertainty, and minimum qualification gates. M3 adds model inventory, explicit runtime controls, exact-provenance preflight, isolated execution, durable summary-safe runs, live progress, and frontend result/history views.
 
 ## Working
 
 - Local Brain server (`127.0.0.1:31313`)
 - `GET /health`, `GET /tools`, `GET /audit`, `GET /scoreboard`, `GET /benchmark/status`
+- Interactive Benchmark Lab APIs under `/benchmark/models`, `/benchmark/suites`, `/benchmark/preflight`, and `/benchmark/runs`
 - `POST /tasks/run` and legacy `POST /analyze`
 - `POST /tracks/run` and `GET /tracks`
 - `GET /orchestration/tracks`, `GET /orchestration/workflows`, `POST /workflows/plan`, `POST /workflows/run`
@@ -94,7 +96,7 @@ North Star direction is now documented as a local capability network: route trac
 
 **Now:** Review CTK-01 on the isolated CTK-only branch. Runtime acceptance is 20/20, the full offline repository suite passes, and validation `validation-20260731T012502-3e424fff` passed. Do not activate CTK-02 or implement DBVT SEO Audit integration.
 
-**Next:** Complete M2 lifecycle delivery gates, then begin the explicitly approved Benchmark Lab M3 — Interactive Local Model Lab milestone.
+**Benchmark Lab M3:** Implementation and real-browser acceptance are complete. Follow `development/project-state.json` for canonical review, validation, completion, and delivery state. No follow-on Benchmark Lab milestone is approved.
 
 **Benchmark Lab M2 gate:** The representative draft has 20 scored trials across 3 strata and is evidence-gate eligible; it remains unpromoted and does not create a new qualification claim.
 

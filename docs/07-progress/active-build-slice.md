@@ -1,12 +1,12 @@
 # Active Build Slice
 
-**Updated:** 2026-08-02 (Benchmark Lab M2 live acceptance complete)
+**Updated:** 2026-08-03 (Benchmark Lab M3 live acceptance complete)
 
 ## Current Slice
 
-**Benchmark Lab M2 — Reproducible Semantic Qualification is implementation-complete** on `codex/benchmark-lab-m2-reproducible-semantic-qualification`. Declared semantic scorers, stable provenance, provenance-aware comparison, repeated-trial Wilson aggregation, qualification gating, and the accessibility-deep v2 path are implemented. The representative live draft completed five independent runs and 20 scored trials across three strata with exact `llama3.2:latest` digest provenance and an eligible evidence gate. Canonical lifecycle delivery gates determine final readiness.
+**Benchmark Lab M3 — Interactive Local Model Lab is implementation-complete with live acceptance** on `codex/benchmark-lab-m3-interactive-local-model-lab`. The localhost shell now discovers registered installed Ollama models, exposes explicit load/unload controls, launches only cataloged suites through an isolated worker, streams summary-safe progress, stores durable result history, and restores completed runs after refresh. Canonical lifecycle state in `development/project-state.json` determines delivery readiness.
 
-No approved evidence artifacts were modified. The implementation must preserve the boundary between screening evidence and credible qualification evidence.
+The live browser run used exact `llama3.2:latest` digest provenance and completed 3/4 cases. It correctly remained below the M2 qualification gate because the sample had only four scored trials and one independent run. No approved evidence artifacts or qualification records were modified.
 
 ## Most Recently Completed Slice
 
@@ -28,7 +28,7 @@ Defined in [maintenance-objective-lifecycle-closeout.md](./maintenance-objective
 
 ## Next Slice
 
-Complete the canonical M2 prepare/validate/complete gates. After M2 reaches ready-for-delivery, begin the explicitly approved Benchmark Lab M3 — Interactive Local Model Lab objective.
+Complete the canonical M3 review, prepare, validate, and complete gates. Do not begin a follow-on Benchmark Lab milestone without an explicitly supplied objective.
 
 ### Deferred (requires specific conditions)
 
@@ -40,4 +40,6 @@ Complete the canonical M2 prepare/validate/complete gates. After M2 reaches read
 - Do not modify approved benchmark evidence
 - Do not claim broad model quality from the semantic scorer slice or from small samples
 - Do not add hosted judges, automatic model switching, or hardware-pilot execution in M2
+- Do not expose raw prompts/model responses through the M3 API or browser state
+- Do not auto-download, auto-promote, auto-qualify, or auto-route models from interactive runs
 - Do not begin another milestone without an explicitly supplied objective

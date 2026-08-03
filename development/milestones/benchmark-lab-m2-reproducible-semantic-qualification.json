@@ -2,7 +2,7 @@
   "schema": "locaily.development.milestone.v1",
   "id": "benchmark-lab-m2-reproducible-semantic-qualification",
   "title": "Benchmark Lab M2 — Reproducible Semantic Qualification",
-  "status": "active",
+  "status": "ready-for-delivery",
   "type": "feature",
   "priority": "medium",
   "purpose": "Make model qualification evidence semantically meaningful, reproducible, and statistically defensible before expanding model comparisons.",
@@ -135,10 +135,12 @@
   "lifecycleRef": null,
   "createdAt": "2026-08-02T22:33:45.978Z",
   "startedAt": "2026-08-02T22:33:45.979Z",
-  "completedAt": null,
+  "completedAt": "2026-08-03T02:40:56.868Z",
   "mergedAt": null,
   "preparedCommit": "37da775d1313523c3de3efe92d4d34d91823c1a0",
   "preparedBranch": "codex/benchmark-lab-m2-reproducible-semantic-qualification",
   "preparedAt": "2026-08-03T02:39:45.986Z",
-  "latestValidationId": "validation-20260803T023624-a84bb3ad"
+  "latestValidationId": "validation-20260803T023959-bd677b49",
+  "completionBranch": "codex/benchmark-lab-m2-reproducible-semantic-qualification",
+  "completionHead": "d52b3758c650c26c8b2acd215d799c495276fde5"
 }
