@@ -31,12 +31,10 @@
     "npm.cmd run benchmark:test - schema, generic runner, semantic scorer, aggregation, and repeated-requalification tests passed.",
     "npm.cmd run test:full - complete offline repository validation passed after the live v2 evidence and exact digest changes.",
     "Live benchmark:requalify - five runs and 20 scored trials completed; aggregation m2-accessibility-v2-llama32-20260802 is gate-eligible.",
-    "npm.cmd run dev:status -- --strict and git diff --check passed earlier; official lifecycle validation follows preparation."
+    "Official pre-delivery lifecycle validation passed: 6 required checks, 1 optional full-suite check, and 2 acknowledged manual checks. The canonical latest ID is recorded in development/validation-index.json."
     ],
     "failed": [],
-    "not_run": [
-    "npm.cmd run dev:validate (official committed-HEAD lifecycle gate)"
-    ]
+    "not_run": []
   },
   "recommended_next_agent": "worker"
 }
