@@ -1740,3 +1740,111 @@ Confirmed for CTK-01
 - Model and human handler ports remain unavailable; there is no implicit fallback.
 - CTK-02 remains inactive and DBVT SEO Audit integration remains out of scope.
 - See `docs/01-architecture/capability-trigger-kernel.md`.
+
+---
+
+## 2026-08-02 - Benchmark Lab M2 semantic qualification boundary
+
+### Decision
+
+Benchmark Lab M2 will treat semantic scoring as a declared, versioned suite contract. Generic runs may use local scenario evaluators, and their identity/version must be present in run summaries. Schema validity remains a separate check; a schema-valid but semantically incorrect output is a failed benchmark case with an actionable semantic failure code.
+
+### Why
+
+The existing generic runner proved JSON parsing, output-schema validity, and expected-label checks, but did not invoke the track-specific semantic rubrics already present in several suites. This made promoted pass rates weaker than their track names implied. M2 must improve evidence credibility without rewriting or mutating prior approved artifacts.
+
+### Status
+
+Confirmed for M2
+
+### Notes
+
+- M2 qualification claims require stronger provenance and repeated-trial evidence than the first semantic-dispatch slice provides.
+- Hosted judges, automatic model switching, hardware-pilot execution, and public rankings remain outside this milestone.
+
+---
+
+## 2026-08-02 - Benchmark Lab M2 provenance and comparison boundary
+
+### Decision
+
+Benchmark Lab run summaries will carry stable, summary-safe provenance for model manifest identity, runtime adapter/version, suite contract, prompt declaration and input fingerprint, scorer, case set/difficulty strata, and hardware-profile capture state. Pairwise comparisons invalidate mismatches in evaluation conditions, but model identity is intentionally excluded from invalidation because model-to-model comparison is a primary use case.
+
+### Why
+
+Pass rates are not credible when the prompt, scorer, case set, runtime version, or hardware context changed between runs. Conversely, treating the model itself as a mismatch would make controlled model comparison impossible. Separating evaluation-condition fingerprints from subject-model identity gives the comparison tool the correct gate.
+
+### Status
+
+Confirmed for M2
+
+### Notes
+
+- `manifestDigest` fingerprints the declared model manifest; it is not a substitute for a runtime model-weight digest.
+- Missing runtime digest or hardware capture is recorded as provenance state and remains disqualifying for future qualification gates where required.
+
+---
+
+## 2026-08-02 - Benchmark Lab M2 repeated-trial qualification gate
+
+### Decision
+
+Repeated qualification evidence must be assembled by the Benchmark Lab aggregation command from independent, provenance-compatible run summaries. Aggregations report overall and per-case pass rates, Wilson 95% intervals, difficulty strata, and critical infrastructure failures. The default M2 gate requires at least 20 scored trials, 3 difficulty strata, 3 independent runs, zero critical failures, a declared semantic scorer and prompt, stable model identity, and a reported runtime version. Promoted evidence may attach an aggregation; `qualification:generate` rejects `qualified` status unless that aggregation is eligible.
+
+### Why
+
+A single deterministic run can demonstrate wiring but cannot establish repeatability or meaningful uncertainty. Separating aggregation from execution keeps raw outputs local, makes the sample policy inspectable, and preserves candidate/screening records when evidence is below the qualification threshold.
+
+### Status
+
+Confirmed for M2
+
+### Notes
+
+- Wilson intervals are descriptive uncertainty for pass-rate estimates, not a substitute for representative live-model evidence.
+- Model identity remains comparable across runs; evaluation-condition fingerprints must match.
+- Existing approved evidence artifacts remain unchanged.
+
+---
+
+## 2026-08-02 - Benchmark Lab M2 representative v2 execution path
+
+### Decision
+
+Use `accessibility-deep/suite-v2.json` as the first representative M2 requalification path. It preserves the existing three cases, adds a hard account-settings case, raises the prompt/contract/scorer identities to v2, and is executed through `benchmark:requalify` with five independent trials by default. The resulting aggregation remains draft-only until an operator reviews and promotes it.
+
+### Why
+
+The existing accessibility suite had only easy and medium strata, so it could not satisfy the default three-strata gate. A versioned additive suite makes the change auditable and avoids rewriting prior suite evidence or approved artifacts.
+
+### Status
+
+Confirmed for M2
+
+### Notes
+
+- The suite targets the declared local Ollama manifest and localhost runtime.
+- The runtime was initially unavailable; the resolved live run is recorded below.
+- No qualification claim is implied by the suite or its test fixture.
+
+---
+
+## 2026-08-02 - Benchmark Lab M2 exact live-model identity boundary
+
+### Decision
+
+Live Ollama qualification runs pin the model manifest to the exact installed runtime slug and SHA-256 digest. Runtime metadata resolves the authoritative digest from Ollama `/api/tags`; when a manifest declares a digest, execution fails closed if the runtime digest is missing or different. The representative v2 third stratum uses the existing canonical `adversarial` difficulty value.
+
+### Why
+
+Ollama `/api/show` does not reliably include the installed model digest, while `/api/tags` does. Recording a manifest fingerprint without verifying the local model weights would leave a provenance gap and allow evidence to be attributed to the wrong artifact.
+
+### Status
+
+Confirmed for M2
+
+### Notes
+
+- `llama3.2-local` is pinned to `llama3.2:latest` with digest `sha256:a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72` for the representative run.
+- The live aggregation remains draft-only. Evidence-gate eligibility is not promotion or qualification.
+- Existing approved evidence artifacts were not modified.

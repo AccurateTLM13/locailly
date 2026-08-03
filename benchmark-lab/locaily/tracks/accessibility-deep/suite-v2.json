@@ -1,10 +1,10 @@
 {
   "schemaVersion": "benchmark.suite.v1",
-  "suiteId": "performance-budget-v1",
-  "name": "Performance Budget Audit V1",
+  "suiteId": "accessibility-deep-v2",
+  "name": "Accessibility Deep Audit V2",
   "mode": "qualification",
-  "trackId": "website_audit.performance_budget",
-  "contractId": "budget-analyzer-v1",
+  "trackId": "website_audit.accessibility_deep",
+  "contractId": "a11y-analyzer-v2",
   "runtime": {
     "provider": "ollama",
     "modelManifest": "llama3.2-local",
@@ -13,41 +13,40 @@
     "temperature": 0,
     "numPredict": 4096
   },
-  "caseFiles": ["cases.json"],
+  "caseFiles": ["cases.json", "cases-v2.json"],
   "prompt": {
-    "id": "performance-budget-json-v1",
-    "version": "1.0.0"
+    "id": "accessibility-deep-json-v2",
+    "version": "2.0.0"
   },
   "outputSchema": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "Budget Analyzer Output",
+    "title": "A11y Analyzer Output V2",
     "type": "object",
     "additionalProperties": false,
-    "required": ["summary", "budgetGaps", "label"],
+    "required": ["summary", "findings", "label"],
     "properties": {
       "label": { "enum": ["extract"] },
       "summary": { "type": "string", "minLength": 1 },
-      "budgetGaps": {
+      "findings": {
         "type": "array",
         "items": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["auditId", "title", "currentValue", "target", "gapSeverity"],
+          "required": ["auditId", "title", "severity", "finding"],
           "properties": {
             "auditId": { "type": "string", "minLength": 1 },
             "title": { "type": "string" },
-            "currentValue": { "type": "string" },
-            "target": { "type": "string" },
-            "gapSeverity": { "enum": ["critical", "significant", "moderate", "within_budget"] }
+            "severity": { "enum": ["critical", "high", "medium", "low"] },
+            "finding": { "type": "string", "minLength": 1 }
           }
         }
       }
     }
   },
   "semanticScorer": {
-    "id": "performance-budget-semantic-v1",
-    "version": "1.0.0",
-    "module": "scenarios.js"
+    "id": "accessibility-deep-semantic-v2",
+    "version": "2.0.0",
+    "module": "scenarios-v2.js"
   },
   "validators": ["json-parse", "json-schema", "semantic-scorer"]
 }

@@ -1,35 +1,42 @@
 {
-  "work_id": "wave-3-dm10-lhbridge-20260801",
-  "objective_id": "wave-3-multiproject-product-bridge",
+  "work_id": "benchmark-lab-m2-reproducible-semantic-qualification-20260802",
+  "objective_id": "benchmark-lab-m2-reproducible-semantic-qualification",
   "status": "complete",
-  "closed_at": "2026-08-01",
-  "original_goal": "Execute Wave 3 combining DM10 Multi-Project Template and Vault Importer and Lighthouse Handoff Product Bridge.",
+  "closed_at": "2026-08-03T02:20:05.4779016Z",
+  "original_goal": "Make model qualification evidence semantically meaningful, reproducible, and statistically defensible before expanding model comparisons.",
   "completed": [
-    "DM10: Extended memory-project.js CLI with generate-template and import-vault commands for starter vault generation and multi-codebase importing.",
-    "DM10: Passed scripts/test-development-memory-multi-project.js (6/6 passed).",
-    "LH Product Bridge: Implemented companion/capability-kernel/lighthouse-product-bridge.js with CORS allowlist policy (127.0.0.1, chrome-extension://*), PageSpeed JSON to Markdown conversion, and Local AI recommendation enhancement.",
-    "LH Product Bridge: Passed scripts/test-lighthouse-product-bridge.js (3/3 passed)."
+    "Created branch codex/benchmark-lab-m2-reproducible-semantic-qualification.",
+    "Activated the M2 development-control-plane milestone and recorded explicit scope and acceptance criteria.",
+    "Added the declared, versioned semanticScorer suite contract and generic runner dispatch.",
+    "Enabled semantic scorer declarations for accessibility-deep, performance-budget, seo-audit, and dealsniper without modifying approved evidence artifacts.",
+    "Added a schema-valid negative-control fixture and actionable SEMANTIC_EXPECTATION_MISMATCH validation test.",
+    "Added summary-safe model/runtime/suite/prompt/scorer/case/hardware provenance and provenance-aware comparison gates.",
+    "Added deterministic repeated-trial aggregation with per-case metrics, Wilson uncertainty intervals, critical-failure counts, difficulty strata, and an explicit qualification gate.",
+    "Attached optional aggregation evidence to promotion and rejected qualified status without an eligible aggregation while preserving screening and candidate workflows.",
+    "Added benchmark:requalify for repeated independent trials and a representative accessibility-deep v2 suite with easy, medium, and adversarial strata.",
+    "Resolved the local Ollama runtime blocker and added the missing lifecycle blocker-clear path.",
+    "Pinned llama3.2-local to the exact installed runtime slug and digest; runtime metadata now resolves the authoritative digest from Ollama tags and fails closed on mismatch.",
+    "Generated five independent accessibility-deep v2 live runs totaling 20 scored trials across easy, medium, and adversarial strata.",
+    "Verified the draft aggregation is gate-eligible with 15/20 passes, a 0.75 scored pass rate, Wilson 95% interval 0.531299-0.888138, and zero critical failures.",
+    "Kept live outputs and aggregation draft-only; no existing approved evidence or qualification records were modified.",
+    "Updated current-state, active-slice, next-agent, progress, and decision documentation for the completed M2 boundary."
   ],
   "remaining": [],
-  "deferred_outside_ctk_02": [],
-  "next_required_action": "Execute Truth-and-Boundaries Reconciliation Pass to harden prototypes and tests.",
+  "next_required_action": "Follow the canonical project state; after M2 is ready for delivery, begin the explicitly approved Benchmark Lab M3 milestone.",
   "blockers": [],
   "safe_to_start_unrelated_work": true,
-  "working_branch": "main",
-  "last_commit": "c2561c3",
+  "working_branch": "codex/benchmark-lab-m2-reproducible-semantic-qualification",
   "validation": {
     "passed": [
-      "node scripts/test-development-memory-multi-project.js - 6/6 passed.",
-      "node scripts/test-lighthouse-product-bridge.js - 3/3 passed.",
-      "node scripts/test-node-event-bus.js - 4/4 passed.",
-      "node scripts/test-relay-trust-pairing.js - 4/4 passed.",
-      "node scripts/test-node-roles-capability-capsules.js - 12/12 passed.",
-      "node scripts/test-dev-loop.js - 4/4 passed.",
-      "node scripts/test-capability-trigger-kernel.js - 20/20 passed.",
-      "node scripts/dev-status.js --strict - clean with 0 errors."
+    "npm.cmd run benchmark:test - schema, generic runner, semantic scorer, aggregation, and repeated-requalification tests passed.",
+    "npm.cmd run test:full - complete offline repository validation passed after the live v2 evidence and exact digest changes.",
+    "Live benchmark:requalify - five runs and 20 scored trials completed; aggregation m2-accessibility-v2-llama32-20260802 is gate-eligible.",
+    "npm.cmd run dev:status -- --strict and git diff --check passed earlier; official lifecycle validation follows preparation."
     ],
     "failed": [],
-    "not_run": []
+    "not_run": [
+    "npm.cmd run dev:validate (official committed-HEAD lifecycle gate)"
+    ]
   },
-  "recommended_next_agent": "developer"
+  "recommended_next_agent": "worker"
 }

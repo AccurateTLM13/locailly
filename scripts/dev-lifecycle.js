@@ -13,6 +13,7 @@
  *   node scripts/dev-lifecycle.js checkpoint --message "What was done"
  *   node scripts/dev-lifecycle.js pause --reason "Why pausing"
  *   node scripts/dev-lifecycle.js block --reason "Why blocked" --type <type>
+ *   node scripts/dev-lifecycle.js block --clear [--id <blocker-id>]
  *   node scripts/dev-lifecycle.js resume
  *   node scripts/dev-lifecycle.js validate
  *   node scripts/dev-lifecycle.js complete
@@ -147,6 +148,17 @@ function findActiveMilestone() {
 
 function findPausedMilestone() {
   return listMilestones().find(m => m.status === "paused") || null;
+}
+
+function findBlockedMilestone() {
+  const ps = readProjectState();
+  if (ps && ps.currentMilestone) {
+    const current = readMilestone(ps.currentMilestone);
+    if (current && current.status === "blocked") return current;
+  }
+
+  const blocked = listMilestones().filter(m => m.status === "blocked");
+  return blocked.length === 1 ? blocked[0] : null;
 }
 
 // ---- session operations ----
@@ -563,6 +575,57 @@ function cmdPause(args) {
 }
 
 function cmdBlock(args) {
+  if (hasFlag(args, "--clear")) {
+    const milestone = findBlockedMilestone();
+    if (!milestone) {
+      console.error("Error: No unambiguous blocked milestone to clear.");
+      process.exit(1);
+    }
+
+    const blockerId = extractArg(args, "--id");
+    const blockers = Array.isArray(milestone.blockers) ? milestone.blockers : [];
+    if (blockers.length === 0) {
+      console.error(`Error: Milestone '${milestone.id}' has no blockers to clear.`);
+      process.exit(1);
+    }
+    if (!blockerId && blockers.length > 1) {
+      console.error("Error: Multiple blockers exist. Pass --id <blocker-id> to clear one explicitly.");
+      process.exit(1);
+    }
+
+    const cleared = blockerId
+      ? blockers.find(blocker => blocker.id === blockerId)
+      : blockers[0];
+    if (!cleared) {
+      console.error(`Error: Blocker '${blockerId}' was not found on milestone '${milestone.id}'.`);
+      process.exit(1);
+    }
+
+    milestone.blockers = blockers.filter(blocker => blocker.id !== cleared.id);
+    milestone.status = milestone.blockers.length > 0 ? "blocked" : "paused";
+    writeMilestone(milestone);
+
+    const ps = readProjectState();
+    if (ps) {
+      ps.currentMilestone = milestone.id;
+      ps.activeSession = null;
+      ps.status = milestone.status;
+      ps.blockers = milestone.blockers.map(blocker => blocker.description);
+      ps.nextRecommendedAction = milestone.status === "paused"
+        ? `Resume milestone '${milestone.id}'`
+        : `Resolve remaining blocker(s) for milestone '${milestone.id}'`;
+      writeProjectState(ps);
+    }
+
+    console.log(JSON.stringify({
+      ok: true,
+      milestone: { id: milestone.id, status: milestone.status },
+      clearedBlocker: { id: cleared.id, description: cleared.description },
+      remainingBlockers: milestone.blockers,
+    }, null, 2));
+    return;
+  }
+
   const reason = extractArg(args, "--reason");
   const type = extractArg(args, "--type") || "human-action";
 

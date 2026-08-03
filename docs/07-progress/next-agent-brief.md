@@ -2,13 +2,13 @@
 
 Hand this to Cursor, Claude, Codex, or any coding agent continuing Locaily work.
 
-**Updated:** 2026-07-31 (CTK-01 completion audit)
+**Updated:** 2026-08-02 (Benchmark Lab M2 live acceptance complete)
 
 ## Read First
 
 1. [../00-start-here/current-state.md](../00-start-here/current-state.md)
 2. [active-build-slice.md](./active-build-slice.md)
-3. [../01-architecture/capability-trigger-kernel.md](../01-architecture/capability-trigger-kernel.md) *(active objective)*
+3. [../02-systems/benchmark-lab.md](../02-systems/benchmark-lab.md) *(active objective)*
 4. [../01-architecture/development-memory-loop.md](../01-architecture/development-memory-loop.md) *(Development Memory Loop DM1–DM10 complete)*
 5. [../02-planning/development-memory-roadmap.md](../02-planning/development-memory-roadmap.md)
 6. [build-status.md](./build-status.md)
@@ -18,14 +18,15 @@ Hand this to Cursor, Claude, Codex, or any coding agent continuing Locaily work.
 
 Also: root [AGENTS.md](../../AGENTS.md) and [../08-agents/agent-context.md](../08-agents/agent-context.md)
 
-## Current CTK-01 Handoff
+## Current Benchmark Lab M2 Handoff
 
-- CTK-01 is ready for delivery review.
-- The CTK acceptance suite passes 20/20, `npm.cmd run test:full` passes, and the `pre-delivery` profile passed as `validation-20260731T012502-3e424fff`.
-- The implementation is isolated on `codex/ctk-01-completion` so the unrelated dirty `main` worktree is not included.
-- No implementation blocker remains; the next action is review.
-- CTK-02 must remain planned and inactive.
-- DBVT SEO Audit integration is outside CTK-01 scope.
+- M2 is implementation-complete on `codex/benchmark-lab-m2-reproducible-semantic-qualification`; consult `development/project-state.json` for the canonical delivery state.
+- Current slices add `semanticScorer` declarations, generic runner dispatch, stable run provenance, provenance-aware comparison gates, repeated-trial aggregation with Wilson uncertainty, a reusable `benchmark:requalify` runner, and an accessibility-deep v2 suite with three difficulty strata.
+- `npm.cmd run test:full` passes, including schema, semantic scorer, provenance, comparison, aggregation, repeated-run orchestration, and qualification-boundary coverage.
+- The live `accessibility-deep/suite-v2.json` draft completed five independent runs and 20 scored trials against exact `llama3.2:latest` digest `sha256:a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72`. The aggregation is evidence-gate eligible at 15/20 pass with zero critical failures.
+- Do not modify approved evidence or claim qualification from this draft. Promotion remains an explicit follow-on operator action.
+- After M2 reaches ready-for-delivery, the next explicitly approved objective is Benchmark Lab M3 — Interactive Local Model Lab.
+- Local Brain runtime separation remains mandatory: it may consume compact qualification artifacts but must not import `benchmark-lab/engine/` modules.
 
 ## Important: Benchmark Lab Status
 

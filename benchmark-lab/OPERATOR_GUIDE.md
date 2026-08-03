@@ -4,7 +4,17 @@ This guide covers the local workflow for running Benchmark Lab and deciding what
 
 ## Benchmark Lab Status
 
-Benchmark Lab Milestone 1 is complete and operator-ready. Qualification breadth remains incremental across models, Tracks, hardware profiles, prompts, runtimes, and regression packs.
+Benchmark Lab Milestone 1 is complete and operator-ready. M2 is active: semantic scoring, run provenance, repeated-trial aggregation, uncertainty, and minimum qualification gates are being hardened before new qualification claims are made. Qualification breadth remains incremental across models, Tracks, hardware profiles, prompts, runtimes, and regression packs.
+
+### M2 Provenance Boundary
+
+Every generic suite run now records summary-safe provenance for the model manifest, runtime adapter/version, suite contract, prompt declaration and input fingerprint, semantic scorer, case set and difficulty strata, and hardware-profile capture state. `benchmark:compare` rejects mismatched evaluation conditions such as prompt, scorer, case-set, runtime-version, or hardware-profile differences. It intentionally does not reject model identity changes: comparing models is the purpose of a controlled matrix or pairwise comparison.
+
+`manifestDigest` identifies the model manifest used for the run. A runtime model digest is recorded when the local Ollama API exposes one. A missing runtime digest, undeclared prompt, or uncaptured hardware profile is provenance evidence to review; it is not a qualification claim.
+
+### M2 Repeated-Trial Boundary
+
+Aggregate independent runs with `benchmark:aggregate`. The aggregation reports overall and per-case pass rates, Wilson 95% uncertainty intervals, critical infrastructure failures, difficulty strata, and a qualification gate. A `qualified` record is rejected unless the promoted evidence carries an eligible aggregation.
 
 ## Operator Start
 
@@ -40,6 +50,8 @@ These commands use the mock adapter and do not require Ollama.
 - `benchmark:run` — writes raw run results + draft summary (Git-ignored)
 - `benchmark:review` — reads local draft, writes review record (local-only)
 - `benchmark:compare` — writes comparison output (local-only unless promoted)
+- `benchmark:aggregate` — reads independent draft summaries and writes a repeated-trial aggregation (local-only)
+- `benchmark:requalify` — runs independent trials and writes the aggregation in one local-only workflow
 - `benchmark:matrix` — writes draft matrix reports (Git-ignored)
 - `benchmark:probe` — writes capability probe records to `evidence/probes/` (Git-ignored cache)
 
@@ -64,6 +76,8 @@ These commands use the mock adapter and do not require Ollama.
 | Run | `benchmark:run` | `results/raw/<run-id>/run.json`, `reports/drafts/<run-id>/summary.json` | Ignored | Yes — inspect draft before promote |
 | Review | `benchmark:review` | Review record (read from draft) | Ignored | Yes — review output for quality |
 | Compare | `benchmark:compare` | Comparison output | Ignored | Before using comparison to justify a promotion |
+| Aggregate | `benchmark:aggregate` | `reports/drafts/aggregations/<aggregation-id>.json` | Ignored | Review trial counts, uncertainty, strata, critical failures, and gate reasons |
+| Requalify | `benchmark:requalify` | Multiple draft runs plus an aggregation | Ignored | Review all trial summaries and the aggregation before promotion |
 | Matrix | `benchmark:matrix` | `reports/drafts/matrices/<matrix-id>.json`, `reports/drafts/matrices/<matrix-id>.md` | Ignored | Each model result should be reviewed individually |
 | Probe | `benchmark:probe` | `evidence/probes/<model-id>/` (capability cache) | Ignored | Review capabilities before running suite |
 | Diagnose | `benchmark:diagnose` | Diagnostic output | Ignored | Before using results to justify a fix |
@@ -80,7 +94,7 @@ These commands use the mock adapter and do not require Ollama.
 Benchmark Lab commands are split deliberately:
 
 ```txt
-run -> review -> compare -> promote -> report/model-card/qualification -> checksum verify
+run -> review -> compare -> aggregate repeated runs -> promote -> report/model-card/qualification -> checksum verify
 ```
 
 Only `promote`, `qualification:generate`, `model-card:generate`, and `report:generate` create reviewable artifacts. Raw results and draft reports stay local and ignored by Git.
@@ -115,6 +129,22 @@ Compare two draft runs:
 ```powershell
 npm.cmd run benchmark:compare -- --left <run-id> --right <run-id> --output <comparison-id>
 ```
+
+Aggregate at least three independent runs before making a qualification claim:
+
+```powershell
+npm.cmd run benchmark:aggregate -- --run <run-a> --run <run-b> --run <run-c> --output <aggregation-id>
+```
+
+For the representative M2 v2 accessibility suite, run five independent trials so four cases produce the default 20 scored-trial minimum:
+
+```powershell
+npm.cmd run benchmark:requalify -- --suite benchmark-lab/locaily/tracks/accessibility-deep/suite-v2.json --model-manifest llama3.2-local --trials 5 --run-prefix a11y-v2-llama32 --output a11y-v2-llama32-aggregation
+```
+
+This requires Ollama at the suite's configured localhost address. The command writes only ignored raw runs, draft summaries, and a draft aggregation; it does not promote evidence or create a qualification record.
+
+Inspect `reports/drafts/aggregations/<aggregation-id>.json`. The default M2 gate requires 20 scored trials, 3 difficulty strata, 3 independent runs, zero critical failures, and required semantic/provenance declarations. A failed gate is still useful screening evidence, but it cannot support `qualified` status.
 
 ## Live Ollama Loop
 
@@ -278,6 +308,12 @@ Promotion is explicit:
 npm.cmd run benchmark:promote -- --run <run-id> --evidence <evidence-id> --approved-by <name> --note "Reviewed locally"
 ```
 
+Attach the reviewed aggregation when promoting evidence:
+
+```powershell
+npm.cmd run benchmark:promote -- --run <run-id> --evidence <evidence-id> --aggregation <aggregation-id> --approved-by <name> --note "Repeated-trial aggregation reviewed"
+```
+
 This writes compact evidence and checksum records:
 
 ```txt
@@ -333,7 +369,7 @@ Default record status is `screening`. To create role-specific evidence for routi
 npm.cmd run qualification:generate -- --model <model-id> --evidence <evidence-id> --role fast_worker --status candidate --role-status conditional --note "Reviewed locally"
 ```
 
-Use `qualified` only when the evidence genuinely supports it. Conditional is the safer default for early local evidence.
+Use `qualified` only when the attached aggregation reports `qualificationGate.eligible: true`; the CLI rejects qualified status otherwise. Conditional is the safer default for early local evidence.
 
 ## Verify Checksums
 

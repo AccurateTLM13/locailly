@@ -1,12 +1,12 @@
 # Active Build Slice
 
-**Updated:** 2026-07-31 (CTK-01 completion audit)
+**Updated:** 2026-08-02 (Benchmark Lab M2 live acceptance complete)
 
 ## Current Slice
 
-**CTK-01 Capability Trigger Kernel is ready for delivery review.** Its bounded runtime implementation is complete on the isolated `codex/ctk-01-completion` branch. The 20-case CTK acceptance suite, the complete offline repository suite, and the `pre-delivery` validation profile pass.
+**Benchmark Lab M2 — Reproducible Semantic Qualification is implementation-complete** on `codex/benchmark-lab-m2-reproducible-semantic-qualification`. Declared semantic scorers, stable provenance, provenance-aware comparison, repeated-trial Wilson aggregation, qualification gating, and the accessibility-deep v2 path are implemented. The representative live draft completed five independent runs and 20 scored trials across three strata with exact `llama3.2:latest` digest provenance and an eligible evidence gate. Canonical lifecycle delivery gates determine final readiness.
 
-No CTK-01 implementation blocker remains. CTK-02 remains planned and inactive. DBVT SEO Audit integration is out of scope.
+No approved evidence artifacts were modified. The implementation must preserve the boundary between screening evidence and credible qualification evidence.
 
 ## Most Recently Completed Slice
 
@@ -28,7 +28,7 @@ Defined in [maintenance-objective-lifecycle-closeout.md](./maintenance-objective
 
 ## Next Slice
 
-Do not select or activate a next slice until CTK-01 is reviewed.
+Complete the canonical M2 prepare/validate/complete gates. After M2 reaches ready-for-delivery, begin the explicitly approved Benchmark Lab M3 — Interactive Local Model Lab objective.
 
 ### Deferred (requires specific conditions)
 
@@ -37,8 +37,7 @@ Do not select or activate a next slice until CTK-01 is reviewed.
 
 ## Stop Conditions
 
-- Do not claim hardware-proven until pilot runs on physical devices
 - Do not modify approved benchmark evidence
-- Embedding-based retrieval remains out of scope
-- Do not begin a new milestone without an explicitly supplied objective
-- Do not activate CTK-02 or implement DBVT SEO Audit integration during CTK-01 closeout
+- Do not claim broad model quality from the semantic scorer slice or from small samples
+- Do not add hosted judges, automatic model switching, or hardware-pilot execution in M2
+- Do not begin another milestone without an explicitly supplied objective

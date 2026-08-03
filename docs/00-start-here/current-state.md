@@ -2,11 +2,11 @@
 
 Blunt snapshot of what Locaily is **right now**. When docs disagree with this file, check running code first, then update this file.
 
-**Updated:** 2026-08-01 (CTK-02 implementation)
+**Updated:** 2026-08-02 (Benchmark Lab M2 live acceptance complete)
 
 ## Current Milestone
 
-CTK-02 Node Roles and Capability Capsule Foundation is active. Node identity contracts, Brain/Worker/Hybrid role declarations, portable/bindable capability capsule verification (`checksums.json`), node-local binding store, evaluator rejection provenance, and CTK-01 placement routing are complete with 12/12 passing acceptance tests.
+Benchmark Lab M2 — Reproducible Semantic Qualification is implemented on `codex/benchmark-lab-m2-reproducible-semantic-qualification`. Its representative live v2 path completed five independent runs and 20 scored trials with exact model/runtime provenance. The canonical delivery state remains in `development/project-state.json`; no qualification or promotion is implied by the draft result.
 
 ## What Works
 
@@ -39,6 +39,7 @@ CTK-02 Node Roles and Capability Capsule Foundation is active. Node identity con
 - **Multi-Device Workflow Coordination (M5)** - `companion/relay/placement.js` placement planner distributes model steps across healthy relay nodes (capability + health + least-loaded; `distribute` policy). `POST /relay/plan` previews placement. `executeStepWithAssignedNode` routes each step to its assigned node and falls back locally (with `RELAY_FALLBACK` audit) on node failure. Wired into `/tracks/run` and `/workflows/run` for `relay_policy=distribute`; responses include `relay_placement` summary. Tests: `test-relay-placement.cjs` (14/14), `test-multi-device-e2e.cjs` (22/22), `test-relay` unit (17/17 after harness fix).
 - **Operator Log editorial tracks** - experimental discovery and human-selected draft proposal paths
 - **Benchmark Lab Milestone 1** - complete and operator-ready. Implements: engine and CLI (run, review, compare, promote, matrix, probe, diagnose, report, model-card, qualification, checksum-verify); 14 schemas with validation; mock + Ollama + ToolEvalRuntime adapters; execution-router with native/policy-routed/runtime-constrained modes; evidence promotion and checksum verification (canonical_text_v1/byte_exact); qualification-record generation; model capability probing; read-only runtime status at `GET /benchmark/status`; Local Brain consuming compact qualification data without importing Benchmark Lab engine internals
+- **Benchmark Lab M2** - generic semantic scorer dispatch is implemented for accessibility-deep, performance-budget, seo-audit, and dealsniper. Run summaries carry stable provenance fingerprints; comparisons reject evaluation-condition mismatches while allowing intentional model-to-model comparisons. The live accessibility-deep v2 draft completed 5 independent runs and 20 scored trials across easy, medium, and adversarial strata: 15/20 pass, 0.75 scored pass rate, Wilson 95% interval 0.531299-0.888138, zero critical failures, and an eligible evidence gate. This is narrow draft evidence, not a promotion or broad quality claim.
 - **Tool Eval Bench compatibility slice** - `benchmark-lab/locaily/tracks/basic-tool-use/`, ported 8 Tool Eval Bench scenarios, `ToolEvalRuntime` adapter (Ollama `/api/chat` tool-calling), multi-turn runner, PARTIAL verdict support, and evidence/report pipeline
 - **Hardened basic-tool-use track** - capability allowlisting, track-level tool-use policy, canonical checksum normalization (CRLF/LF), TC-05 field-level diagnostics, TC-12 detailed refusal diagnostics, separate restraint/answer metrics
 - **Canonical Track Run Records** - schema (`locaily.track_run_record.v1`), record builder, example fixtures, schema validation tests, Benchmark Lab suite-runner and hybrid-runner integrations
@@ -181,8 +182,8 @@ The North Star is now documented as a local capability network: decompose work i
 
 | Layer | Focus |
 |---|---|
-| **Now** | Between build cycles; no active objective. Security Policy Foundation complete. Second-repo operator acceptance ready to resume. |
-| **Next** | Clean-Machine v1 Acceptance; Lighthouse Handoff Product Bridge (candidates, not yet selected) |
+| **Now** | Complete the canonical Benchmark Lab M2 prepare, validate, and delivery gates. |
+| **Next** | Begin the explicitly approved Benchmark Lab M3 — Interactive Local Model Lab objective. |
 | **Later** | Physical Multi-Device Pilot (M09 held); Workflow Pack; Orchestrator Governance; Model Specialization |
 | **Archive** | Old companion-only architecture, pre-track planning docs |
 

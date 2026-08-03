@@ -132,6 +132,14 @@ test("dev:status --strict exits 1 for warnings", () => {
 
 console.log("\n## Validation Command");
 
+test("dev:block supports clearing a resolved blocker before resume", () => {
+  const content = fs.readFileSync(path.join(PROJECT_ROOT, "scripts", "dev-lifecycle.js"), "utf8");
+  assert(content.includes('hasFlag(args, "--clear")'), "Missing --clear handling");
+  assert(content.includes("findBlockedMilestone"), "Missing blocked milestone lookup");
+  assert(content.includes('milestone.status = milestone.blockers.length > 0 ? "blocked" : "paused"'),
+    "Clearing the final blocker must make the milestone resumable");
+});
+
 test("dev:validate requires active milestone", () => {
   cleanState();
   resetProjectState();
