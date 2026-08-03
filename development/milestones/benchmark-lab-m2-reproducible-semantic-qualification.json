@@ -129,7 +129,7 @@
       ]
     }
   ],
-  "validationProfile": null,
+  "validationProfile": "pre-delivery",
   "dependencies": [],
   "blockers": [],
   "lifecycleRef": null,
